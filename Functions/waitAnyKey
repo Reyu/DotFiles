@@ -1,0 +1,7 @@
+# Wait for user input
+tput smso
+tput rmso
+oldstty=`stty -g`
+stty -icanon -echo min 1 time 0
+dd bs=1 count=1 >/dev/null 2>&1
+stty "$oldstty"

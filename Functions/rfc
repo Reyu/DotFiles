@@ -1,0 +1,2 @@
+# Read an RFC
+curl -s http://www.ietf.org/rfc/rfc$1.txt | less

@@ -1,0 +1,8 @@
+if [[ -e "$1" && -e "$2" ]]; then
+    mv -bfS "~tmp" "$1" "$2"
+    mv "${2}~tmp" "$1"
+elif [[ ! -e "$1" ]]; then
+    printf '"%s" does not exist!' $1
+elif [[ ! -e "$2" ]]; then
+    printf '"%s" does not exist!' $2
+fi

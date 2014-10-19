@@ -1,0 +1,9 @@
+#!/bin/zsh
+if [[ -f ~/vimt ]]; then
+    file=~/vimt
+else
+    file=$(mktemp)
+fi
+vim $file
+cat $file
+rm $file

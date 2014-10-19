@@ -1,0 +1,14 @@
+if [[ ! -z $3 && ! -z $4 ]]
+then
+    comm="Notify $3 $4"
+elif [[ ! -z $3 ]]
+then
+    comm="Notify $3"
+else
+    comm="Notify"
+fi
+
+comm=$(urlencode $comm)
+title=$(urlencode $1)
+message=$(urlencode $2)
+curl "https://autoremotejoaomgcd.appspot.com/sendmessage?key=$(cat ~/.TokalaARKey)&message=${comm}=:=${title}=:=${message}&password=$(cat ~/.TokalaARPass)"
