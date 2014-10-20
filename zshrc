@@ -56,6 +56,7 @@ done
 # }}}
 # ZSH Options & Modules {{{
 setopt ALWAYS_TO_END          # Move cursor to the end of a completed word.
+setopt AUTO_CD                # Auto changes to a directory without typing cd.
 setopt AUTO_LIST              # Automatically list choices on ambiguous completion.
 setopt AUTO_MENU              # Show completion menu on a successive tab press.
 setopt AUTO_NAME_DIRS         # Auto add variable-stored paths to ~ list.
@@ -66,7 +67,7 @@ setopt BANG_HIST              # Treat the '!' character specially during expansi
 setopt CDABLE_VARS            # Change directory to a path stored in a variable.
 setopt COMPLETE_IN_WORD       # Complete from both ends of a word.
 setopt CORRECT                # Turn on spell correcting
-setopt CORRECTALL             # spelling correction for arguments
+setopt CORRECT_ALL            # Spelling correction for arguments
 setopt DVORAK                 # Use Dvorak keyboard for correcting mistakes
 setopt EXTENDED_GLOB          # Use extended globbing syntax.
 setopt EXTENDED_HISTORY       # Write the history file in the ':start:elapsed;command' format.
@@ -104,6 +105,9 @@ zmodload zsh/terminfo
 # Load and initialize the completion system ignoring insecure directories.
 autoload -Uz compinit && compinit -i
 
+# Load and initialize the prompt system
+autoload -U promptinit && promptinit
+
 # Allow command line editing in an external editor.
 autoload -Uz edit-command-line
 zle -N edit-command-line
@@ -129,6 +133,20 @@ else
 
     alias ls='ls -G'
 fi
+
+# Prompt Styles
+zstyle ':prompt:addon:openstack:tenant:default' color 'green'
+zstyle ':prompt:addon:openstack:tenant:openstack' color 'yellow'
+zstyle ':prompt:addon:openstack:user:default' color 'green'
+zstyle ':prompt:addon:openstack:user:pi_admin' color 'yellow'
+zstyle ':prompt:addon:openstack:user:admin' color 'red'
+zstyle ':prompt:addon:openstack:token:used' color 'magenta'
+zstyle ':prompt:addon:openstack:token:none' color 'blue'
+zstyle ':prompt:addon:openstack:token:used' symbol '!'
+zstyle ':prompt:addon:openstack:token:none' symbol '@'
+zstyle ':prompt:addon:openstack:tenant:openstack' color 'yellow'
+
+
 # Completion {{{
 # Use caching to make completion for commands such as dpkg and apt usable.
 zstyle ':completion::complete:*' use-cache on
@@ -253,7 +271,7 @@ done
 
 # Makes a directory and changes to it.
 function mkdcd {
-  [[ -n "$1" ]] && mkdir -p "$1" && builtin cd "$1"
+  test -n "$1" && mkdir -p "$1" && builtin cd "$1"
 }
 
 # Changes to a directory and lists its contents.
@@ -280,16 +298,16 @@ zle -N clear-line
 function zsh_recompile() {
     autoload -U zrecompile
 
-    [[ -f ~/.zshrc ]] && zrecompile -p ~/.zshrc
-    [[ -f ~/.zshrc.zwc.old ]] && rm -f ~/.zshrc.zwc.old
+    test -f ~/.zshrc && zrecompile -p ~/.zshrc
+    test -f ~/.zshrc.zwc.old && rm -f ~/.zshrc.zwc.old
 
     for f in ~/.zsh/**/*.zsh; do
-        [[ -f $f ]] && zrecompile -p $f
-        [[ -f $f.zwc.old ]] && rm -f $f.zwc.old
+        test -f $f && zrecompile -p $f
+        test -f $f.zwc.old && rm -f $f.zwc.old
     done
 
-    [[ -f ~/.zcompdump ]] && zrecompile -p ~/.zcompdump
-    [[ -f ~/.zcompdump.zwc.old ]] && rm -f ~/.zcompdump.zwc.old
+    test -f ~/.zcompdump && zrecompile -p ~/.zcompdump
+    test -f ~/.zcompdump.zwc.old && rm -f ~/.zcompdump.zwc.old
 
     source ~/.zshrc
 }
@@ -416,7 +434,7 @@ source ${ZDOTDIR:-$HOME/.zsh}/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 source ${ZDOTDIR:-$HOME/.zsh}/zsh-history-substring-search/zsh-history-substring-search.zsh
 
 # Make sure we have some ssh keys {{{
-if ! ssh-add -L | grep -q 'id_rsa';then
+if [[ -f "~/.ssh/id_rsa" ]] && ! ssh-add -L | grep -q 'id_rsa';then
     ssh-add ~/.ssh/id_rsa
 fi
 if [[ -f "~/.ssh/Comcast" ]] && ! ssh-add -L | grep -q 'Comcast';then
@@ -530,23 +548,73 @@ if (( $+commands[tmux] )); then
 fi
 # }}}
 # Prompt {{{
-# Load Powerline, if available
+# Prefer Powerline, if available
 if [[ -f /usr/share/zsh/site-contrib/powerline.zsh ]]; then
-	source /usr/share/zsh/site-contrib/powerline.zsh
+    source /usr/share/zsh/site-contrib/powerline.zsh
+else
+    prompt elite2 green # For now.....
+    set_rprompt() {
+        # Get OpenStack Tennant Name, if set
+        if [[ -z $OS_TENANT_NAME ]]; then
+            tenant_txt=""
+        else
+            zstyle -s ":prompt:addon:openstack:tenant:$OS_TENANT_NAME" color color || \
+                zstyle -s ":prompt:addon:openstack:tenant:default" color color
+            tenant_txt=" %B%F{green}(%b%F{${color}}$OS_TENANT_NAME%B%F{green})%b%f"
+        fi
+
+        # Set marker if using OpenStack token
+        if [[ -z $OS_SERVICE_TOKEN ]]; then
+            zstyle -s ':prompt:addon:openstack:token:none' color color || \
+                color="blue"
+            zstyle -s ':prompt:addon:openstack:token:none' symbol symbol || \
+                symbol="!"
+        else
+            zstyle -s ':prompt:addon:openstack:token:used' color color || \
+                color="magonta"
+            zstyle -s ':prompt:addon:openstack:token:used' symbol symbol || \
+                symbol="@"
+        fi
+        token="%B%F{${color}}${symbol}%b%f"
+
+        # Set Open Stack Username / Environment, if set
+        if [[ -z $OS_USERNAME ]]; then
+            tusername=""
+        else
+            zstyle -s ":prompt:addon:openstack:user:$OS_USERNAME" color color || \
+                zstyle -s ":prompt:addon:openstack:user:default" color color
+            tusername="%b%F{${color}}$OS_USERNAME%b%f"
+        fi
+
+        if [[ -z $OS_REGION_NAME || -s $tusername ]]; then
+            os_prompt=""
+        else
+            os_prompt="$tusername$token%b%F{green}$OS_REGION_NAME%b%f$tenant_txt"
+        fi
+
+        if [[ -z $os_prompt ]]; then
+            RPROMPT=""
+        else
+            RPROMPT="[$os_prompt]"
+        fi
+    }
+    add-zsh-hook precmd set_rprompt
 fi
 # }}}
 # Aliases {{{
-alias ..='cd ..'
 alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow'
 alias mmv='noglob zmv -W'
-alias -g CLIP='`xclip -o -sel clip`'
-alias -g ISODATE='`date --iso-8601=date`'
+alias -g CLIP='$(xclip -o -sel clip)'
+alias -g ISODATE='$(date --iso-8601=date)'
 alias -g PL='| ${PAGER}'
 alias -g PG='| grep -P'
 alias -g PN1='> /dev/null'
 alias -g PN2='2> /dev/null'
 alias -g PN='&> /dev/null'
 alias -s hs=runhaskell
+alias -s zsh=/bin/zsh
+alias -s pl=/bin/perl
+alias -s sh=/bin/sh
 
 # Load package manager based Aliases
 if (( $+commands[emerge] )); then
@@ -558,12 +626,15 @@ fi
 if [[ $HOST == "renard.home.reyuzenfold.com" ]]; then
     # Pulse Audio volume control
     if (( $+command[pacmd])); then
+        autoload pvol
         # Alias for Razer Megaladons
         alias rvol="pvol 1"
         # Alias for Speakers
         alias svol="pvol 2"
     fi
 fi
+
+source ~/.openstack/os-alias.zsh
 # }}}
 
 # Give a Foxxy Fortune!
