@@ -1,6 +1,6 @@
 #!/bin/zsh
-if [[ -f ~/vimt ]]; then
-    file=~/vimt
+if [[ -n $1 ]]; then
+    file=$1
 else
     file=$(mktemp)
 fi
