@@ -634,12 +634,17 @@ if [[ $HOST == "renard.home.reyuzenfold.com" ]]; then
     fi
 fi
 
-source ~/.openstack/os-alias.zsh
+if [[ -d $HOME/.openstack ]]; then
+    # For files marked +x in ~/.openstack
+    for file in $HOME/.openstack/*(*); do
+        source $file
+    done
+fi
 # }}}
 
-# Give a Foxxy Fortune!
+# Give a Fortune!
 if [[ -z $SSH_CONNECTION ]]; then
-    fortune | foxsay
+    fortune
 fi
 
 # vim: fdm=marker syntax=zsh
