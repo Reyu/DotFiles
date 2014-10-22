@@ -263,9 +263,9 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<-
 # }}}
 # }}}
 # Functions {{{
-fpath=("${ZDOTDIR:-$HOME/.zsh}/Functions" $fpath)
+fpath=(${ZDOTDIR:-$HOME/.zsh}/Functions ${HOME}/.local/ZFunctions $fpath)
 # Autoload any functions set executable
-for func in ${ZDOTDIR:-$HOME/.zsh}/Functions/*(*:t:r); do
+for func in ${ZDOTDIR:-$HOME/.zsh}/Functions/*(*:t:r) ${HOME}/.local/ZFunctions/*(*:t:r); do
     autoload $func
 done
 
