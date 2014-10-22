@@ -90,7 +90,6 @@ setopt PUSHD_SILENT           # Do not print the directory stack after pushd or 
 setopt PUSHD_TO_HOME          # Push to home directory when no argument is given.
 setopt RC_QUOTES              # Allow 'Henry''s Garage' instead of 'Henry'\''s Garage'.
 setopt SHARE_HISTORY          # Share history between all sessions.
-setopt TRANSIENT_RPROMPT      # only show the rprompt on the current prompt
 unsetopt BEEP                 # Turn off all beeping
 unsetopt BG_NICE              # Don't run all background jobs at a lower priority.
 unsetopt CHECK_JOBS           # Don't report on jobs when shell exit.
@@ -99,6 +98,7 @@ unsetopt FLOW_CONTROL         # Disable start/stop characters in shell editor.
 unsetopt HUP                  # Don't kill jobs on shell exit.
 unsetopt MAIL_WARNING         # Don't print a warning message if a mail file has been accessed.
 unsetopt MENU_COMPLETE        # Do not auto select the first completion entry.
+unsetopt TRANSIENT_RPROMPT    # only show the rprompt on the current prompt
 
 zmodload zsh/terminfo
 
@@ -268,6 +268,14 @@ fpath=("${ZDOTDIR:-$HOME/.zsh}/Functions" $fpath)
 for func in ${ZDOTDIR:-$HOME/.zsh}/Functions/*(*:t:r); do
     autoload $func
 done
+
+# Load OpenStack fuctions, if we have them.
+if [[ -d $HOME/.openstack ]]; then
+    # For files marked +x in ~/.openstack
+    for file in $HOME/.openstack/*(*); do
+        source $file
+    done
+fi
 
 # Makes a directory and changes to it.
 function mkdcd {
@@ -632,13 +640,6 @@ if [[ $HOST == "renard.home.reyuzenfold.com" ]]; then
         # Alias for Speakers
         alias svol="pvol 2"
     fi
-fi
-
-if [[ -d $HOME/.openstack ]]; then
-    # For files marked +x in ~/.openstack
-    for file in $HOME/.openstack/*(*); do
-        source $file
-    done
 fi
 # }}}
 
