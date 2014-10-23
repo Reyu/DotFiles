@@ -13,3 +13,7 @@
     zcompile "$zcompdump"
   fi
 } &!
+
+if [[ -f ${ZDOTDIR:-$HOME}/.zlogin.local ]]; then
+    source ${ZDOTDIR:-$HOME}/.zlogin.local
+fi

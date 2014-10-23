@@ -666,4 +666,7 @@ if [[ -z $SSH_CONNECTION ]]; then
     fortune
 fi
 
+if [[ -f ${ZDOTDIR:-$HOME}/.zshrc.local ]]; then
+    source ${ZDOTDIR:-$HOME}/.zshrc.local
+fi
 # vim: fdm=marker syntax=zsh

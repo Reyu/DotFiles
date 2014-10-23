@@ -92,4 +92,7 @@ export NNTPSERVER="nntp.aioe.org"
 export EMERGE_DEFAULT_OPTS="--ask"
 # }}}
 
+if [[ -f ${ZDOTDIR:-$HOME}/.zprofile.local ]]; then
+    source ${ZDOTDIR:-$HOME}/.zprofile.local
+fi
 # vim: fdm=marker syntax=zsh
