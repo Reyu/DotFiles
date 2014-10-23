@@ -10,12 +10,6 @@ if (( $+commands[vim] )); then
         export EDITOR=${commands[vim]}
         export VISUAL=${commands[vim]}
 fi
-if (( $+commands[vimpager] )); then
-        export PAGER=${commands[vimpager]}
-	# vimpager doesn't play well with man
-	export MANPAGER=${commands[less]}
-	export SYTEMD_PAGER=${commands[less]}
-fi
 # }}}
 # Language {{{
 if [[ -z "$LANG" ]]; then
