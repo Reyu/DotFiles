@@ -265,7 +265,7 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<-
 # Functions {{{
 fpath=(${ZDOTDIR:-$HOME/.zsh}/Functions ${HOME}/.local/ZFunctions $fpath)
 # Autoload any functions set executable
-for func in ${ZDOTDIR:-$HOME/.zsh}/Functions/*(*:t:r) ${HOME}/.local/ZFunctions/*(*:t:r); do
+for func in ${ZDOTDIR:-$HOME/.zsh}/Functions/*(*N:t:r) ${HOME}/.local/ZFunctions/*(*N:t:r); do
     autoload $func
 done
 
@@ -286,17 +286,6 @@ function mkdcd {
 function cdls {
   builtin cd "$argv[-1]" && ls "${(@)argv[1,-2]}"
 }
-
-# On empty line, run `bg` else hold command
-fancy-ctrl-z () {
-    if [[ $#BUFFER -eq 0 ]]; then
-        bg
-        zle redisplay
-    else
-        zle push-input
-    fi
-}
-zle -N fancy-ctrl-z
 
 # Auto expand global aliases
 globalias() {
@@ -476,6 +465,11 @@ bindkey "$key_info[Down]" history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
 
+# Auto expand global aliases
+bindkey " " globalias
+bindkey "^ " magic-space           # control-space to bypass completion
+bindkey -M isearch " " magic-space # normal space during searches
+
 # Clear Line
 bindkey '\el' clear-line
 
@@ -534,14 +528,6 @@ bindkey -M "viins" "$key_info[Control]I" \
 
 # Insert 'sudo ' at the beginning of the line.
 bindkey -M "viins" "$key_info[Control]X$key_info[Control]S" prepend-sudo
-
-# Auto expand global aliases
-bindkey " " globalias
-bindkey "^ " magic-space           # control-space to bypass completion
-bindkey -M isearch " " magic-space # normal space during searches
-
-# Fancy Ctrl-Z
-bindkey '^Z' fancy-ctrl-z
 # }}}
 # Tmux {{{
 if (( $+commands[tmux] )); then
