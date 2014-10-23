@@ -41,15 +41,6 @@ path=(
 )
 # Remove non-existent directories
 path=($^path(N-/))
-
-mailpath=(
-    "$HOME/Mail/Personal/Inbox?You have Personal mail"
-    "$HOME/Mail/Fuzzy/Inbox?You have Fuzzy mail"
-    "$HOME/Mail/BlackFox/Inbox?You have Work-Fox mail"
-    "$HOME/Mail/Personal/Lists.Gentoo.User?You have mail from the Gentoo User list"
-    "$HOME/Mail/Personal/Lists.ZFS?You have mail from the ZFS list"
-    "$HOME/Mail/Personal/Lists.Vim?You have mail from the Vim list"
-)
 # }}}
 # Less {{{
 # Set the default Less options.
