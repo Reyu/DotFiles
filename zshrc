@@ -102,8 +102,8 @@ unsetopt TRANSIENT_RPROMPT    # only show the rprompt on the current prompt
 
 zmodload zsh/terminfo
 
-# Load and initialize the completion system ignoring insecure directories.
-autoload -Uz compinit && compinit -i
+# Load the completion system ignoring insecure directories.
+autoload -Uz compinit
 
 # Load and initialize the prompt system
 autoload -U promptinit && promptinit
@@ -656,6 +656,10 @@ if [[ $HOST == "renard.home.reyuzenfold.com" ]]; then
     fi
 fi
 # }}}
+
+# Everything else is loaded, so it should be safe to initialize the
+# completion system. This makes sure any additions where not missed.
+compinit -i
 
 # Give a Fortune!
 if [[ -z $SSH_CONNECTION ]]; then
