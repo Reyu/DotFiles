@@ -1,0 +1,1 @@
+runghc =(print "main = putStrLn $ show $ $@")
