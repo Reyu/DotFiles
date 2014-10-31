@@ -574,7 +574,11 @@ fi
 if [[ -f /usr/share/zsh/site-contrib/powerline.zsh ]]; then
     source /usr/share/zsh/site-contrib/powerline.zsh
 else
-    prompt elite2 green # For now.....
+    if prompt -l | grep -q 'gentoo'; then
+        prompt gentoo
+    else
+        prompt elite2 green
+    fi
     set_rprompt() {
         # Get OpenStack Tennant Name, if set
         if [[ -z $OS_TENANT_NAME ]]; then
@@ -630,6 +634,7 @@ alias -g CLIP='$(xclip -o -sel clip)'
 alias -g ISODATE='$(date --iso-8601=date)'
 alias -g PL='| ${PAGER}'
 alias -g PG='| grep -P'
+alias -g PE='| egrep'
 alias -g PN1='> /dev/null'
 alias -g PN2='2> /dev/null'
 alias -g PN='&> /dev/null'
