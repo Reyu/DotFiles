@@ -1,0 +1,105 @@
+__nova_caching_policy()
+{
+  oldp=( "$1"(Nmh+1) )     # 24 hour
+  (( $#oldp ))
+}
+
+__nova_commands () {
+    local cache_policy _result
+    zstyle -s ":completion:${curcontext}:" cache-policy cache_policy
+    if [[ -z "$cache_policy" ]]; then
+        zstyle ":completion:${curcontext}:" cache-policy __nova_caching_policy
+    fi
+    if ( [[ ${+_nova_subcommands} -eq 0 ]] || _cache_invalid nova_subcommands) \
+        && ! _retrieve_cache nova_subcommands;
+    then
+        _result=(${(f)"$(_call_program commands nova 2>&1|sed -n -e '/^  <subcommand>/,/Optional arguments/ { /^    [a-zA-Z0-9]/ { s/^ *//;s/^\([^ ]*\)[ ]*\(.*\)$/\1:\2/;p ;} ;}')"})
+        _nova_subcommands=($_result 'help:Show help for a command')
+        _store_cache nova_subcommands _nova_subcommands
+    fi
+    _describe -t nova-commands "nova command" _nova_subcommands
+}
+
+__nova_runningvms() {
+    rets=(${(f)"$(_call_program commands nova list|sed -e '1,3d;$d'|awk '{print $4}')"})
+    _describe -t nova-running-vms "Nova VMS"  rets
+}
+
+__nova_flavors() {  
+    rets=(${(f)"$(_call_program commands nova flavor-list|sed -e '1,3d;$d' -e 's/ | /|/g;s/| //;s/[ \t]\{1,\}//'|awk -F\| '{print $2":""Memory:"$3" Disk: "$4" Vcpu: "$7}')"})
+    _describe -t nova-flavors "Nova Flavors" rets
+}
+
+__nova_images() {
+    rets=(${(f)"$(_call_program commands nova image-list|sed -e '1,3d;$d' -e 's/ | /|/g;s/| //'|awk -F\| '{print $1":"$2}')"})
+    _describe -t nova-images "Nova Images" rets
+}
+
+__nova_volumes() {
+    rets=(${(f)"$(_call_program commands nova volume-list|sed -e '1,3d;$d' -e 's/ | /|/g;s/| //;s/ \{2,\}//'| \
+          awk -F\| '{print $1":"$3" -- Size:"$4" Type: "$5}')"})
+    _describe -t nova-volumes "Nova Volumes" rets
+}
+
+__nova_secgroups() {
+    rets=(${(f)"$(_call_program commands nova secgroup-list|sed -e '1,3d;$d;s/[ ]*//'|awk -F\| '{print $2}')"})
+    _describe -t nova-segroups "Nova Secgroups"  rets
+}
+
+
+__nova_subcommand () {
+    case "$words[1]" in
+        (show)
+            _arguments \
+                '--minimal[Skips flavor/image lookups when showing servers]' \
+                ':vms:__nova_runningvms'
+            ;;
+        (boot)
+            _arguments \
+                '--flavor[Name or ID of flavor]:flavors:__nova_flavors' \
+                '--image[Name or ID of image]:images:__nova_images' \
+                '--image-with=-[Image metadata property]:image_metadata: ' \
+                '--boot-volume[Volume ID to boot from]:volumes:__nova_volumes'
+            ;;
+        (image-show)
+            _arguments \
+                ':images:__nova_images'
+            ;;
+        (flavor-show)
+            _arguments \
+                ':images:__nova_flavors'
+            ;;
+        (secgroup-list-rules)
+            _arguments \
+                ':images:__nova_secgroups'
+            ;;
+        (help)
+            _arguments \
+                ':vms:__nova_commands'
+            ;;
+         (*)
+             _message 'Unkown sub command'
+      esac
+}
+
+_nova() {
+    local curcontext="$curcontext" state
+     _arguments -C \
+         '--version' \
+         '--debug' \
+         '--os-cache' \
+         '(-): :->command' \
+         '(-)*:: :->option-or-argument'
+    case $state in 
+        (command)
+            __nova_commands
+            ;;
+        (option-or-argument)
+            curcontext=${curcontext%:*:*}:nova-$words[1]:
+            __nova_subcommand
+            ;;
+    esac
+}
+
+compdef _nova nova
+#_nova "$@"
