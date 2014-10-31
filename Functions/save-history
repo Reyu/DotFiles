@@ -1,0 +1,12 @@
+#!/bin/zsh
+if [[ -n $TMUX ]]; then
+    if [[ -n $1 ]]; then
+        tmux capture-pane -eJS -9000000
+        tmux save-buffer $1
+    else
+        tmux capture-pane -eJS -9000000
+        tmux command-prompt -p 'File to save history to:' -I '~/BuffSave' 'save-buffer %%'
+    fi
+else
+    print "This command can only be used in a Tmux session."
+fi

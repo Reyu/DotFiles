@@ -672,9 +672,7 @@ else
     }
     add-zsh-hook precmd steeef_precmd
 
-    PROMPT=$'
-    %{$purple%}%n%{$reset_color%} at %{$orange%}%m%{$reset_color%} in %{$limegreen%}%~%{$reset_color%} $vcs_info_msg_0_$(virtualenv_info)%{$reset_color%}
-    $ '
+    PROMPT=$'\n%{$purple%}%n%{$reset_color%} at %{$orange%}%m%{$reset_color%} in %{$limegreen%}%~%{$reset_color%} $vcs_info_msg_0_$(virtualenv_info)%{$reset_color%}\n$ '
         # }}}
 
         # Load OpenStack RPrompt, if needed. {{{
@@ -731,7 +729,6 @@ else
 # Aliases {{{
 alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow'
 alias mmv='noglob zmv -W'
-alias save-history="tmux capture-pane -eJS -9000000;tmux command-prompt -p 'File to save history to:' -I '~/BuffSave' 'save-buffer %%'"
 alias -g CLIP='$(xclip -o -sel clip)'
 alias -g ISODATE='$(date --iso-8601=date)'
 alias -g PL='| ${PAGER}'
