@@ -571,8 +571,15 @@ fi
 # }}}
 # Prompt {{{
 # Prefer Powerline, if available
-if [[ -f /usr/share/zsh/site-contrib/powerline.zsh ]]; then
-    source /usr/share/zsh/site-contrib/powerline.zsh
+typeset -U powerlineLocation
+powerlineLocation=(
+    /usr/share/zsh/site-contrib/powerline.zsh
+    $(print /usr/lib/python*/site-packages/powerline/bindings/zsh/powerline.zsh)
+)
+# Remove non-existant locations
+loc=($^loc(N-.))
+if [[ $#locs ]]; then
+    source $locs[1];
 else
     # Steeef Prompt {{{
     # prompt style and colors based on Steve Losh's Prose theme:
@@ -673,59 +680,58 @@ else
     add-zsh-hook precmd steeef_precmd
 
     PROMPT=$'\n%{$purple%}%n%{$reset_color%} at %{$orange%}%m%{$reset_color%} in %{$limegreen%}%~%{$reset_color%} $vcs_info_msg_0_$(virtualenv_info)%{$reset_color%}\n$ '
-        # }}}
-
-        # Load OpenStack RPrompt, if needed. {{{
-        if [[ -d ${HOME}/.openstack ]]; then
-            set_rprompt() {
-                # Get OpenStack Tennant Name, if set
-                if [[ -z $OS_TENANT_NAME ]]; then
-                    tenant_txt=""
-                else
-                    zstyle -s ":prompt:addon:openstack:tenant:$OS_TENANT_NAME" color color || \
-                        zstyle -s ":prompt:addon:openstack:tenant:default" color color
-                    tenant_txt=" %B%F{green}(%b%F{${color}}$OS_TENANT_NAME%B%F{green})%b%f"
-                fi
-
-                # Set marker if using OpenStack token
-                if [[ -z $OS_SERVICE_TOKEN ]]; then
-                    zstyle -s ':prompt:addon:openstack:token:none' color color || \
-                        color="blue"
-                    zstyle -s ':prompt:addon:openstack:token:none' symbol symbol || \
-                        symbol="!"
-                else
-                    zstyle -s ':prompt:addon:openstack:token:used' color color || \
-                        color="magonta"
-                    zstyle -s ':prompt:addon:openstack:token:used' symbol symbol || \
-                        symbol="@"
-                fi
-                token="%B%F{${color}}${symbol}%b%f"
-
-                # Set Open Stack Username / Environment, if set
-                if [[ -z $OS_USERNAME ]]; then
-                    tusername=""
-                else
-                    zstyle -s ":prompt:addon:openstack:user:$OS_USERNAME" color color || \
-                        zstyle -s ":prompt:addon:openstack:user:default" color color
-                    tusername="%b%F{${color}}$OS_USERNAME%b%f"
-                fi
-
-                if [[ -z $OS_REGION_NAME || -s $tusername ]]; then
-                    os_prompt=""
-                else
-                    os_prompt="$tusername$token%b%F{green}$OS_REGION_NAME%b%f$tenant_txt"
-                fi
-
-                if [[ -z $os_prompt ]]; then
-                    RPROMPT=""
-                else
-                    RPROMPT="[$os_prompt]"
-                fi
-            }
-            add-zsh-hook precmd set_rprompt
-        fi # }}}
-    fi
     # }}}
+    # Load OpenStack RPrompt, if needed. {{{
+    if [[ -d ${HOME}/.openstack ]]; then
+        set_rprompt() {
+            # Get OpenStack Tennant Name, if set
+            if [[ -z $OS_TENANT_NAME ]]; then
+                tenant_txt=""
+            else
+                zstyle -s ":prompt:addon:openstack:tenant:$OS_TENANT_NAME" color color || \
+                    zstyle -s ":prompt:addon:openstack:tenant:default" color color
+                tenant_txt=" %B%F{green}(%b%F{${color}}$OS_TENANT_NAME%B%F{green})%b%f"
+            fi
+
+            # Set marker if using OpenStack token
+            if [[ -z $OS_SERVICE_TOKEN ]]; then
+                zstyle -s ':prompt:addon:openstack:token:none' color color || \
+                    color="blue"
+                zstyle -s ':prompt:addon:openstack:token:none' symbol symbol || \
+                    symbol="!"
+            else
+                zstyle -s ':prompt:addon:openstack:token:used' color color || \
+                    color="magonta"
+                zstyle -s ':prompt:addon:openstack:token:used' symbol symbol || \
+                    symbol="@"
+            fi
+            token="%B%F{${color}}${symbol}%b%f"
+
+            # Set Open Stack Username / Environment, if set
+            if [[ -z $OS_USERNAME ]]; then
+                tusername=""
+            else
+                zstyle -s ":prompt:addon:openstack:user:$OS_USERNAME" color color || \
+                    zstyle -s ":prompt:addon:openstack:user:default" color color
+                tusername="%b%F{${color}}$OS_USERNAME%b%f"
+            fi
+
+            if [[ -z $OS_REGION_NAME || -s $tusername ]]; then
+                os_prompt=""
+            else
+                os_prompt="$tusername$token%b%F{green}$OS_REGION_NAME%b%f$tenant_txt"
+            fi
+
+            if [[ -z $os_prompt ]]; then
+                RPROMPT=""
+            else
+                RPROMPT="[$os_prompt]"
+            fi
+        }
+        add-zsh-hook precmd set_rprompt
+    fi # }}}
+fi
+# }}}
 # Aliases {{{
 alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow'
 alias mmv='noglob zmv -W'
