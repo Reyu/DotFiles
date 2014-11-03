@@ -263,31 +263,36 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<-
 # }}}
 # }}}
 # Functions {{{
-fpath=(${ZDOTDIR:-$HOME/.zsh}/Functions ${HOME}/.local/ZFunctions $fpath)
-# Autoload any functions set executable
-for func in ${ZDOTDIR:-$HOME/.zsh}/Functions/*(*N:t:r) ${HOME}/.local/ZFunctions/*(*N:t:r); do
-    autoload $func
-done
+typeset -U myfpath
+myfpath=(
+    ${ZDOTDIR:-$HOME/.zsh}/Functions
+    ${HOME}/.local/ZFunctions
+)
+myfpath=($^myfpath(N-/))
+fpath=($myfpath $fpath)
 
-# Load OpenStack fuctions, if we have them.
+# Autoload any functions set executable
+for func in $myfpath; do
+    autoload $func(*N:t:r)
+done
+unset myfpath
+
+# Load OpenStack fuctions, if we have them. {{{
 if [[ -d $HOME/.openstack ]]; then
     # For files marked +x in ~/.openstack
     for file in $HOME/.openstack/*(*); do
         source $file
     done
-fi
-
-# Makes a directory and changes to it.
+fi # }}}
+# Makes a directory and changes to it. {{{
 function mkdcd {
   test -n "$1" && mkdir -p "$1" && builtin cd "$1"
-}
-
-# Changes to a directory and lists its contents.
+} # }}}
+# Changes to a directory and lists its contents. {{{
 function cdls {
   builtin cd "$argv[-1]" && ls "${(@)argv[1,-2]}"
-}
-
-# On empty line, run `bg` else hold command
+} # }}}
+# On empty line, run `bg` else hold command {{{
 fancy-ctrl-z () {
     if [[ $#BUFFER -eq 0 ]]; then
         bg
@@ -296,9 +301,8 @@ fancy-ctrl-z () {
         zle push-input
     fi
 }
-zle -N fancy-ctrl-z
-
-# Auto expand global aliases
+zle -N fancy-ctrl-z # }}}
+# Auto expand global aliases {{{
 globalias() {
    if [[ $LBUFFER =~ ' [A-Z0-9]+$' ]]; then
      zle _expand_alias
@@ -306,14 +310,13 @@ globalias() {
    fi
    zle self-insert
 }
-zle -N globalias
-
-# Clear Line
+zle -N globalias # }}}
+# Clear Line {{{
 clear-line() {
     LBUFFER=""
 }
-zle -N clear-line
-
+zle -N clear-line # }}}
+# Recompile Zsh configuration {{{
 function zsh_recompile() {
     autoload -U zrecompile
 
@@ -329,9 +332,8 @@ function zsh_recompile() {
     test -f ~/.zcompdump.zwc.old && rm -f ~/.zcompdump.zwc.old
 
     source ~/.zshrc
-}
-
-# Exposes information about the Zsh Line Editor via the $editor_info associative array.
+} # }}}
+# Exposes information about the Zsh Line Editor via the $editor_info associative array. {{{
 function editor-info {
   # Clean up previous $editor_info.
   unset editor_info
@@ -358,15 +360,13 @@ function editor-info {
   zle reset-prompt
   zle -R
 }
-zle -N editor-info
-
-# Updates editor information when the keymap changes.
+zle -N editor-info # }}}
+# Updates editor information when the keymap changes. {{{
 function zle-keymap-select {
   zle editor-info
 }
-zle -N zle-keymap-select
-
-# Enables terminal application mode and updates editor information.
+zle -N zle-keymap-select # }}}
+# Enables terminal application mode and updates editor information. {{{
 function zle-line-init {
   # The terminal must be in application mode when ZLE is active for $terminfo
   # values to be valid.
@@ -378,9 +378,8 @@ function zle-line-init {
   # Update editor information.
   zle editor-info
 }
-zle -N zle-line-init
-
-# Disables terminal application mode and updates editor information.
+zle -N zle-line-init # }}}
+# Disables terminal application mode and updates editor information. {{{
 function zle-line-finish {
   # The terminal must be in application mode when ZLE is active for $terminfo
   # values to be valid.
@@ -392,9 +391,8 @@ function zle-line-finish {
   # Update editor information.
   zle editor-info
 }
-zle -N zle-line-finish
-
-# Toggles emacs overwrite mode and updates editor information.
+zle -N zle-line-finish # }}}
+# Toggles emacs overwrite mode and updates editor information. {{{
 function overwrite-mode {
   zle .overwrite-mode
   zle editor-info
@@ -406,24 +404,21 @@ function vi-insert {
   zle .vi-insert
   zle editor-info
 }
-zle -N vi-insert
-
-# Moves to the first non-blank character then enters vi insert mode and updates
+zle -N vi-insert # }}}
+# Moves to the first non-blank character then enters vi insert mode and updates {{{
 # editor information.
 function vi-insert-bol {
   zle .vi-insert-bol
   zle editor-info
 }
-zle -N vi-insert-bol
-
-# Enters vi replace mode and updates editor information.
+zle -N vi-insert-bol # }}}
+# Enters vi replace mode and updates editor information. {{{
 function vi-replace  {
   zle .vi-replace
   zle editor-info
 }
-zle -N vi-replace
-
-# Displays an indicator when completing.
+zle -N vi-replace # }}}
+# Displays an indicator when completing. {{{
 function expand-or-complete-with-indicator {
   local indicator
   zstyle -s ':editor:info:completing' format 'indicator'
@@ -431,50 +426,42 @@ function expand-or-complete-with-indicator {
   zle expand-or-complete
   zle redisplay
 }
-zle -N expand-or-complete-with-indicator
-
-# Inserts 'sudo ' at the beginning of the line.
+zle -N expand-or-complete-with-indicator # }}}
+# Inserts 'sudo ' at the beginning of the line. {{{
 function prepend-sudo {
   if [[ "$BUFFER" != su(do|)\ * ]]; then
     BUFFER="sudo $BUFFER"
     (( CURSOR += 5 ))
   fi
 }
-zle -N prepend-sudo
+zle -N prepend-sudo # }}}
 # }}}
 # External Modules {{{
 # zsh-completions
-fpath=(${ZDOTDIR:-$HOME/.zsh}/zsh-completions $fpath)
+if [[ -d ${ZDOTDIR:-$HOME/.zsh}/zsh-completions ]]; then
+    fpath=(${ZDOTDIR:-$HOME/.zsh}/zsh-completions $fpath)
+fi
 
 # zsh-syntax-highlighting
-source ${ZDOTDIR:-$HOME/.zsh}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [[ -d ${ZDOTDIR:-$HOME/.zsh}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+    source ${ZDOTDIR:-$HOME/.zsh}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
 
 # zsh-history-substring-search
-source ${ZDOTDIR:-$HOME/.zsh}/zsh-history-substring-search/zsh-history-substring-search.zsh
-
-# Make sure we have some ssh keys {{{
-if [[ -f "~/.ssh/id_rsa" ]] && ! ssh-add -L | grep -q 'id_rsa';then
-    ssh-add ~/.ssh/id_rsa
+if [[ -d ${ZDOTDIR:-$HOME/.zsh}/zsh-history-substring-search/zsh-history-substring-search.zsh ]]; then
+    source ${ZDOTDIR:-$HOME/.zsh}/zsh-history-substring-search/zsh-history-substring-search.zsh
 fi
-if [[ -f "~/.ssh/Comcast" ]] && ! ssh-add -L | grep -q 'Comcast';then
-    ssh-add ~/.ssh/Comcast
-fi
-if [[ -f "~/.ssh/Personal" ]] && ! ssh-add -L | grep -q 'Personal';then
-    ssh-add ~/.ssh/Personal
-fi
-if [[ -f "~/.ssh/AWS.pem" ]] && ! ssh-add -L | grep -q 'AWS.pem';then
-    ssh-add ~/.ssh/AWS.pem
-fi
-# }}}
 # }}}
 # Key Bindings {{{
 bindkey -v
 
 # zsh-history-substring-search
-bindkey "$key_info[Up]" history-substring-search-up
-bindkey "$key_info[Down]" history-substring-search-down
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
+if (( $+widgets[history-substring-search-up] )); then
+    bindkey "$key_info[Up]" history-substring-search-up
+    bindkey "$key_info[Down]" history-substring-search-down
+    bindkey -M vicmd 'k' history-substring-search-up
+    bindkey -M vicmd 'j' history-substring-search-down
+fi
 
 # Clear Line
 bindkey '\el' clear-line
@@ -577,9 +564,9 @@ powerlineLocation=(
     $(print /usr/lib/python*/site-packages/powerline/bindings/zsh/powerline.zsh)
 )
 # Remove non-existant locations
-loc=($^loc(N-.))
-if [[ $#locs ]]; then
-    source $locs[1];
+powerlineLocation=($^powerlineLocation(N-.))
+if [[ $#powerlineLocation ]]; then
+    source $powerlineLocation[1];
 else
     # Steeef Prompt {{{
     # prompt style and colors based on Steve Losh's Prose theme:
@@ -747,14 +734,13 @@ alias -s hs=runhaskell
 alias -s zsh=/bin/zsh
 alias -s pl=/bin/perl
 alias -s sh=/bin/sh
-
-# Load package manager based Aliases
+# Load package manager based Aliases {{{
 if (( $+commands[emerge] )); then
     if (( $+commands[equery] )); then
             alias equery="noglob equery"
     fi
-fi
-# Load Host Based Aliases
+fi # }}}
+# Load Host Based Aliases {{{
 if [[ $HOST == "renard.home.reyuzenfold.com" ]]; then
     # Pulse Audio volume control
     if (( $+command[pacmd])); then
@@ -764,6 +750,20 @@ if [[ $HOST == "renard.home.reyuzenfold.com" ]]; then
         # Alias for Speakers
         alias svol="pvol 2"
     fi
+fi # }}}
+# }}}
+# SSH Keys {{{
+print "Adding SSH Keys"
+# The shell globbing pattern below should only return private keys in the
+# configuration directory that are marked executable. It should not return any
+# other files, even if the are set +x
+for key in $(print ${HOME}/.ssh/*~config~authorized_keys~known_hosts~*.pub(*)); do
+    ssh-add $key
+done
+# }}}
+# Read local configuration {{{
+if [[ -f ${ZDOTDIR:-$HOME}/.zshrc.local ]]; then
+    source ${ZDOTDIR:-$HOME}/.zshrc.local
 fi
 # }}}
 
@@ -776,7 +776,4 @@ if [[ -z $SSH_CONNECTION && $USER != 'root' ]]; then
     fortune
 fi
 
-if [[ -f ${ZDOTDIR:-$HOME}/.zshrc.local ]]; then
-    source ${ZDOTDIR:-$HOME}/.zshrc.local
-fi
 # vim: fdm=marker syntax=zsh

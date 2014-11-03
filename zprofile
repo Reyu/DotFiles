@@ -67,12 +67,10 @@ if [[ ! -d "$TMPPREFIX" ]]; then
 fi
 # }}}
 # SSH & GPG Agents {{{
-if [[ -s ${XDG_RUNTIME_DIR}/.gpg-agent.env ]]
-then
+if [[ -s ${XDG_RUNTIME_DIR}/.gpg-agent.env ]]; then
     source ${XDG_RUNTIME_DIR}/.gpg-agent.env
 fi
-if [[ -S $XDG_RUNTIME_DIR/ssh-agent.sock ]]
-then
+if [[ -S $XDG_RUNTIME_DIR/ssh-agent.sock ]]; then
     SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/ssh-agent.sock
     export SSH_AUTH_SOCK
 fi
@@ -84,8 +82,10 @@ export GPG_TTY="$(tty)"
 export NNTPSERVER="nntp.aioe.org"
 export EMERGE_DEFAULT_OPTS="--ask"
 # }}}
-
+# Read local configuration {{{
 if [[ -f ${ZDOTDIR:-$HOME}/.zprofile.local ]]; then
     source ${ZDOTDIR:-$HOME}/.zprofile.local
 fi
+# }}}
+
 # vim: fdm=marker syntax=zsh
