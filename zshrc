@@ -271,9 +271,11 @@ myfpath=(
 myfpath=($^myfpath(N-/))
 fpath=($myfpath $fpath)
 
-# Autoload any functions set executable
-for func in $myfpath; do
-    autoload $func(*N:t:r)
+# Autoload any functions that are set executable in added paths
+for fp in $myfpath; do
+    for func in $fp/*(*N:t:r); do
+        autoload $func
+    done
 done
 unset myfpath
 
