@@ -445,12 +445,12 @@ if [[ -d ${ZDOTDIR:-$HOME/.zsh}/zsh-completions ]]; then
 fi
 
 # zsh-syntax-highlighting
-if [[ -d ${ZDOTDIR:-$HOME/.zsh}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+if [[ -d ${ZDOTDIR:-$HOME/.zsh}/zsh-syntax-highlighting ]]; then
     source ${ZDOTDIR:-$HOME/.zsh}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
 # zsh-history-substring-search
-if [[ -d ${ZDOTDIR:-$HOME/.zsh}/zsh-history-substring-search/zsh-history-substring-search.zsh ]]; then
+if [[ -d ${ZDOTDIR:-$HOME/.zsh}/zsh-history-substring-search ]]; then
     source ${ZDOTDIR:-$HOME/.zsh}/zsh-history-substring-search/zsh-history-substring-search.zsh
 fi
 # }}}
@@ -563,11 +563,11 @@ fi
 typeset -U powerlineLocation
 powerlineLocation=(
     /usr/share/zsh/site-contrib/powerline.zsh
-    $(print /usr/lib/python*/site-packages/powerline/bindings/zsh/powerline.zsh)
+    $(print /usr/lib/python*/site-packages/powerline/bindings/zsh/powerline.zsh(N))
 )
 # Remove non-existant locations
 powerlineLocation=($^powerlineLocation(N-.))
-if [[ $#powerlineLocation ]]; then
+if (( $#powerlineLocation )); then
     source $powerlineLocation[1];
 else
     # Steeef Prompt {{{
@@ -755,12 +755,13 @@ if [[ $HOST == "renard.home.reyuzenfold.com" ]]; then
 fi # }}}
 # }}}
 # SSH Keys {{{
-print "Adding SSH Keys"
 # The shell globbing pattern below should only return private keys in the
 # configuration directory that are marked executable. It should not return any
 # other files, even if the are set +x
-for key in $(print ${HOME}/.ssh/*~config~authorized_keys~known_hosts~*.pub(*)); do
-    ssh-add $key
+for key in $(print ${HOME}/.ssh/*~config~authorized_keys~known_hosts~*.pub(*N)); do
+    if ! $(ssh-add -l | grep -q $key); then
+        ssh-add $key
+    fi
 done
 # }}}
 # Read local configuration {{{
