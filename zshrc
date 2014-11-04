@@ -6,6 +6,9 @@
 #
 
 # Prepend Stuff {{{
+# Where are we?
+zdir=$(print ${ZDOTDIR:-$HOME}/.zshrc(:A:h))
+
 # History Stuff
 export HISTFILE=${HOME}/.zhistory
 export HISTSIZE=10000
@@ -265,7 +268,7 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<-
 # Functions {{{
 typeset -U myfpath
 myfpath=(
-    ${ZDOTDIR:-$HOME/.zsh}/Functions
+    ${zdir}/Functions
     ${HOME}/.local/ZFunctions
 )
 myfpath=($^myfpath(N-/))
@@ -440,18 +443,18 @@ zle -N prepend-sudo # }}}
 # }}}
 # External Modules {{{
 # zsh-completions
-if [[ -d ${ZDOTDIR:-$HOME/.zsh}/zsh-completions ]]; then
-    fpath=(${ZDOTDIR:-$HOME/.zsh}/zsh-completions $fpath)
+if [[ -d ${zdir}/zsh-completions ]]; then
+    fpath=(${zdir}/zsh-completions $fpath)
 fi
 
 # zsh-syntax-highlighting
-if [[ -d ${ZDOTDIR:-$HOME/.zsh}/zsh-syntax-highlighting ]]; then
-    source ${ZDOTDIR:-$HOME/.zsh}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [[ -d ${zdir}/zsh-syntax-highlighting ]]; then
+    source ${zdir}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
 # zsh-history-substring-search
-if [[ -d ${ZDOTDIR:-$HOME/.zsh}/zsh-history-substring-search ]]; then
-    source ${ZDOTDIR:-$HOME/.zsh}/zsh-history-substring-search/zsh-history-substring-search.zsh
+if [[ -d ${zdir}/zsh-history-substring-search ]]; then
+    source ${zdir}/zsh-history-substring-search/zsh-history-substring-search.zsh
 fi
 # }}}
 # Key Bindings {{{
