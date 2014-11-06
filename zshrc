@@ -540,7 +540,7 @@ if (( $+commands[tmux] )); then
     # Ensure that tmux server is started.
     tmux start-server
 
-    if [[ -z $TMUX && -z $SSH_CONNECTION ]]; then
+    if [[ -z $TMUX && -z $SSH_CONNECTION && $USER != 'root' ]]; then
         if ! tmux has-session -t "Global" 2> /dev/null; then
             # Create Global session
             tmux new-session -d -s "Global" -n "HTOP" "sudo htop"
