@@ -725,6 +725,7 @@ else
 fi
 # }}}
 # Aliases {{{
+alias :q='exit' # I do this on accident enough... Might as well make it work.
 alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow'
 alias mmv='noglob zmv -W'
 alias -g CLIP='$(xclip -o -sel clip)'
