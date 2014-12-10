@@ -566,6 +566,7 @@ fi
 typeset -U powerlineLocation
 powerlineLocation=(
     $(print {$HOME/.local,/usr}/lib/python*/site-packages/powerline/bindings/zsh/powerline.zsh(N))
+    /usr/share/zsh/site-contrib/powerline.zsh
 )
 # Remove non-existant locations
 powerlineLocation=($^powerlineLocation(N-.))
