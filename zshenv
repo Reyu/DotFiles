@@ -10,6 +10,22 @@ if [[ "$SHLVL" -eq 1 && ! -o LOGIN && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprofile"
 fi
 # }}}
+# Make sure that SSH and GPG agents are accessible {{{
+if ssh-agent -l 2> /dev/null; then
+    if [[ -f ${HOME}/.ssh-agent.env ]]; then
+        source ${HOME}/.ssh-agent.env > /dev/null
+    else
+        eval $(ssh-agent | tee "${HOME}/.ssh-agent.env") > /dev/null
+    fi
+fi
+if [[ -z $GPG_AGENT_INFO ]]; then
+    if [[ -f ${HOME}/.gpg-agent.env ]]; then
+        source ${HOME}/.gpg-agent.env
+    else
+        eval $(gpg-agent --daemon --write-env-file "${HOME}/.gpg-agent.env")
+    fi
+fi
+# }}}
 # Read local configuration {{{
 if [[ -f ${ZDOTDIR:-$HOME}/.zshenv.local ]]; then
     source ${ZDOTDIR:-$HOME}/.zshenv.local
