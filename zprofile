@@ -38,6 +38,7 @@ path=(
   /{bin,sbin}
   /opt/eclipse
   ${HOME}/.local/android-sdks/platform-tools
+  ${HOME}/.gem/ruby/2.0.0/bin
 )
 # Remove non-existent directories
 path=($^path(N-/))
