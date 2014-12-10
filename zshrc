@@ -565,8 +565,7 @@ fi
 # Prefer Powerline, if available
 typeset -U powerlineLocation
 powerlineLocation=(
-    /usr/share/zsh/site-contrib/powerline.zsh
-    $(print /usr/lib/python*/site-packages/powerline/bindings/zsh/powerline.zsh(N))
+    $(print {$HOME/.local,/usr}/lib/python*/site-packages/powerline/bindings/zsh/powerline.zsh(N))
 )
 # Remove non-existant locations
 powerlineLocation=($^powerlineLocation(N-.))
@@ -725,7 +724,6 @@ else
 fi
 # }}}
 # Aliases {{{
-alias :q='exit' # I do this on accident enough... Might as well make it work.
 alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow'
 alias mmv='noglob zmv -W'
 alias -g CLIP='$(xclip -o -sel clip)'
