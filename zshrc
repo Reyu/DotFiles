@@ -288,6 +288,10 @@ if [[ -d $HOME/.openstack ]]; then
     for file in $HOME/.openstack/*(*); do
         source $file
     done
+    # Add OpenStack scripts dir to path
+    if [[ -d $HOME/.openstack/scripts ]];then
+        path+=$HOME/.openstack/scripts
+    fi
 fi # }}}
 # Makes a directory and changes to it. {{{
 function mkdcd {
