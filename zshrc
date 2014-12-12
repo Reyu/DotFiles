@@ -635,22 +635,10 @@ alias -s sh=/bin/sh
 if (( $+commands[hub] )); then
     eval $(hub alias -s)
 fi
+
 # Load package manager based Aliases {{{
-if (( $+commands[emerge] )); then
-    if (( $+commands[equery] )); then
-            alias equery="noglob equery"
-    fi
-fi # }}}
-# Load Host Based Aliases {{{
-if [[ $HOST == "renard.home.reyuzenfold.com" ]]; then
-    # Pulse Audio volume control
-    if (( $+command[pacmd])); then
-        autoload pvol
-        # Alias for Razer Megaladons
-        alias rvol="pvol 1"
-        # Alias for Speakers
-        alias svol="pvol 2"
-    fi
+if (( $+commands[equery] )); then
+        alias equery="noglob equery"
 fi # }}}
 # }}}
 # SSH Keys {{{
