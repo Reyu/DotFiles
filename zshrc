@@ -539,25 +539,16 @@ bindkey '^Z' fancy-ctrl-z
 if (( $+commands[tmux] )); then
     # Ensure that tmux server is started.
     tmux start-server
-
     if [[ -z $TMUX && -z $SSH_CONNECTION && $USER != 'root' ]]; then
+        # Ensure the Global session is active
         if ! tmux has-session -t "Global" 2> /dev/null; then
             # Create Global session
-            tmux new-session -d -s "Global" -n "HTOP" "sudo htop"
-            tmux new-window -d -t "Global" -n "IRC" "weechat"
+            tmux new-session -d -s "Global" "weechat"
 
             # Disable the destruction of the Global session.
             tmux set-option -t "Global" destroy-unattached off &> /dev/null
         fi
-        if ! tmux has-session -t "Primary" 2> /dev/null; then
-            # Create Primary session
-            tmux new-session -d -s "Primary"
-
-            # Disable the destruction of the Primary session.
-            tmux set-option -t "Primary" destroy-unattached off &> /dev/null
-        fi
-
-        exec tmux attach-session -t "Primary"
+        exec tmux
     fi
 fi
 # }}}
@@ -565,7 +556,7 @@ fi
 # Prefer Powerline, if available
 typeset -U powerlineLocation
 powerlineLocation=(
-    $(print {$HOME/.local,/usr}/lib{,64}/python*/site-packages/powerline/bindings/zsh/powerline.zsh(N))
+    $(print {$HOME/.local,/usr}/lib/python*/site-packages/powerline/bindings/zsh/powerline.zsh(N))
     /usr/share/zsh/site-contrib/powerline.zsh
 )
 # Remove non-existant locations
