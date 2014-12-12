@@ -477,6 +477,7 @@ bindkey '\el' clear-line
 
 # Edit command in an external editor.
 bindkey -M vicmd "v" edit-command-line
+bindkey -M viins "^v" edit-command-line
 
 # Undo/Redo
 bindkey -M vicmd "u" undo
@@ -490,46 +491,39 @@ else
   bindkey -M vicmd "/" history-incremental-search-forward
 fi
 
-bindkey -M "viins" "$key_info[Home]" beginning-of-line
-bindkey -M "viins" "$key_info[End]" end-of-line
+bindkey -M viins "$key_info[Home]" beginning-of-line
+bindkey -M viins "$key_info[End]" end-of-line
 
-bindkey -M "viins" "$key_info[Insert]" overwrite-mode
-bindkey -M "viins" "$key_info[Delete]" delete-char
-bindkey -M "viins" "$key_info[Backspace]" backward-delete-char
+bindkey -M viins "$key_info[Insert]" overwrite-mode
+bindkey -M viins "$key_info[Delete]" delete-char
+bindkey -M viins "$key_info[Backspace]" backward-delete-char
 
-bindkey -M "viins" "$key_info[Left]" backward-char
-bindkey -M "viins" "$key_info[Right]" forward-char
-
-# Expand history on space.
-bindkey -M "viins" ' ' magic-space
+bindkey -M viins "$key_info[Left]" backward-char
+bindkey -M viins "$key_info[Right]" forward-char
 
 # Clear screen.
-bindkey -M "viins" "$key_info[Control]L" clear-screen
+bindkey -M viins "$key_info[Control]L" clear-screen
 
 # Expand command name to full path.
 for key in "$key_info[Escape]"{E,e}
-    bindkey -M "viins" "$key" expand-cmd-path
+    bindkey -M viins "$key" expand-cmd-path
 
 # Duplicate the previous word.
 for key in "$key_info[Escape]"{M,m}
-    bindkey -M "viins" "$key" copy-prev-shell-word
-
-# Use a more flexible push-line.
-for key in "$key_info[Control]Q" "$key_info[Escape]"{q,Q}
-    bindkey -M "viins" "$key" push-line-or-edit
+    bindkey -M viins "$key" copy-prev-shell-word
 
 # Bind Shift + Tab to go to the previous menu item.
-bindkey -M "viins" "$key_info[BackTab]" reverse-menu-complete
+bindkey -M viins "$key_info[BackTab]" reverse-menu-complete
 
 # Complete in the middle of word.
-bindkey -M "viins" "$key_info[Control]I" expand-or-complete
+bindkey -M viins "$key_info[Control]I" expand-or-complete
 
 # Display an indicator when completing.
-bindkey -M "viins" "$key_info[Control]I" \
+bindkey -M viins "$key_info[Control]I" \
     expand-or-complete-with-indicator
 
 # Insert 'sudo ' at the beginning of the line.
-bindkey -M "viins" "$key_info[Control]X$key_info[Control]S" prepend-sudo
+bindkey -M viins "$key_info[Control]X$key_info[Control]S" prepend-sudo
 
 # Auto expand global aliases
 bindkey " " globalias
