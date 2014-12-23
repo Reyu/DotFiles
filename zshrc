@@ -651,7 +651,6 @@ done
 # }}}
 # EC2 Tools {{{
 if [[ -d $HOME/.local/ec2-tools ]];then
-    print "Importing EC2 API"
     export EC2_HOME=$HOME/.local/ec2-tools
     export JAVA_HOME=$(print -l /usr/lib/jvm/java-*-openjdk-*/jre|sort|tail -n1)
     export AWS_ACCESS_KEY=$(cat $HOME/.aws_keys|head -n1)
