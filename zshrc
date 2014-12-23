@@ -649,6 +649,16 @@ for key in $(print ${HOME}/.ssh/*~config~authorized_keys~known_hosts~*.pub(*N));
     fi
 done
 # }}}
+# EC2 Tools {{{
+if [[ -d $HOME/.local/ec2-tools ]];then
+    print "Importing EC2 API"
+    export EC2_HOME=$HOME/.local/ec2-tools
+    export JAVA_HOME=$(print -l /usr/lib/jvm/java-*-openjdk-*/jre|sort|tail -n1)
+    export AWS_ACCESS_KEY=$(cat $HOME/.aws_keys|head -n1)
+    export AWS_SECRET_KEY=$(cat $HOME/.aws_keys|tail -n1)
+    export PATH=$PATH:$EC2_HOME/bin
+fi
+# }}}
 # Read local configuration {{{
 if [[ -f ${ZDOTDIR:-$HOME}/.zshrc.local ]]; then
     source ${ZDOTDIR:-$HOME}/.zshrc.local
