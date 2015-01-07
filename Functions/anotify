@@ -8,6 +8,12 @@ else
     comm="Notify"
 fi
 
+urlencode() {
+    setopt localoptions extendedglob
+    input=( ${(s::)1} )
+    print ${(j::)input/(#b)([^A-Za-z0-9_.!~*\'\(\)-])/%$(([##16]#match))}
+}
+
 comm=$(urlencode $comm)
 title=$(urlencode $1)
 message=$(urlencode $2)
