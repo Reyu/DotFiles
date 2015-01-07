@@ -26,6 +26,17 @@ if [[ -z $GPG_AGENT_INFO ]]; then
     fi
 fi
 # }}}
+# EC2 Tools {{{
+if [[ -f $HOME/.aws_keys ]]; then
+    export AWS_ACCESS_KEY=$(cat $HOME/.aws_keys|head -n1)
+    export AWS_SECRET_KEY=$(cat $HOME/.aws_keys|tail -n1)
+fi
+if [[ -d $HOME/.local/ec2-tools ]];then
+    export EC2_HOME=$HOME/.local/ec2-tools
+    export JAVA_HOME=$(print -l /usr/lib/jvm/java-*-openjdk-*/jre|sort|tail -n1)
+    export PATH=$PATH:$EC2_HOME/bin
+fi
+# }}}
 # Read local configuration {{{
 if [[ -f ${ZDOTDIR:-$HOME}/.zshenv.local ]]; then
     source ${ZDOTDIR:-$HOME}/.zshenv.local
