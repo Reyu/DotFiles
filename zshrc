@@ -615,9 +615,7 @@ else
 fi
 # }}}
 # Aliases {{{
-alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow'
 alias mmv='noglob zmv -W'
-alias -g CLIP='$(xclip -o -sel clip)'
 alias -g ISODATE='$(date --iso-8601=date)'
 alias -g PL='| ${PAGER}'
 alias -g PG='| grep -P'
@@ -625,19 +623,25 @@ alias -g PE='| egrep'
 alias -g PN1='> /dev/null'
 alias -g PN2='2> /dev/null'
 alias -g PN='&> /dev/null'
-alias -s hs=runhaskell
 alias -s zsh=/bin/zsh
 alias -s pl=/bin/perl
 alias -s sh=/bin/sh
 
-if (( $+commands[hub] )); then
-    eval $(hub alias -s)
-fi
+if (( $+commands[hub] ))        ; then eval $(hub alias -s)                                         ; fi
+if (( $+commands[cowsay] ))     ; then alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow' ; fi
+if (( $+commands[xclip] ))      ; then alias -g CLIP='$(xclip -o -sel clip)'                        ; fi
+if (( $+commands[runhaskell] )) ; then alias -s hs=runhaskell                                       ; fi
 
 # Load package manager based Aliases {{{
-if (( $+commands[equery] )); then
-        alias equery="noglob equery"
-fi # }}}
+if (( $+commands[emerge] )); then
+    if [[ $EUID != 0 ]]; then
+        alias emerge='sudo emerge'
+    fi
+    if (( $+commands[equery] )); then
+            alias equery="noglob equery"
+    fi
+fi
+# }}}
 # }}}
 # SSH Keys {{{
 # The shell globbing pattern below should only return private keys in the
