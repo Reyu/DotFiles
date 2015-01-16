@@ -168,6 +168,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- , ((modm .|. mod4Mask,  xK_plus  ), spawn "/usr/bin/mpc volume +5")
     -- , ((modm .|. mod4Mask,  xK_minus ), spawn "/usr/bin/mpc volume -5")
 
+    , ((modm .|. shiftMask, xK_r      ), unsafePrompt "/home/reyu/.local/ZFunctions/roku" myXPConfig)
+
     -- XF86 Keys
     , ((0                ,  0x1008FF10), spawn "sudo systemctl suspend")
     , ((0                ,  0x1008FF11), spawn "/usr/bin/pulseaudio-ctl down")
