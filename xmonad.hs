@@ -42,7 +42,7 @@ import Data.Ratio ((%))
 -- certain contrib modules.
 --
 myTerminal :: String
-myTerminal = "urxvtc"
+myTerminal = "st"
 
 -- Whether focus follows the mouse pointer.
 myFocusFollowsMouse :: Bool
@@ -157,7 +157,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- XMonad Prompt's
     , ((modm,               xK_r     ), runOrRaisePrompt myXPConfig )
     , ((modm,               xK_w     ), windowPromptGoto myXPConfig )
-    , ((modm,               xK_n     ), unsafePrompt (myTerminal ++ " -name") myXPConfig )
+    , ((modm,               xK_n     ), unsafePrompt (myTerminal ++ " -t") myXPConfig )
     , ((modm,               xK_s     ), unsafePrompt (myTerminal ++ " -e") myXPConfig )
     , ((modm .|. shiftMask, xK_s     ), sshPrompt myXPConfig )
 
