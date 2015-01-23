@@ -18,7 +18,7 @@ if ! ssh-add -l &> /dev/null; then
         eval $(ssh-agent | tee "${HOME}/.ssh-agent.env") > /dev/null
     fi
 fi
-if [[ -z $GPG_AGENT_INFO || -z $SSH_CONNECTION ]]; then
+if [[ -z $GPG_AGENT_INFO ]]; then
     if [[ -f ${HOME}/.gpg-agent.env ]]; then
         source ${HOME}/.gpg-agent.env
     else
