@@ -22,6 +22,7 @@ typeset -gU cdpath fpath mailpath path
 # Set the the list of directories that cd searches.
 cdpath=(
    $HOME
+   $HOME/Projects
    $cdpath
 )
 # Remove non-existent directories
@@ -29,16 +30,12 @@ cdpath=($^cdpath(N-/))
 
 # Set the list of directories that Zsh searches for programs.
 path=(
-  ${HOME}/bin
   ${HOME}/.local/bin
-  ${HOME}/.cabal/bin
-  $path
+  ${HOME}/bin
   /usr/local/{bin,sbin}
   /usr/{bin,sbin}
   /{bin,sbin}
-  /opt/eclipse
-  ${HOME}/.local/android-sdks/platform-tools
-  ${HOME}/.gem/ruby/2.0.0/bin
+  $path
 )
 # Remove non-existent directories
 path=($^path(N-/))
