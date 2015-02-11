@@ -12,9 +12,7 @@ fi
 # }}}
 
 if [[ $USER != 'root' ]]; then
-cat <<-EOF
-The world is coming to an end--save your buffers!
-EOF
+    echo 'The world is coming to an end--save your buffers!'
 fi
 
 # vim: fdm=marker syntax=zsh
