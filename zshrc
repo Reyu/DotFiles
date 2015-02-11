@@ -628,6 +628,7 @@ alias -s pl=/bin/perl
 alias -s sh=/bin/sh
 
 if (( $+commands[hub] ))        ; then eval $(hub alias -s)                                         ; fi
+if (( $+commands[docker] ))     ; then alias docker='sudo docker'                                   ; fi
 if (( $+commands[cowsay] ))     ; then alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow' ; fi
 if (( $+commands[xclip] ))      ; then alias -g CLIP='$(xclip -o -sel clip)'                        ; fi
 if (( $+commands[runhaskell] )) ; then alias -s hs=runhaskell                                       ; fi
