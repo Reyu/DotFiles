@@ -1,23 +1,23 @@
 -- Import stuff
 import XMonad
-import qualified XMonad.StackSet               as W
-import qualified Data.Map                      as M
+import qualified XMonad.StackSet  as W
+import qualified Data.Map         as M
 import System.Exit
 import Data.Monoid
+import Control.Applicative ((<$>))
 
 -- Utils
 import XMonad.Util.Run
 import XMonad.Util.NamedWindows (getName)
 
 -- Prompts
-import qualified XMonad.Prompt                 as P
+import qualified XMonad.Prompt    as P
 import XMonad.Prompt
 import XMonad.Prompt.Shell
 import XMonad.Prompt.Ssh
 import XMonad.Prompt.Window
 import XMonad.Prompt.RunOrRaise
--- import XMonad.Prompt.MPD
--- import qualified Network.MPD                   as MPD
+import qualified Network.MPD      as MPD
 
 -- Hooks
 import XMonad.Hooks.DynamicLog
@@ -38,9 +38,8 @@ import XMonad.Layout.Grid
 -- Data.Ratio for IM Layout
 import Data.Ratio ((%))
 
--- The preferred terminal program, which is used in a binding below and by
--- certain contrib modules.
---
+
+-- The preferred terminal program
 myTerminal :: String
 myTerminal = "st"
 
@@ -56,18 +55,12 @@ myClickJustFocuses = False
 myBorderWidth :: Dimension
 myBorderWidth = 2
 
--- modMask lets you specify which modkey you want to use. The default
--- is mod1Mask ("left alt").  You may also consider using mod3Mask
--- ("right alt"), which does not conflict with emacs keybindings. The
--- "windows key" is usually mod4Mask.
+-- Set modMask to left-alt
 myModMask :: KeyMask
 myModMask = mod1Mask
 
 ------------------------------------------------------------
 -- The default number of workspaces (virtual screens) and their names.
--- By default we use numeric strings, but any string may be used as a
--- workspace name. The number of workspaces is determined by the length
--- of this list.
 myWorkspaces :: [String]
 myWorkspaces = ["1","2","3","4","5","6","7","8","9","10"]
 
@@ -81,120 +74,46 @@ myFocusedBorderColor = "#657b83"
 -- Key bindings. Add, modify or remove key bindings here.
 myKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
-
-    -- launch terminal
-    [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
-
-    -- Yeganesh as run dialog (L_Alt+r and Win+r)
-    {-, ((modm,               xK_r     ), spawn "exe=`yeganesh -x -p exec` && eval \"exec $exe\"")-}
-
-    -- close focused window
-    , ((modm .|. shiftMask, xK_c     ), kill)
-
-     -- Rotate through the available layout algorithms
-    , ((modm,               xK_space ), sendMessage NextLayout)
-
-    --  Reset the layouts on the current workspace to default
-    , ((modm .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf)
-
-    -- Resize viewed windows to the correct size
-    , ((modm,               xK_n     ), refresh)
-
-    -- Move focus to the next window
-    , ((modm,               xK_Tab   ), windows W.focusDown)
-
-    -- Move focus to the next window
-    , ((modm,               xK_j     ), windows W.focusDown)
-
-    -- Move focus to the previous window
-    , ((modm,               xK_k     ), windows W.focusUp  )
-
-    -- Move focus to the master window
-    , ((modm,              xK_m     ), windows W.focusMaster  )
-
-    -- Swap the focused window and the master window
-    , ((modm,               xK_Return), windows W.swapMaster)
-
-    -- Swap the focused window with the next window
-    , ((modm .|. shiftMask, xK_j     ), windows W.swapDown  )
-
-    -- Swap the focused window with the previous window
-    , ((modm .|. shiftMask, xK_k     ), windows W.swapUp    )
-
-    -- Shrink the master area
-    , ((modm,               xK_h     ), sendMessage Shrink)
-
-    -- Expand the master area
-    , ((modm,               xK_l     ), sendMessage Expand)
-
-    -- Push window back into tiling
-    , ((modm,               xK_t     ), withFocused $ windows . W.sink)
-
-    -- Increment the number of windows in the master area
-    , ((modm .|. shiftMask, xK_w     ), sendMessage (IncMasterN 1))
-
-    -- Deincrement the number of windows in the master area
-    , ((modm .|. shiftMask, xK_v     ), sendMessage (IncMasterN (-1)))
-
-    -- Toggle the status bar gap
-    -- , ((modm,               xK_b     ), sendMessage ToggleStruts)
-
-    -- Focus Urgent Window
-    , ((modm,               xK_BackSpace), focusUrgent)
-    , ((modm .|. shiftMask, xK_BackSpace), clearUrgents)
-
-    -- Type RSA Token
-    , ((modm .|. shiftMask, xK_t     ), spawn "/home/reyu/bin/stoken-type")
-
-    -- Launch Firefox
-    -- TODO: Set -new-instance to be different key binding
-    , ((modm,               xK_u     ), spawn "/usr/bin/firefox -P default -new-instance")
-    , ((modm .|. shiftMask, xK_u     ), spawn "/usr/bin/firefox -P Work -new-instance")
-
-    -- Launch Mutt
-    , ((modm,               xK_e     ), spawn (myTerminal ++ " -e mutt"))
-
-    -- XMonad Prompt's
-    , ((modm,               xK_r     ), runOrRaisePrompt myXPConfig )
-    , ((modm,               xK_w     ), windowPromptGoto myXPConfig )
-    , ((modm,               xK_n     ), unsafePrompt (myTerminal ++ " -t") myXPConfig )
-    , ((modm,               xK_s     ), unsafePrompt (myTerminal ++ " -e") myXPConfig )
-    , ((modm .|. shiftMask, xK_s     ), sshPrompt myXPConfig )
-
-    -- MPD Control
-    -- , ((modm .|. shiftMask, xK_a     ), addMatching MPD.withMPD myXPConfig [MPD.Artist, MPD.Album] >> return ())
-    , ((modm .|. mod4Mask,  xK_m     ), unsafePrompt "/usr/bin/mpc" mpcXPConfig)
-    -- , ((modm .|. mod4Mask,  xK_space ), spawn "/usr/bin/mpc toggle")
-    -- , ((modm .|. mod4Mask,  xK_plus  ), spawn "/usr/bin/mpc volume +5")
-    -- , ((modm .|. mod4Mask,  xK_minus ), spawn "/usr/bin/mpc volume -5")
-
-    , ((modm .|. shiftMask, xK_r      ), unsafePrompt "/home/reyu/.local/ZFunctions/roku" myXPConfig)
-
-    -- XF86 Keys
-    , ((0                ,  0x1008FF10), spawn "sudo systemctl suspend")
-    , ((0                ,  0x1008FF11), spawn "/usr/bin/pulseaudio-ctl down")
-    , ((0                ,  0x1008FF12), spawn "/usr/bin/pulseaudio-ctl mute")
-    , ((0                ,  0x1008FF13), spawn "/usr/bin/pulseaudio-ctl up")
-    , ((0                ,  0x1008FF14), spawn "/usr/bin/mpc toggle")
-    , ((0                ,  0x1008FF16), spawn "/usr/bin/mpc prev")
-    , ((0                ,  0x1008FF17), spawn "/usr/bin/mpc next")
-    , ((modm             ,  0x1008FF14), spawn "${HOME}/.local/ZFunctions/roku play")
-    , ((modm             ,  0x1008FF16), spawn "${HOME}/.local/ZFunctions/roku prev")
-    , ((modm             ,  0x1008FF17), spawn "${HOME}/.local/ZFunctions/roku next")
-
-    -- Lock Screen
-    , ((modm .|. mod4Mask,  xK_l     ), spawn "/usr/bin/xscreensaver-command -activate")
-
-    -- Quit xmonad
-    , ((modm .|. mod4Mask,  xK_q     ), io exitSuccess)
-
-    -- Restart xmonad
-    , ((modm,               xK_q     ), spawn "xmonad --recompile; xmonad --restart")
+    [ ((0                 ,  0x1008FF10  ), spawn "sudo systemctl suspend") -- XF86 Keys
+    , ((0                 ,  0x1008FF11  ), spawn "/usr/bin/pulseaudio-ctl down")
+    , ((0                 ,  0x1008FF12  ), spawn "/usr/bin/pulseaudio-ctl mute")
+    , ((0                 ,  0x1008FF13  ), spawn "/usr/bin/pulseaudio-ctl up")
+    , ((0                 ,  0x1008FF14  ), spawn "/usr/bin/mpc toggle")
+    , ((0                 ,  0x1008FF16  ), spawn "/usr/bin/mpc prev")
+    , ((0                 ,  0x1008FF17  ), spawn "/usr/bin/mpc next")
+    , ((modm              ,  xK_BackSpace), focusUrgent)
+    , ((modm .|. shiftMask,  xK_BackSpace), clearUrgents)
+    , ((modm              ,  xK_Return   ), windows W.swapMaster)
+    , ((modm .|. shiftMask,  xK_Return   ), spawn $ XMonad.terminal conf)
+    , ((modm              ,  xK_Tab      ), windows W.focusDown)
+    , ((modm              ,  xK_space    ), sendMessage NextLayout)
+    , ((modm .|. shiftMask,  xK_space    ), setLayout $ XMonad.layoutHook conf)
+    , ((modm .|. shiftMask,  xK_c        ), kill)
+    , ((modm              ,  xK_e        ), spawn (myTerminal ++ " -e mutt"))
+    , ((modm              ,  xK_h        ), sendMessage Shrink)
+    , ((modm              ,  xK_j        ), windows W.focusDown)
+    , ((modm .|. shiftMask,  xK_j        ), windows W.swapDown  )
+    , ((modm              ,  xK_k        ), windows W.focusUp  )
+    , ((modm .|. shiftMask,  xK_k        ), windows W.swapUp    )
+    , ((modm              ,  xK_l        ), sendMessage Expand)
+    , ((modm .|. mod4Mask ,  xK_l        ), spawn "/usr/bin/xscreensaver-command -activate")
+    , ((modm              ,  xK_m        ), windows W.focusMaster)
+    , ((modm .|. mod4Mask ,  xK_m        ), unsafePrompt "/usr/bin/mpc" mpcXPConfig)
+    , ((modm              ,  xK_n        ), unsafePrompt (myTerminal ++ " -t") myXPConfig )
+    , ((modm              ,  xK_q        ), spawn "xmonad -- recompile; xmonad -- restart")
+    , ((modm .|. mod4Mask ,  xK_q        ), io exitSuccess)
+    , ((modm              ,  xK_r        ), runOrRaisePrompt myXPConfig )
+    , ((modm              ,  xK_s        ), unsafePrompt (myTerminal ++ " -e") myXPConfig )
+    , ((modm .|. shiftMask,  xK_s        ), sshPrompt myXPConfig )
+    , ((modm              ,  xK_t        ), withFocused $ windows . W.sink)
+    , ((modm              ,  xK_u        ), spawn "/usr/bin/firefox -P default -new-instance")
+    , ((modm .|. shiftMask,  xK_u        ), spawn "/usr/bin/firefox -P Work -new-instance")
+    , ((modm .|. shiftMask,  xK_v        ), sendMessage (IncMasterN (-1)))
+    , ((modm              ,  xK_w        ), windowPromptGoto myXPConfig )
+    , ((modm .|. shiftMask,  xK_w        ), sendMessage (IncMasterN 1))
     ]
     ++
 
-    --
-    -- mod-[F1..F10], Switch to workspace N
     --
     -- mod-[F1..F10], Switch to workspace N
     -- mod-shift-[F1..F10], Move client to workspace N
@@ -206,8 +125,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     ++
 
     --
-    -- mod-{F11,F12}, Switch to physical/Xinerama screens 1 or 2
-    -- mod-shift-{F11,F12}, Move client to screen 1 or 2
+    -- mod-{',','.'}, Switch to physical/Xinerama screens 1 or 2
+    -- mod-shift-{',','.'}, Move client to screen 1 or 2
     --
     [((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
         | (key, sc) <- zip [xK_comma, xK_period] [1,0]
@@ -235,32 +154,14 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList
 
     -- mod-button3, Set the window to floating mode and resize by dragging
     , ((modm, button3), \w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster)
-
-    -- you may also bind events to the mouse scroll wheel (button4 and button5)
     ]
 
 ------------------------------------------------------------------------
 -- Layouts:
-
--- You can specify and transform your layouts by modifying these values.
--- If you change layout bindings be sure to use 'mod-shift-space' after
--- restarting (with 'mod-q') to reset your layout state to the new
--- defaults, as xmonad preserves your old layout settings by default.
 --
--- * NOTE: XMonad.Hooks.EwmhDesktops users must remove the obsolete
--- ewmhDesktopsLayout modifier from layoutHook. It no longer exists.
--- Instead use the 'ewmh' function from that module to modify your
--- defaultConfig as a whole. (See also logHook, handleEventHook, and
--- startupHook ewmh notes.)
---
--- The available layouts.  Note that each layout is separated by |||,
--- which denotes layout choice.
---
-
--- LayoutHook
 myLayoutHook  = avoidStruts $
                 smartBorders $
-                onWorkspace "9" imLayout
+                onWorkspace "10" imLayout
                 standardLayouts
     where
         standardLayouts = noBorders Full ||| tiled |||  reflectTiled ||| Mirror tiled ||| Grid
@@ -279,18 +180,6 @@ myLayoutHook  = avoidStruts $
 
 ------------------------------------------------------------------------
 -- Window rules:
-
--- Execute arbitrary actions and WindowSet manipulations when managing
--- a new window. You can use this to, for example, always float a
--- particular program, or have a client always appear on a particular
--- workspace.
---
--- To find the property name associated with a program, use
--- > xprop | grep WM_CLASS
--- and click on the client you're interested in.
---
--- To match on the WM_NAME, you can use 'title' in the same way that
--- 'className' and 'resource' are used below.
 --
 myManageHook :: Query (Endo WindowSet)
 myManageHook = composeAll . concat $
@@ -322,49 +211,25 @@ myManageHook = composeAll . concat $
 
 ------------------------------------------------------------------------
 -- Event handling
-
--- Defines a custom handler function for X Events. The function should
--- return (All True) if the default handler is to be run afterwards. To
--- combine event hooks use mappend or mconcat from Data.Monoid.
 --
--- * NOTE: EwmhDesktops users should use the 'ewmh' function from
--- XMonad.Hooks.EwmhDesktops to modify their defaultConfig as a whole.
--- It will add EWMH event handling to your custom event hooks by
--- combining them with ewmhDesktopsEventHook.
---
-myEventHook :: Event -> X All
-myEventHook = mempty
+-- myEventHook :: Event -> X All
+-- myEventHook = mempty
 
 ------------------------------------------------------------------------
 -- Status bars and logging
-
--- Perform an arbitrary action on each internal state change or X event.
--- See the 'XMonad.Hooks.DynamicLog' extension for examples.
 --
---
--- * NOTE: EwmhDesktops users should use the 'ewmh' function from
--- XMonad.Hooks.EwmhDesktops to modify their defaultConfig as a whole.
--- It will add EWMH logHook actions to your custom log hook by
--- combining it with ewmhDesktopsLogHook.
---
+-- myLogHook :: X ()
 -- myLogHook h = dynamicLogWithPP $ myPP { ppOutput = hPutStrLn h }
-myLogHook :: X ()
-myLogHook = return ()
 
 ------------------------------------------------------------------------
 -- Startup hook
-
--- Perform an arbitrary action each time xmonad starts or is restarted
--- with mod-q.  Used by, e.g., XMonad.Layout.PerWorkspace to initialize
--- per-workspace layout choices.
 --
--- By default, do nothing.
 myStartupHook :: X ()
 myStartupHook = setWMName "LG3D"
 
 ------------------------------------------------------------------------
 -- Set up status bar
-
+--
 -- Command to launch the bar.
 myBar :: String
 myBar = "dzen2 " ++ myDzenBaseFmt ++ " -w '950' -ta 'left'"
@@ -422,21 +287,14 @@ data LibNotifyUrgencyHook = LibNotifyUrgencyHook deriving (Read, Show)
 instance UrgencyHook LibNotifyUrgencyHook where
     urgencyHook LibNotifyUrgencyHook w = do
         name     <- getName w
-        Just idx <- fmap (W.findTag w) $ gets windowset
+        Just idx <- W.findTag w <$> gets windowset
         safeSpawn "notify-send" [show name, "workspace " ++ idx]
 
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
-
--- Run xmonad with the settings you specify. No need to modify this.
 main :: IO ()
 main = xmonad =<< statusBar myBar myPP toggleStrutsKey (withUrgencyHook LibNotifyUrgencyHook defaults)
-
--- A structure containing your configuration settings, overriding
--- fields in the default config. Any you don't override, will
--- use the defaults defined in xmonad/XMonad/Config.hs
---
 defaults = defaultConfig
         { terminal           = myTerminal
         , focusFollowsMouse  = myFocusFollowsMouse
@@ -450,7 +308,5 @@ defaults = defaultConfig
         , mouseBindings      = myMouseBindings
         , layoutHook         = myLayoutHook
         , manageHook         = myManageHook
-        , handleEventHook    = myEventHook
-        , logHook            = myLogHook
         , startupHook        = myStartupHook
         }
