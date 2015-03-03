@@ -551,6 +551,8 @@ if (( $+commands[tmux] )); then
 fi
 # }}}
 # Prompt {{{
+# Set Term title to current working dir
+precmd () {print -Pn "\033]0%~\007"}
 # Prefer Powerline, if available
 typeset -U powerlineLocation
 powerlineLocation=(
