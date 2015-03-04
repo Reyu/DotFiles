@@ -9,7 +9,7 @@
 if (( $+commands[nvim] )); then
     export EDITOR=${commands[nvim]}
     export VISUAL=${commands[nvim]}
-else if (( $+commands[vim] )); then
+elif (( $+commands[vim] )); then
     export EDITOR=${commands[vim]}
     export VISUAL=${commands[vim]}
 fi
