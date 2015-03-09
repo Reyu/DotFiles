@@ -36,7 +36,7 @@ set scrolloff=7
 " Turn on the Wild menu
 set wildmenu
 
-" Ignore compiled files
+" Ignore compiled files and some directories
 set wildignore=*.o,*~,*.pyc,.git\*,.hg\*,.svn\*
 
 "Always show current position
@@ -196,21 +196,10 @@ map <leader>p :cp<cr>
 " Pressing ,ss will toggle and untoggle spell checking
 map <leader>ss :setlocal spell!<cr>
 " Spell checking }}}
-" {{{ Misc
-" Haskell Mode
-let g:haddock_browser = "/usr/bin/firefox"
-
-" Set '.cwiki' files as Confluence Wiki
-autocmd BufRead *.cwiki set filetype=confluencewiki
-" Misc }}}
 " {{{ Vim grep
 let Grep_Skip_Dirs = 'RCS CVS SCCS .svn generated'
 set grepprg=/bin/grep\ -nH
 " Vim grep }}}
-" {{{ Fast editing and reloading of vimrc configs
-map <leader>nvim :e! ~/.nvim/nvimrc<cr>
-autocmd! bufwritepost nvimrc source ~/.nvim/nvimrc
-" Fast editing and reloading of vimrc configs }}}
 " {{{ General abbreviations
 iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 " General abbreviations }}}
