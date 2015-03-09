@@ -4,3 +4,4 @@
 " Version:     1.1
 
 au BufNewFile,BufRead *pentadactylrc*,*.penta set filetype=pentadactyl
+au BufRead,BufEnter */pentadactyl.*.txt set spell
