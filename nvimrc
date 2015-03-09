@@ -270,12 +270,10 @@ endfunction
 call plug#begin('~/.config/NeoVim/plugged')
 Plug 'ajh17/VimCompletesMe'
 Plug 'altercation/vim-colors-solarized'
-Plug 'ardagnir/pterosaur'
-Plug 'ardagnir/vimbed'
 Plug 'bling/vim-airline'
 Plug 'chase/vim-ansible-yaml', { 'for' : 'ansible' }
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'godlygeek/tabular'
+Plug 'godlygeek/tabular', { 'on' : 'Tabularize' }
 Plug 'jamessan/vim-gnupg'
 Plug 'klen/python-mode', { 'for' : 'python' }
 Plug 'Lokaltog/vim-easymotion'
@@ -285,7 +283,6 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'pbrisbin/vim-syntax-shakespeare', { 'for' : ['hamlet','julias','casius'] }
 Plug 'scrooloose/syntastic'
 Plug 'Shougo/unite.vim'
-" Plug 'sjl/gundo.vim', { 'on' : 'GundoToggle' } Not NeoVim compatible yet :(
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-capslock'
@@ -375,9 +372,6 @@ function! s:unite_settings()
 endfunction
 
 " Unite }}}
-" " Plugin 'sjl/gundo.vim' {{{
-" map <leader>u :GundoToggle<CR>
-" " Gundo }}}
 " Plugin 'tpope/vim-fugitive' {{{
 " Git saving
 noremap <leader>gw :Gwrite<cr>

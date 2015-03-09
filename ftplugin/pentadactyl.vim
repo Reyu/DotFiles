@@ -25,3 +25,5 @@ endif
 
 let &cpo = s:cpo_save
 unlet s:cpo_save
+
+au BufRead,BufEnter */pentadactyl.*.txt set spell
