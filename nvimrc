@@ -96,18 +96,13 @@ set ffs=unix,dos,mac
 " {{{ Files, backups and undo
 " Keep backups in cache folder, so as not to clutter filesystem.
 set backup
-set backupdir=~/.vim/tmp_files/backup,~/tmp,.,~/
-set directory=~/.vim/tmp_files/other,~/tmp,.,/var/tmp,/tmp
-set nowb
+set backupdir=~/.cache/vim/backup,~/tmp,.,~/
+set directory=~/.cache/vim/other,~/tmp,.,/var/tmp,/tmp
+set undodir=~/.cache/vim/undo
+set undofile
+" Don't need backups for tmp files (usually sudo -e)
+autocmd BufRead,BufEnter /var/tmp/* set nobackup noundofile nowritebackup
 " Files, backups and undo }}}
-" {{{ Turn persistent undo on
-"    means that you can undo even when you close a buffer/VIM
-try
-    set undodir=~/.vim/tmp_files/undo
-    set undofile
-catch
-endtry
-" Turn persistent undo on }}}
 " {{{ Text, tab and indent related
 " Use spaces instead of tabs
 set expandtab
