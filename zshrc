@@ -555,12 +555,13 @@ precmd () {print -Pn "\033]0%~\007"}
 # Write some info to terminal title.
 # This is seen when the shell prompts for input.
 function precmd {
-    print -Pn "\e]0;%~%(1j,; %j job%(2j|s|),)\a"
+    print -Pn "\e]2;%~%(1j,; %j job%(2j|s|),)\a"
 }
 # Write command and args to terminal title.
 # This is seen while the shell waits for a command to complete.
 function preexec {
-    printf "\033]0;%s\a" "$1"
+  # cmd name only, or if this is sudo or ssh, the next cmd
+  print -Pn "\e]2;${1[(wr)^(*=*|sudo|ssh|-*)]:gs/%/%%:g}\a"
 }
 # Prefer Powerline, if available
 typeset -U powerlineLocation
