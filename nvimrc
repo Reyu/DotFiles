@@ -247,7 +247,6 @@ endfunction
 " Helper functions }}}
 " {{{ Plugins
 call plug#begin('~/.config/NeoVim/plugged')
-Plug 'ajh17/VimCompletesMe'
 Plug 'altercation/vim-colors-solarized'
 Plug 'bling/vim-airline'
 Plug 'chase/vim-ansible-yaml', { 'for' : 'ansible' }
@@ -262,7 +261,6 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'pbrisbin/vim-syntax-shakespeare', { 'for' : ['hamlet','julias','casius'] }
 Plug 'scrooloose/syntastic'
 Plug 'Shougo/unite.vim'
-Plug 'terryma/vim-multiple-cursors'
 Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-capslock'
 Plug 'tpope/vim-commentary'
@@ -272,18 +270,11 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'Twinside/vim-haskellConceal', { 'for' : 'haskell' }
-Plug 'wikitopian/hardmode'
 call plug#end()
 " Plugin Configuration {{{
 " Plugin 'altercation/vim-colors-solarized' {{{
 set background=dark
 colorscheme solarized
-" }}}
-" Plugin 'ardagnir/pterosaur' {{{
-augroup pentadactyl
-    au!
-    au BufRead,BufEnter */pentadactyl.*.txt set spell
-augroup END
 " }}}
 " Plugin 'bling/vim-airline' {{{
 let g:airline_powerline_fonts = 1
@@ -364,9 +355,6 @@ noremap <leader>gs :Gstatus<cr>
 au FileType mako vmap Si S"i${ _(<esc>2f"a) }<esc>
 
 " surround.vim config }}}
-" Plugin 'wikitopian/hardmode' {{{
-nnoremap <leader>h <ESC>:call ToggleHardMode()<CR>
-" Hard Mode }}}
 " Plugin 'lukerandall/haskellmode-vim' {{{
 let g:haddock_browser="firefox"
 let g:haskellmode_completion_ghc=0
