@@ -27,7 +27,7 @@ set title
 " General }}}
 " {{{ VIM User Interface
 " Hide the default mode text (e.g. -- INSERT -- below the statusline)
-" This is shown by (Power|Air)Line instead
+" This is shown by /(Power|Air)Line/ instead
 set noshowmode
 
 " Set 7 lines to the cursor when moving vertically using j/k
