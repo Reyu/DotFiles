@@ -389,6 +389,7 @@ au FileType mako vmap Si S"i${ _(<esc>2f"a) }<esc>
 nnoremap <leader>h <ESC>:call ToggleHardMode()<CR>
 " Hard Mode }}}
 " Plugin 'lukerandall/haskellmode-vim' {{{
+let g:haddock_browser="firefox"
 let g:haskellmode_completion_ghc=0
 let g:haskellmode_completion_haddock=0
 autocmd BufEnter *.hs compiler ghc
