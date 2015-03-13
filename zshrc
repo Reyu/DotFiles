@@ -555,7 +555,7 @@ precmd () {print -Pn "\033]0%~\007"}
 # Write some info to terminal title.
 # This is seen when the shell prompts for input.
 function precmd {
-    print -Pn "\e]2;%~%(1j,; %j job%(2j|s|),)\a"
+    print -Pn "\e]2;%~%(1j, - %j job%(2j|s|),)\a"
 }
 # Write command and args to terminal title.
 # This is seen while the shell waits for a command to complete.
