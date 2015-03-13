@@ -11,13 +11,17 @@ if [[ "$SHLVL" -eq 1 && ! -o LOGIN && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
 fi
 # }}}
 # Make sure that SSH and GPG agents are accessible {{{
-if [[ -f ${HOME}/.ssh-agent.env ]]; then
-    source ${HOME}/.ssh-agent.env &> /dev/null
-    if ! ssh-add -l &> /dev/null; then
+if ! ssh-add -l &> /dev/null; then
+    if [[ -f ${HOME}/.ssh-agent.env ]]; then
+        source ${HOME}/.ssh-agent.env &> /dev/null
+        if ! ssh-add -l &> /dev/null; then
+            pkill -9 ssh-agent
+            eval $(ssh-agent | tee ${HOME}/.ssh-agent.env)
+        fi
+    else
+        pkill -9 ssh-agent
         eval $(ssh-agent | tee ${HOME}/.ssh-agent.env)
     fi
-else
-    eval $(ssh-agent | tee ${HOME}/.ssh-agent.env)
 fi
 if [[ -z $GPG_AGENT_INFO ]]; then
     if [[ -f ${HOME}/.gpg-agent.env ]]; then
