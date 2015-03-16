@@ -540,33 +540,16 @@ if (( $+commands[tmux] )); then
     if [[ -z $TMUX && -z $SSH_CONNECTION && $USER != 'root' ]]; then
         # Ensure the Global session is active
         if ! tmux has-session -t "Global" 2> /dev/null; then
-            # Temporarly disable detached session distruction
-            tmux set -g destroy-unattached off
-
             # Create Global session
-            tmux new-session -d -s "Global" "weechat"
-
-            # Disable the destruction of the Global session.
-            tmux set-option -t "Global" destroy-unattached off &> /dev/null
-
-            # Re-enable detached session distruction
-            tmux set -g destroy-unattached on
+            tmux new-session -d -s "Global" "weechat" \; set-option -t "Global" destroy-unattached off
         fi
         if ! tmux has-session -t "Primary" 2> /dev/null; then
-            # Temporarly disable detached session distruction
-            tmux set -g destroy-unattached off
-
             # Create Primary Session
-            tmux new-session -d -s "Primary"
-
-            # Disable the destruction of the Primary session.
-            tmux set-option -t "Primary" destroy-unattached off &> /dev/null
-
-            # Re-enable detached session distruction
-            tmux set -g destroy-unattached on
+            tmux new-session -d -s "Primary" \; set-option -t "Primary" destroy-unattached off
         fi
         # Create a new session that is grouped with the Primary session
-        exec tmux new-session -t "Primary"
+        name="Primary~$(($(tmux ls|grep 'Primary~'|cut -d':' -f1|sort|tail -n1|cut -d'~' -f2)+1))"
+        exec tmux new-session -s $name -t "Primary"
     fi
 fi
 # }}}
