@@ -261,6 +261,7 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'pbrisbin/vim-syntax-shakespeare', { 'for' : ['hamlet','julias','casius'] }
 Plug 'scrooloose/syntastic'
 Plug 'Shougo/unite.vim'
+Plug 'tmux-plugins/vim-tmux', { 'for' : 'tmux' }
 Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-capslock'
 Plug 'tpope/vim-commentary'
