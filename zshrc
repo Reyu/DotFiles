@@ -543,13 +543,7 @@ if (( $+commands[tmux] )); then
             # Create Global session
             tmux new-session -d -s "Global" "weechat" \; set-option -t "Global" destroy-unattached off
         fi
-        if ! tmux has-session -t "Primary" 2> /dev/null; then
-            # Create Primary Session
-            tmux new-session -d -s "Primary" \; set-option -t "Primary" destroy-unattached off
-        fi
-        # Create a new session that is grouped with the Primary session
-        name="Primary~$(($(tmux ls|grep 'Primary~'|cut -d':' -f1|sort|tail -n1|cut -d'~' -f2)+1))"
-        exec tmux new-session -s $name -t "Primary"
+        exec tmux
     fi
 fi
 # }}}
