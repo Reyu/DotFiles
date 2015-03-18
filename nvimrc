@@ -246,7 +246,18 @@ function! <SID>BufcloseCloseIt()
 endfunction
 " Helper functions }}}
 " {{{ Plugins
-call plug#begin('~/.config/NeoVim/plugged')
+" Plugin Build Functions {{{
+function! BuildYCM(info)
+      " info is a dictionary with 3 fields
+      " - name:   name of the plugin
+      " - status: 'installed', 'updated', or 'unchanged'
+      " - force:  set on PlugInstall! or PlugUpdate!
+      if a:info.status == 'installed' || a:info.force
+    !./install.sh
+  endif
+endfunction
+" }}}
+call plug#begin('~/.config/NeoVim/plugged') " {{{
 Plug 'altercation/vim-colors-solarized'
 Plug 'bling/vim-airline'
 Plug 'chase/vim-ansible-yaml', { 'for' : 'ansible' }
@@ -271,7 +282,8 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'Twinside/vim-haskellConceal', { 'for' : 'haskell' }
-call plug#end()
+Plug 'Valloric/YouCompleteMe', { 'do' : function('BuildYCM') }
+call plug#end() " }}}
 " Plugin Configuration {{{
 " Plugin 'altercation/vim-colors-solarized' {{{
 set background=dark
@@ -363,6 +375,8 @@ let g:haskellmode_completion_haddock=0
 autocmd BufEnter *.hs compiler ghc
 autocmd BufEnter *.hs set textwidth=100
 autocmd BufEnter *.hs set colorcolumn=101
+" }}}
+" Plugin Valloric/YouCompleteMe {{{
 " }}}
 " Plugin Configuration }}}
 " Plugins }}}
