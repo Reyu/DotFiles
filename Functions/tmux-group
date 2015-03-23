@@ -1,0 +1,4 @@
+#!/bin/zsh
+# Create a new session that is grouped with the Primary session
+name="${1:=Primary}~$(($(tmux ls|grep "${1:=Primary}~"|cut -d':' -f1|sort|tail -n1|cut -d'~' -f2)+1))"
+exec tmux new-session -s $name -t ${1:=Primary}
