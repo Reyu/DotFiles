@@ -262,16 +262,14 @@ Plug 'altercation/vim-colors-solarized'
 Plug 'bling/vim-airline'
 Plug 'chase/vim-ansible-yaml', { 'for' : 'ansible' }
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'fs111/pydoc.vim', { 'for' : 'python' }
 Plug 'godlygeek/tabular', { 'on' : 'Tabularize' }
 Plug 'jamessan/vim-gnupg'
-" Plug 'klen/python-mode', { 'for' : 'python' }
+Plug 'klen/python-mode', { 'for' : 'python' }
 Plug 'Lokaltog/vim-easymotion'
 Plug 'lukerandall/haskellmode-vim', { 'for' : 'haskell' }
-" Plug 'majutsush/tagbar'
-Plug 'msanders/snipmate.vim'
+Plug 'majutsushi/tagbar'
 Plug 'ntpeters/vim-better-whitespace'
-Plug 'pbrisbin/vim-syntax-shakespeare', { 'for' : ['hamlet','julias','casius'] }
+Plug 'pbrisbin/vim-syntax-shakespeare', { 'for' : ['hamlet','julius','casius','lucius'] }
 Plug 'scrooloose/syntastic'
 Plug 'Shougo/unite.vim'
 Plug 'tmux-plugins/vim-tmux', { 'for' : 'tmux' }
@@ -307,11 +305,11 @@ function! s:align()
     endif
 endfunction
 " }}}
-" " Plugin 'klen/python-mode' {{{
-" let g:pymode_lint_checkers = ['pylint', 'pyflakes', 'pep8', 'mccabe']
-" noremap <leader>pl :PymodeLint<cr>
-" noremap <leader>pla :PymodeLintAuto<cr>
-" " }}}
+" Plugin 'klen/python-mode' {{{
+let g:pymode_lint_checkers = ['pylint', 'pyflakes', 'pep8', 'mccabe']
+noremap <leader>pl :PymodeLint<cr>
+noremap <leader>pla :PymodeLintAuto<cr>
+" }}}
 " Plugin 'Lokaltog/vim-easymotion' {{{
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 let g:EasyMotion_keys = 'gpbkcwjrvqlzdihutenosa'
@@ -333,10 +331,10 @@ map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
 
 " Easy Motion }}}
-" " Plugin 'majutsushi/tagbar' {{{
-" map <leader>t :TagbarToggle<CR>
+" Plugin 'majutsushi/tagbar' {{{
+map <leader>t :TagbarToggle<CR>
 
-" " Tagbar }}}
+" Tagbar }}}
 " Plugin 'Shougo/unite.vim' {{{
 let g:unite_source_history_yank_enable = 1
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
@@ -377,6 +375,8 @@ let g:haskellmode_completion_haddock=0
 autocmd BufEnter *.hs compiler ghc
 autocmd BufEnter *.hs set textwidth=100
 autocmd BufEnter *.hs set colorcolumn=101
+" }}}
+" Plugin Valloric/YouCompleteMe {{{
 " }}}
 " Plugin Configuration }}}
 " Plugins }}}
