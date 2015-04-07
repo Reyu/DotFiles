@@ -271,6 +271,8 @@ Plug 'majutsushi/tagbar'
 Plug 'msanders/snipmate.vim'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'pbrisbin/vim-syntax-shakespeare', { 'for' : ['hamlet','julius','casius','lucius'] }
+Plug 'python.vim', { 'for' : 'python' }
+Plug 'python_fold', { 'for' : 'python' }
 Plug 'scrooloose/syntastic'
 Plug 'Shougo/unite.vim'
 Plug 'tmux-plugins/vim-tmux', { 'for' : 'tmux' }
