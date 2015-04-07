@@ -265,10 +265,9 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'fs111/pydoc.vim', { 'for' : 'python' }
 Plug 'godlygeek/tabular', { 'on' : 'Tabularize' }
 Plug 'jamessan/vim-gnupg'
-" Plug 'klen/python-mode', { 'for' : 'python' }
 Plug 'Lokaltog/vim-easymotion'
 Plug 'lukerandall/haskellmode-vim', { 'for' : 'haskell' }
-" Plug 'majutsush/tagbar'
+Plug 'majutsushi/tagbar'
 Plug 'msanders/snipmate.vim'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'pbrisbin/vim-syntax-shakespeare', { 'for' : ['hamlet','julius','casius','lucius'] }
@@ -333,10 +332,10 @@ map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
 
 " Easy Motion }}}
-" " Plugin 'majutsushi/tagbar' {{{
-" map <leader>t :TagbarToggle<CR>
+" Plugin 'majutsushi/tagbar' {{{
+map <leader>t :TagbarToggle<CR>
 
-" " Tagbar }}}
+" Tagbar }}}
 " Plugin 'Shougo/unite.vim' {{{
 let g:unite_source_history_yank_enable = 1
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
