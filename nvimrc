@@ -248,13 +248,13 @@ endfunction
 " {{{ Plugins
 " Plugin Build Functions {{{
 function! BuildYCM(info)
-      " info is a dictionary with 3 fields
-      " - name:   name of the plugin
-      " - status: 'installed', 'updated', or 'unchanged'
-      " - force:  set on PlugInstall! or PlugUpdate!
-      if a:info.status == 'installed' || a:info.force
-    !./install.sh
-  endif
+    " info is a dictionary with 3 fields
+    " - name:   name of the plugin
+    " - status: 'installed', 'updated', or 'unchanged'
+    " - force:  set on PlugInstall! or PlugUpdate!
+    if a:info.status == 'installed' || a:info.force
+        !./install.sh
+    endif
 endfunction
 " }}}
 call plug#begin('~/.config/NeoVim/plugged') " {{{
