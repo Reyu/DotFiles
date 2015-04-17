@@ -269,10 +269,12 @@ Plug 'Lokaltog/vim-easymotion'
 Plug 'lukerandall/haskellmode-vim', { 'for' : 'haskell' }
 Plug 'majutsushi/tagbar'
 Plug 'msanders/snipmate.vim'
+Plug 'myusuf3/numbers.vim'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'pbrisbin/vim-syntax-shakespeare', { 'for' : ['hamlet','julius','casius','lucius'] }
 Plug 'python.vim', { 'for' : 'python' }
 Plug 'python_fold', { 'for' : 'python' }
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'scrooloose/syntastic'
 Plug 'Shougo/unite.vim'
 Plug 'tmux-plugins/vim-tmux', { 'for' : 'tmux' }
@@ -338,6 +340,12 @@ map <Leader>k <Plug>(easymotion-k)
 map <leader>t :TagbarToggle<CR>
 
 " Tagbar }}}
+" Plug 'scrooloose/nerdtree' {{{
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+map <C-n> :NERDTreeToggle<CR>
+" }}}
 " Plugin 'Shougo/unite.vim' {{{
 let g:unite_source_history_yank_enable = 1
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
