@@ -274,6 +274,7 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'pbrisbin/vim-syntax-shakespeare', { 'for' : ['hamlet','julius','casius','lucius'] }
 Plug 'python.vim', { 'for' : 'python' }
 Plug 'python_fold', { 'for' : 'python' }
+Plug 'rodjek/vim-puppet', { 'for': 'puppet' }
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'scrooloose/syntastic'
 Plug 'Shougo/unite.vim'
