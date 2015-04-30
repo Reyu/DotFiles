@@ -1,3 +1,4 @@
+# vim:nu:ai:si:et:ts=4:sw=4:ft=conkyrc:
 background no
 out_to_console yes
 out_to_x no
