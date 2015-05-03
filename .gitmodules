@@ -13,9 +13,6 @@
 [submodule "plugins/tmux-resurrect"]
 	path = plugins/tmux-resurrect
 	url = https://github.com/tmux-plugins/tmux-resurrect.git
-[submodule "plugins/tmux-sessionist"]
-	path = plugins/tmux-sessionist
-	url = https://github.com/tmux-plugins/tmux-sessionist.git
 [submodule "plugins/tmux-yank"]
 	path = plugins/tmux-yank
 	url = https://github.com/tmux-plugins/tmux-yank.git
