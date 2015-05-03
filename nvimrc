@@ -282,6 +282,7 @@ Plug 'tmux-plugins/vim-tmux', { 'for' : 'tmux' }
 Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-capslock'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-markdown', { 'for' : 'markdown' }
 Plug 'tpope/vim-obsession'
