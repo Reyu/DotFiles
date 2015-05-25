@@ -634,9 +634,9 @@ alias -g PE='| egrep'
 alias -g PN1='> /dev/null'
 alias -g PN2='2> /dev/null'
 alias -g PN='&> /dev/null'
-alias -s zsh=/bin/zsh
-alias -s pl=/bin/perl
-alias -s sh=/bin/sh
+alias -s zsh=$(whence -p zsh)
+alias -s pl=$(whence -p perl)
+alias -s sh=$(whence -p sh)
 
 if (( $+commands[hub] ))        ; then eval $(hub alias -s)                                         ; fi
 if (( $+commands[docker] ))     ; then alias docker='sudo docker'                                   ; fi
