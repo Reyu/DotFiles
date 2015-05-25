@@ -16,11 +16,11 @@ if ! ssh-add -l &> /dev/null; then
         source ${HOME}/.ssh-agent.env &> /dev/null
         if ! ssh-add -l &> /dev/null; then
             pkill -9 ssh-agent
-            eval $(ssh-agent | tee ${HOME}/.ssh-agent.env)
+            eval $(ssh-agent | tee ${HOME}/.ssh-agent.env) > /dev/null
         fi
     else
         pkill -9 ssh-agent
-        eval $(ssh-agent | tee ${HOME}/.ssh-agent.env)
+        eval $(ssh-agent | tee ${HOME}/.ssh-agent.env) > /dev/null
     fi
 fi
 if [[ -z $GPG_AGENT_INFO ]]; then
