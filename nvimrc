@@ -290,7 +290,7 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'Twinside/vim-haskellConceal', { 'for' : 'haskell' }
-Plug 'Valloric/YouCompleteMe', { 'do' : function('BuildYCM') }
+" Plug 'Valloric/YouCompleteMe', { 'do' : function('BuildYCM') }
 call plug#end() " }}}
 " Plugin Configuration {{{
 " Plugin 'altercation/vim-colors-solarized' {{{
