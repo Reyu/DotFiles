@@ -82,6 +82,7 @@ export GPG_TTY="$(tty)"
 # Extra {{{
 export NNTPSERVER="nntp.aioe.org"
 export EMERGE_DEFAULT_OPTS="--ask"
+export PASSWORD_STORE_X_SELECTION=primary
 # }}}
 # Read local configuration {{{
 if [[ -f ${ZDOTDIR:-$HOME}/.zprofile.local ]]; then
