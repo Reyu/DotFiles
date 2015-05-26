@@ -571,6 +571,7 @@ powerlineLocation=($^powerlineLocation(N-.))
 if (( $#powerlineLocation )); then
     source $powerlineLocation[1];
 else
+    promptinit
     prompt steef
     # Load OpenStack RPrompt, if needed. {{{
     if [[ -d ${HOME}/.openstack ]]; then
@@ -675,7 +676,6 @@ fi
 # Everything else is loaded, so it should be safe to initialize the
 # completion system. This makes sure any additions where not missed.
 compinit -i
-promptinit
 
 # Give a Fortune!
 if [[ -z $SSH_CONNECTION && $USER != 'root' ]]; then
