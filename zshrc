@@ -572,7 +572,7 @@ if (( $#powerlineLocation )); then
     source $powerlineLocation[1];
 else
     promptinit
-    prompt steef
+    prompt gentoo
     # Load OpenStack RPrompt, if needed. {{{
     if [[ -d ${HOME}/.openstack ]]; then
         set_rprompt() {
