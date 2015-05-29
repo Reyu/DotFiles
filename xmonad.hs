@@ -33,43 +33,33 @@ import Data.Ratio ((%))
 
 
 -- The preferred terminal program
-myTerminal :: String
 myTerminal = "st"
 
 -- Whether focus follows the mouse pointer.
-myFocusFollowsMouse :: Bool
 myFocusFollowsMouse = False
 
 -- Whether clicking on a window to focus also passes the click to the window
-myClickJustFocuses :: Bool
 myClickJustFocuses = False
 
 -- Width of the window border in pixels.
-myBorderWidth :: Dimension
 myBorderWidth = 2
 
 -- Set modMask to left-alt
-myModMask :: KeyMask
 myModMask = mod4Mask
 
 -- Key binding to toggle the gap for the bar.
-toggleStrutsKey :: XConfig t -> (KeyMask, KeySym)
 toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 
 ------------------------------------------------------------
 -- The default number of workspaces (virtual screens) and their names.
-myWorkspaces :: [String]
-myWorkspaces = ["1","2","3","4","5","6","7","8","9","10"]
+myWorkspaces = show <$> [1..10]
 
 -- Border colors for unfocused and focused windows, respectively.
-myNormalBorderColor :: String
 myNormalBorderColor  = "#002b36"
-myFocusedBorderColor :: String
 myFocusedBorderColor = "#657b83"
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
-myKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((0                 ,  0x1008FF10  ), spawn "sudo systemctl suspend")
     , ((0                 ,  0x1008FF11  ), spawn "/usr/bin/pulseaudio-ctl down")
@@ -132,7 +122,6 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     ]
 
 -- Non-numeric num pad keys, sorted by number
-numPadKeys :: [KeySym]
 numPadKeys = [ xK_KP_Home, xK_KP_Up,    xK_KP_Page_Up   -- 1, 2, 3
              , xK_KP_Left, xK_KP_Begin, xK_KP_Right     -- 4, 5, 6
              , xK_KP_End,  xK_KP_Down,  xK_KP_Page_Down -- 7, 8, 9
@@ -142,7 +131,6 @@ numPadKeys = [ xK_KP_Home, xK_KP_Up,    xK_KP_Page_Up   -- 1, 2, 3
 ------------------------------------------------------------------------
 -- Mouse bindings: default actions bound to mouse events
 --
-myMouseBindings :: XConfig t -> M.Map (KeyMask, Button) (Window -> X ())
 myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList
     -- mod-button1, Set the window to floating mode and move by dragging
     [ ((modm, button1), \w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster)
@@ -172,7 +160,6 @@ myLayoutHook  = avoidStruts $
 ------------------------------------------------------------------------
 -- Window rules:
 --
-myManageHook :: Query (Endo WindowSet)
 myManageHook = composeAll . concat $
     [ [resource     =? r        --> doIgnore            |   r    <- myIgnores]
     , [className    =? c        --> doCenterFloat       |   c    <- myFloats ]
@@ -195,21 +182,17 @@ myManageHook = composeAll . concat $
 ------------------------------------------------------------------------
 -- Startup hook
 --
-myStartupHook :: X ()
 myStartupHook = setWMName "LG3D"
 
 ------------------------------------------------------------------------
 -- Set up status bar
 --
 -- Command to launch the bar.
-myBar :: String
 myBar = "dzen2 " ++ myDzenBaseFmt ++ " -w '950' -ta 'left'"
 
 -- Dzen2 Format
-myDzenBaseFmt :: String
 myDzenBaseFmt = "-x '0' -y '0' -h '16' -xs 1 -fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*' -bg '#002b36' -fg '#657b83'"
 
-myPP :: PP
 myPP = dzenPP
     { ppCurrent         = dzenColor "#859900" "" . wrap "<" "> "
     , ppVisible         = dzenColor "#2AA198" "" . wrap "[" "] "
@@ -223,7 +206,6 @@ myPP = dzenPP
 
 -----------------------------------------------------------------------
 -- Colors for text and backgrounds of each tab when in "Tabbed" layout.
-tabConfig :: Theme
 tabConfig = defaultTheme
     { activeBorderColor   = "#657b83"
     , activeTextColor     = "#859900"
@@ -235,7 +217,6 @@ tabConfig = defaultTheme
 
 -----------------------------------------------------------------------
 -- Prompt Config
-myXPConfig :: XPConfig
 myXPConfig = defaultXPConfig
     { P.font            = "xft:Terminus:pixelsize=14:autohint=true"
     , bgColor           = "#002B36"
@@ -243,7 +224,6 @@ myXPConfig = defaultXPConfig
     , borderColor       = "#657b83"
     , promptBorderWidth = 1
     }
-mpcXPConfig :: XPConfig
 mpcXPConfig = myXPConfig
 
 ------------------------------------------------------------------------
@@ -258,7 +238,6 @@ instance UrgencyHook LibNotifyUrgencyHook where
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
-main :: IO ()
 main = xmonad =<< statusBar myBar myPP toggleStrutsKey (withUrgencyHook LibNotifyUrgencyHook defaults)
 defaults = defaultConfig
     { terminal           = myTerminal
