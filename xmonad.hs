@@ -86,6 +86,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm              ,  xK_m        ), windows W.focusMaster)
     , ((modm .|. mod1Mask ,  xK_m        ), unsafePrompt "/usr/bin/mpc" mpcXPConfig)
     , ((modm              ,  xK_n        ), unsafePrompt (myTerminal ++ " -t") myXPConfig )
+    , ((modm              ,  xK_p        ), spawn "~/bin/passmenu" )
     , ((modm              ,  xK_q        ), spawn "xmonad -- recompile; xmonad -- restart")
     , ((modm .|. mod1Mask ,  xK_q        ), io exitSuccess)
     , ((modm              ,  xK_r        ), runOrRaisePrompt myXPConfig )
