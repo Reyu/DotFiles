@@ -460,6 +460,11 @@ fi
 if [[ -d ${zdir}/zsh-history-substring-search ]]; then
     source ${zdir}/zsh-history-substring-search/zsh-history-substring-search.zsh
 fi
+
+# git-flow-completion
+if [[ $+commands[git-flow] && -d ${zdir}/git-flow-completion ]]; then
+    source ${zdir}/git-flow-completion/git-flow-completion.zsh
+fi
 # }}}
 # Key Bindings {{{
 bindkey -v
