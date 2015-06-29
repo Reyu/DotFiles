@@ -462,7 +462,7 @@ if [[ -d ${zdir}/zsh-history-substring-search ]]; then
 fi
 
 # git-flow-completion
-if [[ $+commands[git-flow] && -d ${zdir}/git-flow-completion ]]; then
+if [[ -d ${zdir}/git-flow-completion && $+commands[git-flow] == 1 ]]; then
     source ${zdir}/git-flow-completion/git-flow-completion.zsh
 fi
 # }}}
