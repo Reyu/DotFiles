@@ -88,6 +88,7 @@ setopt LONG_LIST_JOBS         # List jobs in the long format by default.
 setopt MULTIOS                # Write to multiple descriptors.
 setopt NOTIFY                 # Report status of background jobs immediately.
 setopt PATH_DIRS              # Perform path search even on command names with slashes.
+setopt PROMPTSUBST            # Perform prompt substitutions
 setopt PUSHD_IGNORE_DUPS      # Do not store duplicates in the stack.
 setopt PUSHD_SILENT           # Do not print the directory stack after pushd or popd.
 setopt PUSHD_TO_HOME          # Push to home directory when no argument is given.
@@ -138,16 +139,25 @@ else
 fi
 
 # Prompt Styles
-zstyle ':prompt:addon:openstack:tenant:default' color 'green'
-zstyle ':prompt:addon:openstack:tenant:openstack' color 'yellow'
-zstyle ':prompt:addon:openstack:user:default' color 'green'
-zstyle ':prompt:addon:openstack:user:pi_admin' color 'yellow'
-zstyle ':prompt:addon:openstack:user:admin' color 'red'
-zstyle ':prompt:addon:openstack:token:used' color 'magenta'
-zstyle ':prompt:addon:openstack:token:none' color 'blue'
-zstyle ':prompt:addon:openstack:token:used' symbol '!'
-zstyle ':prompt:addon:openstack:token:none' symbol '@'
-zstyle ':prompt:addon:openstack:tenant:openstack' color 'yellow'
+zstyle ':prompt:addon:openstack:tenant:default' 'color' 'green'
+zstyle ':prompt:addon:openstack:tenant:openstack' 'color' 'yellow'
+zstyle ':prompt:addon:openstack:user:default' 'color' 'green'
+zstyle ':prompt:addon:openstack:user:pi_admin' 'color' 'yellow'
+zstyle ':prompt:addon:openstack:user:admin' 'color' 'red'
+zstyle ':prompt:addon:openstack:token:used' 'color' 'magenta'
+zstyle ':prompt:addon:openstack:token:none' 'color' 'blue'
+zstyle ':prompt:addon:openstack:token:used' 'symbol' '!'
+zstyle ':prompt:addon:openstack:token:none' 'symbol' '@'
+zstyle ':prompt:addon:openstack:tenant:openstack' 'color' 'yellow'
+zstyle ':prompt:addon:vcs:*' 'enabled' 'true'
+zstyle ':prompt:addon:vcs:git' 'prefix' '%{%f%}on%{%F{37}%} '
+zstyle ':prompt:addon:vcs:git' 'suffix' '%{%f%}'
+zstyle ':prompt:addon:vcs:*:status:dirty' 'prefix' '%{%F{160}%}'
+zstyle ':prompt:addon:vcs:*:status:dirty' 'suffix' '%{%f%}'
+zstyle ':prompt:addon:vcs:*:status:clean' 'prefix' '%{%F{64}%}'
+zstyle ':prompt:addon:vcs:*:status:clean' 'suffix' '%{%f%}'
+zstyle ':prompt:addon:vcs:*:status:untracked' 'prefix' '%{%F{136}%}'
+zstyle ':prompt:addon:vcs:*:status:untracked' 'suffix' '%{%f%}'
 
 
 # Completion {{{
@@ -565,69 +575,93 @@ function preexec {
   # cmd name only, or if this is sudo or ssh, the next cmd
   print -Pn "\e]2;${1[(wr)^(*=*|sudo|ssh|-*)]:gs/%/%%:g}\a"
 }
-# Prefer Powerline, if available
-typeset -U powerlineLocation
-powerlineLocation=(
-    $(print {$HOME/.local,/usr}/lib{,64}/python*/site-packages/powerline/bindings/zsh/powerline.zsh(N))
-    /usr/share/zsh/site-contrib/powerline.zsh
-)
-# Remove non-existant locations
-powerlineLocation=($^powerlineLocation(N-.))
-if (( $#powerlineLocation )); then
-    source $powerlineLocation[1];
-else
-    promptinit
-    prompt gentoo
-    # Load OpenStack RPrompt, if needed. {{{
-    if [[ -d ${HOME}/.openstack ]]; then
-        set_rprompt() {
-            # Get OpenStack Tennant Name, if set
-            if [[ -z $OS_TENANT_NAME ]]; then
-                tenant_txt=""
-            else
-                zstyle -s ":prompt:addon:openstack:tenant:$OS_TENANT_NAME" color color || \
-                    zstyle -s ":prompt:addon:openstack:tenant:default" color color
-                tenant_txt=" %B%F{green}(%b%F{${color}}$OS_TENANT_NAME%B%F{green})%b%f"
-            fi
+# Prompt char changes if in a VCS repo
+function prompt_char {
+    git branch >/dev/null 2>/dev/null && echo '±' && return
+    echo '>'
+}
+# Get the name of the branch we are on
+function git_prompt_info() {
+    zstyle -s ':prompt:addon:vcs:git' enabled show_git || show_git='true'
+    if [[ $show_git == 'true' ]]; then
+        zstyle -s ':prompt:addon:vcs:git' prefix prefix || prefix='on '
+        zstyle -s ':prompt:addon:vcs:git' suffix suffix || suffix=''
+        zstyle -s ':prompt:addon:vcs:git:status:untracked' prefix uprefix || uprefix=''
+        zstyle -s ':prompt:addon:vcs:git:status:untracked' suffix usuffix || usuffix='?'
+        zstyle -s ':prompt:addon:vcs:git:status:untracked' enabled uenabled || uenabled='true'
+        zstyle -s ':prompt:addon:vcs:git:status:dirty' prefix dprefix || dprefix=''
+        zstyle -s ':prompt:addon:vcs:git:status:dirty' suffix dsuffix || dsuffix='!'
+        zstyle -s ':prompt:addon:vcs:git:status:clean' prefix cprefix || cprefix=''
+        zstyle -s ':prompt:addon:vcs:git:status:clean' suffix csuffix || csuffix=''
+        zstyle -s ':prompt:addon:vcs:git:ignore' submodules submodules || submodules='none'
 
-            # Set marker if using OpenStack token
-            if [[ -z $OS_SERVICE_TOKEN ]]; then
-                zstyle -s ':prompt:addon:openstack:token:none' color color || \
-                    color="blue"
-                zstyle -s ':prompt:addon:openstack:token:none' symbol symbol || \
-                    symbol="!"
-            else
-                zstyle -s ':prompt:addon:openstack:token:used' color color || \
-                    color="magonta"
-                zstyle -s ':prompt:addon:openstack:token:used' symbol symbol || \
-                    symbol="@"
-            fi
-            token="%B%F{${color}}${symbol}%b%f"
+        ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
+            ref=$(command git rev-parse --short HEAD 2> /dev/null) || return 0
 
-            # Set Open Stack Username / Environment, if set
-            if [[ -z $OS_USERNAME ]]; then
-                tusername=""
-            else
-                zstyle -s ":prompt:addon:openstack:user:$OS_USERNAME" color color || \
-                    zstyle -s ":prompt:addon:openstack:user:default" color color
-                tusername="%b%F{${color}}$OS_USERNAME%b%f"
-            fi
+        # Get status
+        if git status --porcelain --ignore-submodules=$submodules --untracked-files=no|grep -qP '^..'; then
+            print " $prefix$dprefix${ref#refs/heads/}$dsuffix$suffix"
+        elif git status --porcelain --ignore-submodules=$submodules|grep -qP '^\?\?' && [[ $uenabled == 'true' ]]; then
+            print " $prefix$uprefix${ref#refs/heads/}$usuffix$suffix"
+        else
+            print " $prefix$cprefix${ref#refs/heads/}$csuffix$suffix"
+        fi
+    fi
+}
 
-            if [[ -z $OS_REGION_NAME || -s $tusername ]]; then
-                os_prompt=""
-            else
-                os_prompt="$tusername$token%b%F{green}$OS_REGION_NAME%b%f$tenant_txt"
-            fi
+PROMPT='
+%{%F{160}%}%n%{%f%} at %{%F{136}%}%m%{%f%} in %{%F{64}%B%}%~%{%b%f%}$(git_prompt_info)
+$(prompt_char) '
 
-            if [[ -z $os_prompt ]]; then
-                RPROMPT=""
-            else
-                RPROMPT="[$os_prompt]"
-            fi
-        }
-        add-zsh-hook precmd set_rprompt
-    fi # }}}
-fi
+# Load OpenStack RPrompt, if needed. {{{
+if [[ -d ${HOME}/.openstack ]]; then
+    set_rprompt() {
+        # Get OpenStack Tennant Name, if set
+        if [[ -z $OS_TENANT_NAME ]]; then
+            tenant_txt=""
+        else
+            zstyle -s ":prompt:addon:openstack:tenant:$OS_TENANT_NAME" color color || \
+                zstyle -s ":prompt:addon:openstack:tenant:default" color color
+            tenant_txt=" %B%F{green}(%b%F{${color}}$OS_TENANT_NAME%B%F{green})%b%f"
+        fi
+
+        # Set marker if using OpenStack token
+        if [[ -z $OS_SERVICE_TOKEN ]]; then
+            zstyle -s ':prompt:addon:openstack:token:none' color color || \
+                color="blue"
+            zstyle -s ':prompt:addon:openstack:token:none' symbol symbol || \
+                symbol="!"
+        else
+            zstyle -s ':prompt:addon:openstack:token:used' color color || \
+                color="magonta"
+            zstyle -s ':prompt:addon:openstack:token:used' symbol symbol || \
+                symbol="@"
+        fi
+        token="%B%F{${color}}${symbol}%b%f"
+
+        # Set Open Stack Username / Environment, if set
+        if [[ -z $OS_USERNAME ]]; then
+            tusername=""
+        else
+            zstyle -s ":prompt:addon:openstack:user:$OS_USERNAME" color color || \
+                zstyle -s ":prompt:addon:openstack:user:default" color color
+            tusername="%b%F{${color}}$OS_USERNAME%b%f"
+        fi
+
+        if [[ -z $OS_REGION_NAME || -s $tusername ]]; then
+            os_prompt=""
+        else
+            os_prompt="$tusername$token%b%F{green}$OS_REGION_NAME%b%f$tenant_txt"
+        fi
+
+        if [[ -z $os_prompt ]]; then
+            RPROMPT=""
+        else
+            RPROMPT="[$os_prompt]"
+        fi
+    }
+    add-zsh-hook precmd set_rprompt
+fi # }}}
 # }}}
 # Aliases {{{
 alias :q='exit' # I do this on accident enough... Might as well make it work.
