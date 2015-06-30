@@ -610,7 +610,7 @@ function git_prompt_info() {
 }
 
 PROMPT='
-%{%F{160}%}%n%{%f%} at %{%F{136}%}%m%{%f%} in %{%F{64}%B%}%~%{%b%f%}$(git_prompt_info)
+%{%(!,%F{160},%F{37})%}%n%{%f%} at %{%F{136}%}%m%{%f%} in %{%F{64}%B%}%(5~,../%4c,%~)%{%b%f%}$(git_prompt_info)
 $(prompt_char) '
 
 # Load OpenStack RPrompt, if needed. {{{
