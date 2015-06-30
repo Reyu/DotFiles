@@ -22,9 +22,9 @@ function git_prompt() {
 
         # Print branch (or SHA) with indications of clean/dirty/untracked
         FLAGS=('--porcelain', "--ignore-submodules=$submodules")
-        if [[ $(command git status --porcelain --ignore-submodules=$submodules --untracked-files=no|grep -qP '^..') ]]; then
+        if [[ -n "$(command git status --porcelain --ignore-submodules=$submodules --untracked-files=no|grep -P '^..')" ]]; then
             print -n " $prefix$dprefix$(git_branch)$dsuffix$suffix"
-        elif [[ $(command git status --porcelain --ignore-submodules=$submodules --untracked-files=normal|grep -qP '^\?\?') && $uenabled == 'true' ]]; then
+        elif [[ -n "$(command git status --porcelain --ignore-submodules=$submodules --untracked-files=normal|grep -P '^\?\?')" && $uenabled == 'true' ]]; then
             print -n " $prefix$uprefix$(git_branch)$usuffix$suffix"
         else
             print -n " $prefix$cprefix$(git_branch)$csuffix$suffix"
