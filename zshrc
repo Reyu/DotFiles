@@ -586,9 +586,17 @@ function prompt_char {
     git branch >/dev/null 2>/dev/null && echo '±' && return
     echo '>'
 }
+# Print the system hostname, use a different color if remote
+function prompt_host() {
+    if [[ -z $SSH_CONNECTION ]]; then
+        print -n '%{%F{136}%}%m%{%f%}'
+    else
+        print -n '%{%F{166}%}%m%{%f%}'
+    fi
+}
 
 PROMPT='
-%{%(!,%F{160},%F{37})%}%n%{%f%} at %{%F{136}%}%m%{%f%} in %{%F{64}%B%}%(5~,../%4c,%~)%{%b%f%}$(git_prompt)
+%{%(!,%F{160},%F{37})%}%n%{%f%} at $(prompt_host) in %{%F{64}%B%}%(5~,../%4c,%~)%{%b%f%}$(git_prompt)
 %(3L,L%L ,)%(1j,J%j ,)$(prompt_char) '
 
 # Load OpenStack RPrompt, if needed. {{{
