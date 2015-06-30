@@ -563,6 +563,8 @@ if (( $+commands[tmux] )); then
 fi
 # }}}
 # Prompt {{{
+source ${zdir}/lib/git.zsh
+
 precmd () {print -Pn "\033]0%~\007"}
 # Write some info to terminal title.
 # This is seen when the shell prompts for input.
@@ -580,37 +582,9 @@ function prompt_char {
     git branch >/dev/null 2>/dev/null && echo '±' && return
     echo '>'
 }
-# Get the name of the branch we are on
-function git_prompt_info() {
-    zstyle -s ':prompt:addon:vcs:git' enabled show_git || show_git='true'
-    if [[ $show_git == 'true' ]]; then
-        zstyle -s ':prompt:addon:vcs:git' prefix prefix || prefix='on '
-        zstyle -s ':prompt:addon:vcs:git' suffix suffix || suffix=''
-        zstyle -s ':prompt:addon:vcs:git:status:untracked' prefix uprefix || uprefix=''
-        zstyle -s ':prompt:addon:vcs:git:status:untracked' suffix usuffix || usuffix='?'
-        zstyle -s ':prompt:addon:vcs:git:status:untracked' enabled uenabled || uenabled='true'
-        zstyle -s ':prompt:addon:vcs:git:status:dirty' prefix dprefix || dprefix=''
-        zstyle -s ':prompt:addon:vcs:git:status:dirty' suffix dsuffix || dsuffix='!'
-        zstyle -s ':prompt:addon:vcs:git:status:clean' prefix cprefix || cprefix=''
-        zstyle -s ':prompt:addon:vcs:git:status:clean' suffix csuffix || csuffix=''
-        zstyle -s ":prompt:addon:vcs:git:options${PWD:gs/\//:/}" submodules submodules || submodules='none'
-
-        ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
-            ref=$(command git rev-parse --short HEAD 2> /dev/null) || return 0
-
-        # Get status
-        if git status --porcelain --ignore-submodules=$submodules --untracked-files=no|grep -qP '^..'; then
-            print " $prefix$dprefix${ref#refs/heads/}$dsuffix$suffix"
-        elif git status --porcelain --ignore-submodules=$submodules|grep -qP '^\?\?' && [[ $uenabled == 'true' ]]; then
-            print " $prefix$uprefix${ref#refs/heads/}$usuffix$suffix"
-        else
-            print " $prefix$cprefix${ref#refs/heads/}$csuffix$suffix"
-        fi
-    fi
-}
 
 PROMPT='
-%{%(!,%F{160},%F{37})%}%n%{%f%} at %{%F{136}%}%m%{%f%} in %{%F{64}%B%}%(5~,../%4c,%~)%{%b%f%}$(git_prompt_info)
+%{%(!,%F{160},%F{37})%}%n%{%f%} at %{%F{136}%}%m%{%f%} in %{%F{64}%B%}%(5~,../%4c,%~)%{%b%f%}$(git_prompt)
 %{%(3L,L:%L ,)%}%{%(1j,j:%j ,)%}$(prompt_char) '
 
 # Load OpenStack RPrompt, if needed. {{{
