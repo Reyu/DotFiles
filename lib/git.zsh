@@ -23,11 +23,11 @@ function git_prompt() {
         # Print branch (or SHA) with indications of clean/dirty/untracked
         FLAGS=('--porcelain', "--ignore-submodules=$submodules")
         if [[ $(command git status --porcelain --ignore-submodules=$submodules --untracked-files=no|grep -qP '^..') ]]; then
-            print " $prefix$dprefix$(git_branch)$dsuffix$suffix"
+            print -n " $prefix$dprefix$(git_branch)$dsuffix$suffix"
         elif [[ $(command git status --porcelain --ignore-submodules=$submodules --untracked-files=normal|grep -qP '^\?\?') && $uenabled == 'true' ]]; then
-            print " $prefix$uprefix$(git_branch)$usuffix$suffix"
+            print -n " $prefix$uprefix$(git_branch)$usuffix$suffix"
         else
-            print " $prefix$cprefix$(git_branch)$csuffix$suffix"
+            print -n " $prefix$cprefix$(git_branch)$csuffix$suffix"
         fi
 
         # Print indications of remote status, if availible
@@ -46,6 +46,8 @@ function git_branch() {
 git_remote_status() {
     remote=${$(command git rev-parse --verify $(git_branch)@{upstream} --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
     if [[ -n ${remote} ]] ; then
+        zstyle -s ':prompt:addon:vcs:git:remote' prefix prefix || prefix="R"
+        zstyle -s ':prompt:addon:vcs:git:remote' suffix suffix || suffix=""
         zstyle -s ':prompt:addon:vcs:git:remote:ahead' prefix aprefix || aprefix="+"
         zstyle -s ':prompt:addon:vcs:git:remote:ahead' suffix asuffix || asuffix=""
         zstyle -s ':prompt:addon:vcs:git:remote:behind' prefix bprefix || bprefix="-"
@@ -54,11 +56,15 @@ git_remote_status() {
         ahead=$(command git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l)
         behind=$(command git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null | wc -l)
 
-        if [ $ahead -gt 0 ]; then
-            print " $aprefix$ahead$asuffix"
-        fi
-        if [ $behind -gt 0 ]; then
-            print " $bprefix$behind$bsuffix"
+        if [[ $ahead -gt 0 || $behind -gt 0 ]]; then
+            print -n $prefix
+            if [[ $ahead -gt 0 ]]; then
+                print -n "$aprefix$ahead$asuffix"
+            fi
+            if [[ $behind -gt 0 ]]; then
+                print -n "$bprefix$behind$bsuffix"
+            fi
+            print -n $suffix
         fi
     fi
 }

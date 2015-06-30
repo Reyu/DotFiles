@@ -158,6 +158,10 @@ zstyle ':prompt:addon:vcs:*:status:clean' 'prefix' '%{%F{64}%}'
 zstyle ':prompt:addon:vcs:*:status:clean' 'suffix' '%{%f%}'
 zstyle ':prompt:addon:vcs:*:status:untracked' 'prefix' '%{%F{136}%}'
 zstyle ':prompt:addon:vcs:*:status:untracked' 'suffix' '%{%f%}'
+zstyle ':prompt:addon:vcs:git:remote:ahead' 'prefix' '%{%F{64}%}⇡'
+zstyle ':prompt:addon:vcs:git:remote:ahead' 'suffix' '%{%f%}'
+zstyle ':prompt:addon:vcs:git:remote:behind' 'prefix' '%{%F{166}%}⇣'
+zstyle ':prompt:addon:vcs:git:remote:behind' 'suffix' '%{%f%}'
 
 
 # Completion {{{
