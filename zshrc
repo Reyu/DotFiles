@@ -611,7 +611,7 @@ function git_prompt_info() {
 
 PROMPT='
 %{%(!,%F{160},%F{37})%}%n%{%f%} at %{%F{136}%}%m%{%f%} in %{%F{64}%B%}%(5~,../%4c,%~)%{%b%f%}$(git_prompt_info)
-%{%(1j,%j ,)%}$(prompt_char) '
+%{%(3L,L:%L ,)%}%{%(1j,j:%j ,)%}$(prompt_char) '
 
 # Load OpenStack RPrompt, if needed. {{{
 if [[ -d ${HOME}/.openstack ]]; then
