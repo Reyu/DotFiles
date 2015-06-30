@@ -593,7 +593,7 @@ function git_prompt_info() {
         zstyle -s ':prompt:addon:vcs:git:status:dirty' suffix dsuffix || dsuffix='!'
         zstyle -s ':prompt:addon:vcs:git:status:clean' prefix cprefix || cprefix=''
         zstyle -s ':prompt:addon:vcs:git:status:clean' suffix csuffix || csuffix=''
-        zstyle -s ':prompt:addon:vcs:git:ignore' submodules submodules || submodules='none'
+        zstyle -s ":prompt:addon:vcs:git:options${PWD:gs/\//:/}" submodules submodules || submodules='none'
 
         ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
             ref=$(command git rev-parse --short HEAD 2> /dev/null) || return 0
