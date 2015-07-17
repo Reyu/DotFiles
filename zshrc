@@ -594,10 +594,21 @@ function prompt_host() {
         print -n '%{%F{166}%}%m%{%f%}'
     fi
 }
-
-PROMPT='
+# Prompt funchion
+function zle-line-init zle-keymap-select {
+    case $KEYMAP in
+        main) VIM_MODE='%{%F{64}%}I%{%f%}' ;;
+        vicmd) VIM_MODE='%{%F{166}%}N%{%f%}' ;;
+        *) VIM_MODE="($KEYMAP)" ;;
+    esac
+    PROMPT='
 %{%(!,%F{160},%F{37})%}%n%{%f%} at $(prompt_host) in %{%F{64}%B%}%(5~,../%4c,%~)%{%b%f%}$(git_prompt)
-%(3L,L%L ,)%(1j,J%j ,)$(prompt_char) '
+${VIM_MODE} %(1j,J%j ,)$(prompt_char) '
+    zle reset-prompt
+}
+zle -N zle-line-init
+zle -N zle-keymap-select
+
 
 # Load OpenStack RPrompt, if needed. {{{
 if [[ -d ${HOME}/.openstack ]]; then
