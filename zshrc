@@ -581,10 +581,17 @@ function preexec {
   # cmd name only, or if this is sudo or ssh, the next cmd
   print -Pn "\e]2;${1[(wr)^(*=*|sudo|ssh|-*)]:gs/%/%%:g}\a"
 }
-# Prompt char changes if in a VCS repo
+# Prompt char changes if in a VCS repo or for VI command modes
 function prompt_char {
-    git branch >/dev/null 2>/dev/null && echo '±' && return
-    echo '>'
+    if [[ $KEYMAP != 'main' ]]; then
+        case $KEYMAP in
+            vicmd) echo '|' ;;
+        esac
+    elif git branch >/dev/null 2>/dev/null; then
+        echo '±'
+    else
+        echo '>'
+    fi
 }
 # Print the system hostname, use a different color if remote
 function prompt_host() {
@@ -596,14 +603,9 @@ function prompt_host() {
 }
 # Prompt funchion
 function zle-line-init zle-keymap-select {
-    case $KEYMAP in
-        main) VIM_MODE='%{%F{64}%}I%{%f%}' ;;
-        vicmd) VIM_MODE='%{%F{166}%}N%{%f%}' ;;
-        *) VIM_MODE="($KEYMAP)" ;;
-    esac
     PROMPT='
 %{%(!,%F{160},%F{37})%}%n%{%f%} at $(prompt_host) in %{%F{64}%B%}%(5~,../%4c,%~)%{%b%f%}$(git_prompt)
-${VIM_MODE} %(1j,J%j ,)$(prompt_char) '
+%(1j,J%j ,)$(prompt_char) '
     zle reset-prompt
 }
 zle -N zle-line-init
