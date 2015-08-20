@@ -586,6 +586,7 @@ function prompt_char {
     if [[ $KEYMAP != 'main' ]]; then
         case $KEYMAP in
             vicmd) echo '|' ;;
+            *) echo '*' ;;
         esac
     elif git branch >/dev/null 2>/dev/null; then
         echo '±'
