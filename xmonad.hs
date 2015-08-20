@@ -90,7 +90,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm              ,  xK_q        ), spawn "xmonad -- recompile; xmonad -- restart")
     , ((modm .|. mod1Mask ,  xK_q        ), io exitSuccess)
     , ((modm              ,  xK_r        ), runOrRaisePrompt myXPConfig )
-    , ((modm              ,  xK_s        ), unsafePrompt (myTerminal ++ " -e") myXPConfig )
+    , ((modm              ,  xK_s        ), unsafePrompt myTerminal myXPConfig )
     , ((modm .|. shiftMask,  xK_s        ), sshPrompt myXPConfig )
     , ((modm              ,  xK_t        ), withFocused $ windows . W.sink)
     , ((modm              ,  xK_u        ), bindOn
