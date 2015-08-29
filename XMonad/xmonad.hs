@@ -33,7 +33,7 @@ import Data.Ratio ((%))
 
 
 -- The preferred terminal program
-myTerminal = "st"
+myTerminal = "urxvtc"
 
 -- Whether focus follows the mouse pointer.
 myFocusFollowsMouse = False
