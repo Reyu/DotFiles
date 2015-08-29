@@ -88,7 +88,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm              ,  xK_n        ), unsafePrompt (myTerminal ++ " -t") myXPConfig )
     , ((modm              ,  xK_p        ), spawn "~/bin/passmenu" )
     , ((modm              ,  xK_q        ), spawn "xmonad -- recompile; xmonad -- restart")
-    , ((modm .|. mod1Mask ,  xK_q        ), io exitSuccess)
+    , ((modm .|. shiftMask,  xK_q        ), io exitSuccess)
     , ((modm              ,  xK_r        ), runOrRaisePrompt myXPConfig )
     , ((modm              ,  xK_s        ), unsafePrompt myTerminal myXPConfig )
     , ((modm .|. shiftMask,  xK_s        ), sshPrompt myXPConfig )
