@@ -189,7 +189,7 @@ myStartupHook = setWMName "LG3D"
 -- Set up status bar
 --
 -- Command to launch the bar.
-myBar = "dzen2 " ++ myDzenBaseFmt ++ " -w '950' -ta 'left'"
+myBar = "dzen2 " ++ myDzenBaseFmt ++ " -w '1728' -ta 'left'"
 
 -- Dzen2 Format
 myDzenBaseFmt = "-x '0' -y '0' -h '16' -xs 1 -fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*' -bg '#002b36' -fg '#657b83'"
