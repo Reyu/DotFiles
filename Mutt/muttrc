@@ -1,0 +1,27 @@
+#  This file usually is named "$HOME/.muttrc" or "$HOME/.mutt/muttrc"
+#  Purpose: setup file for 'mutt'.
+#  Author: Christian Schneider <strcat@gmx.net>
+#  Modified for personal use by: Tim Millican <tim.millican@gmail.com>
+#  Structure of this file:
+#   Lines starting with an '#' are comments.
+
+# reset all and show Version
+reset all
+push V
+
+source ~/.mutt/general             # general options
+source ~/.mutt/mailboxes           # my mailboxes
+source ~/.mutt/headers             # extra header and ignores
+source ~/.mutt/gpg                 # GnuPG options
+source ~/.mutt/bind                # key bindings and macros
+source ~/.mutt/save-hooks          # hooks definitions
+source ~/.mutt/scoring             # i. e. $ man lart
+source ~/.mutt/autoview            # autoview configuration
+source ~/.mutt/color               # color configuration
+source ~/.mutt/aliases             # mail aliases
+source ~/.mutt/ignores             # boring headers
+source ~/.mutt/unignore            # visible headers
+source ~/.mutt/various             # some baubles
+# source ~/.mutt/patches             # muttng specific options!
+source ~/.mutt/misc-hooks          # Change settings based upon message recipients
+source ~/.mutt/mlists              # Mailinglists

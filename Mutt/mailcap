@@ -1,0 +1,6 @@
+text/html;      lynx %s; nametemplate=%s.html
+text/html;      lynx -dump %s; nametemplate=%s.html; copiousoutput
+image/*;        feh %s
+
+
+*/*;            xdg-open %s

@@ -1,0 +1,4 @@
+folder-hook ^Lists* 'push <limit>~N<enter>'
+
+folder-hook .       set sort_aux=date-received
+folder-hook Inbox   set sort_aux=score

@@ -1,0 +1,5 @@
+#save-hook "~C gentoo-user@lists.gentoo.org" +Lists.Gentoo.User
+#save-hook "~C gentoo-hardened@lists.gentoo.org" +Lists.Gentoo.Hardened
+#save-hook "~C gentoo-announce@gentoo.org" +Lists.Gentoo.Announce
+#save-hook "~C zfs-discuss@zfsonlinux.org" +Lists.ZFS
+#save-hook "~C vim_use@googlegroups.com" +Lists.Vim
