@@ -259,7 +259,6 @@ endfunction
 " }}}
 call plug#begin('~/.config/NeoVim/plugged') " {{{
 Plug 'altercation/vim-colors-solarized'
-Plug 'bling/vim-airline'
 Plug 'chase/vim-ansible-yaml', { 'for' : 'ansible' }
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'fs111/pydoc.vim', { 'for' : 'python' }
@@ -296,9 +295,6 @@ call plug#end() " }}}
 " Plugin 'altercation/vim-colors-solarized' {{{
 set background=dark
 colorscheme solarized
-" }}}
-" Plugin 'bling/vim-airline' {{{
-let g:airline_powerline_fonts = 1
 " }}}
 " Plugin 'godlygeek/tabular' {{{
 inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
