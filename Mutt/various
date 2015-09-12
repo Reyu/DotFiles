@@ -14,8 +14,8 @@ set print_command="fmt --prefix='>' -s | fmt -s | a2ps -b"" -1 -R --pretty-print
 #set display_filter='t-prot -acelmtS -Mmutt --spass -L$HOME/.mutt/mlfooters -A$HOME/.mutt/adfooters'
 
 # highlight TOFU protection:
-color body	brightmagenta	black	"^\\[---.*"
-color body	green			black	"^#v[-+]"
+color body brightmagenta black "^\\[---.*"
+color body green black "^#v[-+]"
 
 # aspell for president *hr*
 set ispell="/usr/bin/aspell --language-tag=en --lang=en --moen=email check --add-email-quote=%,#,:,}"
