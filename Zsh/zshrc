@@ -554,6 +554,7 @@ bindkey '^Z' fancy-ctrl-z
 # }}}
 # Prompt {{{
 source ${zdir}/lib/git.zsh
+source ${zdir}/lib/darcs.zsh
 
 precmd () {print -Pn "\033]0%~\007"}
 # Write some info to terminal title.
@@ -591,7 +592,7 @@ function prompt_host() {
 # Prompt funchion
 function zle-line-init zle-keymap-select {
     PROMPT='
-%{%(!,%F{160},%F{37})%}%n%{%f%} at $(prompt_host) in %{%F{64}%B%}%(5~,../%4c,%~)%{%b%f%}$(git_prompt)
+%{%(!,%F{160},%F{37})%}%n%{%f%} at $(prompt_host) in %{%F{64}%B%}%(5~,../%4c,%~)%{%b%f%}$(git_prompt)$(darcs_prompt)
 %(1j,J%j ,)$(prompt_char) '
     zle reset-prompt
 }
