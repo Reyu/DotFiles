@@ -24,3 +24,5 @@
 
 # gnaaa
 ignore *
+
+# vim: ft=muttrc

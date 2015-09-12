@@ -30,3 +30,5 @@ auto_view text/html text/enriched application/x-gunzip application/postscript im
 auto_view application/x-shar application/gzip
 auto_view application/x-tex text/html text/enriched application/x-gunzip application/postscript image/gif application/x-tar-gz application/octet-stream application/zip application/msword
 alternative_order text/enriched text/plain text application/postscript image/*
+
+# vim: ft=muttrc

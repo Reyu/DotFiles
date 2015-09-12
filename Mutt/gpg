@@ -31,3 +31,5 @@ set pgp_verify_key_command="/usr/bin/gpg --no-verbose --batch --fingerprint --ch
 set pgp_list_pubring_command="/usr/bin/gpg --no-verbose --batch --with-colons --list-keys %r"
 set pgp_list_secring_command="/usr/bin/gpg --no-verbose --batch --with-colons --list-secret-keys %r"
 set pgp_getkeys_command="/usr/bin/gpg --recv-keys %r >/dev/null 2>&1"
+
+# vim: ft=muttrc

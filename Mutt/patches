@@ -261,3 +261,5 @@ set strip_was=yes
 set strip_was_regex = "\\([Ww][Aa][RrSs]: .*\\)[ ]*$"
 
 # }}}
+
+# vim: ft=muttrc fdm=marker

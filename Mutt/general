@@ -579,3 +579,5 @@ set wrapmargin=10
 
 # When writing a mailbox, a message will be printed every write_inc messages to indicate progress.
 set write_inc=10
+
+# vim: ft=muttrc

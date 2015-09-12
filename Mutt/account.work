@@ -9,3 +9,8 @@ set postponed = "imaps://tmilli001c@communications.reyuzenfold.com:1143/[Gmail]/
 set record = "imaps://tmilli001c@communications.reyuzenfold.com:1143/[Gmail]/Sent Mail"
 set smtp_url = "smtp://tmilli001c@communications.reyuzenfold.com:1025"
 set smtp_pass = `pass Comcast/LDAP`
+
+# Account Bindings
+macro index d s=Trash "Archived Message."
+
+# vim: ft=muttrc

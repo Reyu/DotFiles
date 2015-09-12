@@ -71,3 +71,5 @@
 # mu search:
 macro index <F8> "<enter-command>unset wait_key<enter><shell-escape>read -p'mu query: ' x; mu find --clearlinks --linksdir ~/Mail/mu-search --format links \$x<enter><change-folder-readonly>~/Mail/mu-search\n" "mu find"
 macro index <F9> "<change-folder-readonly>~/Mail/mu-search\n" "display mu-find results"
+
+# vim: ft=muttrc

@@ -15,3 +15,5 @@ unignore X-Now-Playing
 unignore X-Newsreader
 unignore Newsgroup
 hdr_order From: To: Subject: Cc: Date: X-Mailer:
+
+# vim: ft=muttrc

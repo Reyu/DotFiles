@@ -3,3 +3,5 @@
 #save-hook "~C gentoo-announce@gentoo.org" +Lists.Gentoo.Announce
 #save-hook "~C zfs-discuss@zfsonlinux.org" +Lists.ZFS
 #save-hook "~C vim_use@googlegroups.com" +Lists.Vim
+
+# vim: ft=muttrc

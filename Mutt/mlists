@@ -3,3 +3,5 @@ subscribe gentoo-hardened@lists.gentoo.org
 subscribe gentoo-announce@gentoo.org
 subscribe zfs-discuss@zfsonlinux.org
 subscribe vim_use@googlegroups.com
+
+# vim: ft=muttrc

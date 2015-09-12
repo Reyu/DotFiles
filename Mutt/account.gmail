@@ -9,3 +9,6 @@ set postponed = "imaps://tim.millican@imap.gmail.com/[Gmail]/Drafts"
 set record = "imaps://tim.millican@imap.gmail.com/[Gmail]/Sent Mail"
 set smtp_url = "smtp://tim.millican@smtp.gmail.com:587"
 set smtp_pass = `pass Mail/tim.millican@gmail.com`
+
+
+# vim: ft=muttrc

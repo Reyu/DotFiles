@@ -25,3 +25,5 @@ source ~/.mutt/various             # some baubles
 # source ~/.mutt/patches             # muttng specific options!
 source ~/.mutt/misc-hooks          # Change settings based upon message recipients
 source ~/.mutt/mlists              # Mailinglists
+
+# vim: ft=muttrc

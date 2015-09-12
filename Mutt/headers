@@ -9,3 +9,5 @@ my_hdr X-GPG-Key: gpg --recv-keys --keyserver wwwkeys.pgp.net 79141B15
 my_hdr X-Editor: `vim --version | grep "VIM - Vi IM" | sed 's/(.*)/\<http:\/\/www.vim.org\>/g'`
 my_hdr X-PGP-Fingerprint: C277 2E18 B175 1FFE 1B19  5F0E 17B7 9C8C 7914 1B15
 my_hdr User-Agent: `mutt -v | head -n 1 |  awk '{ print $1}'`/`mutt -v | head -1 | cut -f 2 -d " "` (`uname -a | tr -s ' ' ' ' | cut -d ' ' -f1,3 | tr ' ' ' '`)
+
+# vim: ft=muttrc
