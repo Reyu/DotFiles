@@ -552,20 +552,6 @@ bindkey -M isearch " " magic-space # normal space during searches
 # Fancy Ctrl-Z
 bindkey '^Z' fancy-ctrl-z
 # }}}
-# Tmux {{{
-if (( $+commands[tmux] )); then
-    # Ensure that tmux server is started.
-    tmux start-server
-    if [[ -z $TMUX && -z $SSH_CONNECTION && $USER != 'root' ]]; then
-        # Ensure the Global session is active
-        if ! tmux has-session -t "Global" 2> /dev/null; then
-            # Create Global session
-            tmux new-session -d -s "Global" "weechat" \; set-option -t "Global" destroy-unattached off
-        fi
-        exec tmux
-    fi
-fi
-# }}}
 # Prompt {{{
 source ${zdir}/lib/git.zsh
 

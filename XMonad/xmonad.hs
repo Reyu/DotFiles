@@ -33,7 +33,7 @@ import Data.Ratio ((%))
 
 
 -- The preferred terminal program
-myTerminal = "urxvtc"
+myTerminal = "st"
 
 -- Whether focus follows the mouse pointer.
 myFocusFollowsMouse = False
@@ -76,7 +76,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm              ,  xK_BackSpace), focusUrgent)
     , ((modm .|. shiftMask,  xK_BackSpace), clearUrgents)
     , ((modm              ,  xK_Return   ), windows W.swapMaster)
-    , ((modm .|. shiftMask,  xK_Return   ), spawnHere $ XMonad.terminal conf)
+    , ((modm .|. shiftMask,  xK_Return   ), spawnHere (myTerminal ++ " tmux new -A -s Primary \\; set-option -t Primary destroy-unattached off"))
     , ((modm              ,  xK_Tab      ), windows W.focusDown)
     , ((modm              ,  xK_space    ), sendMessage NextLayout)
     , ((modm .|. shiftMask,  xK_space    ), setLayout $ XMonad.layoutHook conf)
@@ -188,7 +188,8 @@ myManageHook = composeAll . concat $
 ------------------------------------------------------------------------
 -- Startup hook
 --
-myStartupHook = setWMName "LG3D"
+myStartupHook =
+    spawn "tmux new-session -d -s Global weechat \\; set-option -t Global destroy-unattached off"
 
 ------------------------------------------------------------------------
 -- Set up status bar
