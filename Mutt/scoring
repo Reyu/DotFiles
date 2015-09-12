@@ -9,30 +9,42 @@ unscore *
 
 # Default - Scoring
 #--------------------------------------------------
-score '~A'                                                      +10     # all messages start with score 10
-score '~g|~G'                                                   +2      # PGP signed / encrypted messages
-score ~F                                                        +20     # flagged mails are important
-score ~S                                                        =0      # superseded messages
+score '~A'                                        +20   # all messages start with this score
+score '~g|~G'                                     +2    # PGP signed / encrypted messages
+score ~F                                          +20   # flagged mails are important
+score ~S                                          =0    # superseded messages
+score ~D                                          =0    # this is a deleted email
 
 # My addresses
-# Messages addressed to me get +10
-score '~t tim.millican@gmail.com'                               +10
-score '~t reyuzenfold@gmail.com'                                +10
+# Messages addressed to me get                    +10
+score '~t tim.millican@gmail.com'                 +10
+score '~t reyuzenfold@gmail.com'                  +10
+score '~t tim_millican@cable.comcast.com'         +10
 # Messages addressed ONLY to me get an additional +10
-score '~t ^tim.millican@gmail.com$'                             +10
-score '~t ^reyuzenfold@gmail.com$'                              +10
+score '~t ^tim.millican@gmail.com$'               +10
+score '~t ^reyuzenfold@gmail.com$'                +10
+score '~t ^tim_millican@cable.comcast.com$'       +10
+
+# Work mail
+score '~l'                                        -5
+score '~s ^OVS-WATCH'                             -15
+score '~s Maintenance'                            +10
+score '~s Outage'                                 +25
 
 # Other
-score '~f ^donotreply@*'                                        -10
-score '~f sourceforge@resources.sourceforge.com'                -10
-score '~s Yugster | ~s Woot'                                    +5
+score '~f ^donotreply@*'                          -10
+score '~f sourceforge@resources.sourceforge.com'  -10
+score '~s Yugster | ~s Woot'                      +5
 
 # SPAM
-score '~f webmaster@*'                                          -9999   # Webmasters kidnapped by evil cult :>
-score '~s ^test$'                                               -9999   # all messages w/ subject "test" are killed
-score '~f anonymous'                                            -9999   # Yeah. Sure. Evil hackers from Serbia.
-score '~='                                                      -9999   # all duplicates are killed
-score '~s ^unsubscribe$ !(~p|~P|~Q|~F)'                         -9999   # all msgs w/ subject "unsubscribe" not by myself are killed
-score '~s "for sale"'                                           -9999   # sale yout compter. moron..
-score '!~f@'                                                    -9999   # no mail address present?
-score "~f '^([^ <>@]+ ){5,}'"                                   -9999   # a realname consisting of >=5 portions is invalid, too
+score '~f webmaster@*'                            -9999 # Webmasters kidnapped by evil cult :>
+score '~s ^test$'                                 -9999 # all messages w/ subject "test" are killed
+score '~f anonymous'                              -9999 # Yeah. Sure. Evil hackers from Serbia.
+score '~='                                        -9999 # all duplicates are killed
+score '~s ^unsubscribe$ !(~p|~P|~Q|~F)'           -9999 # all msgs w/ subject "unsubscribe" not by myself are killed
+score '~s "for sale"'                             -9999 # sale yout compter. moron..
+score '!~f@'                                      -9999 # no mail address present?
+score "~f '^([^ <>@]+ ){5,}'"                     -9999 # a realname consisting of >=5 portions is invalid, too
+
+# Tabularize /\s[+-=]\d\+/
+# vim: ft=muttrc

@@ -1,4 +1,13 @@
-folder-hook ^Lists* 'push <limit>~N<enter>'
-
+# Global hooks
 folder-hook .       set sort_aux=date-received
 folder-hook Inbox   set sort_aux=score
+
+# Gmail hooks
+folder-hook ^Lists* 'push <limit>~N<enter>'
+
+# Work hooks
+folder-hook Nagios  push <limit>~N<enter>
+folder-hook Jira    push <limit>~N<enter>
+folder-hook Commons push <limit>~N<enter>
+folder-hook SAMS    push <limit>~N<enter>
+folder-hook CNOC    push <limit>~N<enter>
