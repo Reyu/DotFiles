@@ -149,6 +149,4 @@ color body          red             default         "([a-z][a-z0-9+-]*://(((([a-
 #folder-hook gmail/inbox        "color status        J_black         yellow          "
 #folder-hook gmail/important    "color status        J_black         yellow          "
 
-
-
 # vim: ft=muttrc

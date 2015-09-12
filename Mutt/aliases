@@ -1,6 +1,5 @@
 # Format:
 #  alias  foobar  Foo bar <foobar@foo.bar>
-
 alias mutt      Mutt Mailinglist <mutt-users@mutt.org>
 alias vim       Vim Mailinglist <vim@vim.org>
 alias zsh       Zsh Mailinglist <zsh-users@sunsite.dk>

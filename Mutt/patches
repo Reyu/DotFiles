@@ -114,7 +114,6 @@ unset nntp_mime_subject
 # original article author) to article that followuped to newsgroup.
 unset nntp_x_comment_to
 # }}}
-
 # "Compressed-Support {{{
 # The compressed folders patch allows you to access mailbox
 # folders, which are compressed using something like gzip or
@@ -141,7 +140,6 @@ close-hook \\.pgp$ "gpg -fe strcat@gmx.net < %t > %f"
 open-hook  \\.idea$ "gpg -f < %f > %t"
 close-hook \\.idea$ "gpg -cf < %t > %f"
 # }}}
-
 # "Initials"-Support {{{
 # Use this character for quoting replies.
 # [NOTE]:
@@ -158,7 +156,6 @@ close-hook \\.idea$ "gpg -cf < %t > %f"
 # set indent_str="%I> "
 set indent_string='> '
 # }}}
-
 # "Sidebar-Patch" {{{
 # <http://thomer.com/mutt/>
 # set up the sidebar, default not visible
@@ -191,7 +188,6 @@ macro index \cP ':push <sidebar-prev><enter>'
 macro index \cN ':push <sidebar-next><enter>'
 macro index \cO ':push <sidebar-open><enter>'
 # }}}
-
 # {{{ Misc stuff
 # This patch introduces a new (optional) check when replying to messages
 # originating from a mailing list. It will ask the user if he really
