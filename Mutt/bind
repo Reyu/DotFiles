@@ -41,6 +41,8 @@
     macro	index	\\	":set simple_search='~b %s'\r<search>"
     macro	index	\e/	":set simple_search='~f %s | ~s %s'\r<search-reverse>"
     macro	index	\e\\	":set simple_search='~b %s'\r<search-reverse>"
+    macro       index   <f4>    '<sync-mailbox><enter-command>source ~/.mutt/account.gmail<enter><change-folder>!<enter>'
+    macro       index   <f5>    '<sync-mailbox><enter-command>source ~/.mutt/account.work<enter><change-folder>!<enter>'
 
 
 # Bindings for PAGER (Message Pager)
