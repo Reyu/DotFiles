@@ -1,12 +1,3 @@
-# $Id: bind,v 1.1 2003/06/19 03:11:59 dope Exp dope $
-#
-# This file is mainly based upon »The ultimative Key-Bindings for Mutt«
-# (Version 1.35), written by Roland Rosenfeld. You can find the original
-# version of this file under <http://www.spinnaker.de/mutt/> . I was very
-# fond of this bindings as I see them the first time, so i decided to take
-# them into my setup (see '/usr/local/doc/mutt/html/manual-6.html#ss6.4' for
-# details.
-#
 # The command 'bind' binds the given key for the given map to the given
 # function.
 # Valid maps are:
@@ -19,60 +10,49 @@
 #  '<enter>', '<home>', '<end>', '<Space>', '<F1{2,3,n}>' and '<f1{,2,3,n}>'.
 
 # Generic key bindings.
-  # Quick change Mailfolders
-    macro	generic	I	"<change-folder>!<enter>" "Go to =INBOX"
   # Show documentation when pressing <F1>
-    macro	generic	<F1>	"!w3m ~/.mutt/doc/manual.html\n" "Show Mutt documentation"
+    macro generic <F1> "!w3m ~/.mutt/doc/manual.html\n" "Show Mutt documentation"
+  # reload ~/.muttrc
+    macro generic <F12> "<enter-command>source ~/.mutt/muttrc<enter>" "Reload ~/.muttrc"
 
 # Bindings for INDEX
-  # reload ~/.muttrc
-    macro	index	<F12>	"<enter-command>source ~/.mutt/muttrc<enter>"				"Reload ~/.muttrc"
-  # Relocate deleted messages in Gmail Archive
-    # macro	index	d	s=[GMAIL]/All\ Mail\n	"Archived Message."
   # switch accounts
     macro index <F4> "<sync-mailbox><enter-command>source ~/.mutt/account.gmail<enter><change-folder>!<enter>" "Switch to Gmail"
     macro index <F5> "<sync-mailbox><enter-command>source ~/.mutt/account.work<enter><change-folder>!<enter>" "Switch to Work Mail"
   # Jumping to the next mail that is still unread.
-    bind	index	\t	next-unread
+    bind index \t next-unread
   # Edit the Bindings And Macros File
-    macro	index	\eB	"!vim  ~/.mutt/bind\n:source ~/.mutt/bind\n"	                        "Edit the bindings and macros file and reload it"
-    macro	index	\eC	"!vim ~/.mutt/color\n:source ~/.mutt/color\n"	                        "Edit the colour file and reload it"
-    macro	index	\eS	"!vim ~/.mutt/scoring\n:source ~/.mutt/scoring\n"		        "Edit the scores file and reload it"
-    macro	index	\eH	"!vim ~/.mutt/misc-hooks\n:source ~/.mutt/misc-hooks\n"                 "Edit the hooks file and reload it"
+    macro index \eB "!nvim  ~/.mutt/bind\n:source ~/.mutt/bind\n" "Edit the bindings and macros file and reload it"
+    macro index \eC "!nvim ~/.mutt/color\n:source ~/.mutt/color\n" "Edit the colour file and reload it"
+    macro index \eS "!nvim ~/.mutt/scoring\n:source ~/.mutt/scoring\n" "Edit the scores file and reload it"
+    macro index \eH "!nvim ~/.mutt/misc-hooks\n:source ~/.mutt/misc-hooks\n" "Edit the hooks file and reload it"
   # Quicksearch
-    macro	index	/	":set simple_search='~f %s | ~s %s'\r<search>"
-    macro	index	\\	":set simple_search='~b %s'\r<search>"
-    macro	index	\e/	":set simple_search='~f %s | ~s %s'\r<search-reverse>"
-    macro	index	\e\\	":set simple_search='~b %s'\r<search-reverse>"
-    macro       index   <f4>    '<sync-mailbox><enter-command>source ~/.mutt/account.gmail<enter><change-folder>!<enter>'
-    macro       index   <f5>    '<sync-mailbox><enter-command>source ~/.mutt/account.work<enter><change-folder>!<enter>'
+    macro index / ":set simple_search='~f %s | ~s %s'\r<search>"
+    macro index \\ ":set simple_search='~b %s'\r<search>"
+    macro index \e/ ":set simple_search='~f %s | ~s %s'\r<search-reverse>"
+    macro index \e\\ ":set simple_search='~b %s'\r<search-reverse>"
 
 
 # Bindings for PAGER (Message Pager)
   # Jumping to the next mail that is still unread ('\t' means <TAB> (Tabulator)!).
-    bind	pager	\t	next-unread
-  # Jump to bottom of a message
-    bind	pager	(	bottom
+    bind pager \t next-unread
+  # Pager movement
+    bind pager gg top
+    bind pager G bottom
   # urlview rulez
-    macro	pager	\ew	"|urlview\n"
+    macro pager \ew "|urlview\n"
   # Change »pager_index_lines«
-    macro	pager	\Cw	<enter-command>'set pager_index_lines=0'<enter>		                "Toggle pager_index_lines to 0 lines"
-    macro	pager	\Ct	<enter-command>'set pager_index_lines=20'<enter>	                "Toggle pager_index_lines to 20 lines"
-    macro	pager	\Cb	<enter-command>'set pager_index_lines=10'<enter>	                "Toggle pager_index_lines back to default (10)"
+    macro pager \Cw <enter-command>'set pager_index_lines=0'<enter> "Toggle pager_index_lines to 0 lines"
+    macro pager \Ct <enter-command>'set pager_index_lines=20'<enter> "Toggle pager_index_lines to 20 lines"
+    macro pager \Cb <enter-command>'set pager_index_lines=10'<enter> "Toggle pager_index_lines back to default (10)"
   # Prints the contents of the recieved headers
-    macro	pager	\eh	"| ~/.mutt/bin/mailhops | less -c\n"					"View the path of the mail."
+    macro pager \eh "| ~/.mutt/bin/mailhops | less -c\n" "View the path of the mail."
   # Edit the Bindings And Macros File (~/.mutt/bind)
-    macro	pager	\eB	"!vim ~/.mutt/bind\n:source ~/.mutt/bind\n"		                "Edit the bindings and macros file and reload it"
-    macro	pager	\eC	"!vim ~/.mutt/color\n:source ~/.mutt/color\n"		                "Edit the colour and macros file and reload it"
-    macro	pager	\eS	"!vim ~/.mutt/scoring\n:source ~/.mutt/scoring\n"	                "Edit the scores file and reload it"
-    macro	pager	\eH	"!vim ~/.mutt/misc-hooks\n:source ~/.mutt/misc-hooks\n"                 "Edit the hooks file and reload it"
+    macro pager \eB "!nvim ~/.mutt/bind\n:source ~/.mutt/bind\n" "Edit the bindings and macros file and reload it"
+    macro pager \eC "!nvim ~/.mutt/color\n:source ~/.mutt/color\n" "Edit the colour and macros file and reload it"
+    macro pager \eS "!nvim ~/.mutt/scoring\n:source ~/.mutt/scoring\n" "Edit the scores file and reload it"
+    macro pager \eH "!nvim ~/.mutt/misc-hooks\n:source ~/.mutt/misc-hooks\n" "Edit the hooks file and reload it"
   # Getting PGP/GnuPG-Key from server
-    macro	pager	P	"!gpg --keyserver pgp.mit.edu --recv-key 0x"	                        "Get PGP Key"
-  # reload ~/.muttrc
-    macro	pager	<F12>	"<enter-command>source ~/.muttrc<enter>"				"Reload ~/.muttrc"
-
-# mu search:
-macro index <F8> "<enter-command>unset wait_key<enter><shell-escape>read -p'mu query: ' x; mu find --clearlinks --linksdir ~/Mail/mu-search --format links \$x<enter><change-folder-readonly>~/Mail/mu-search\n" "mu find"
-macro index <F9> "<change-folder-readonly>~/Mail/mu-search\n" "display mu-find results"
+    macro pager P "!gpg --keyserver pgp.mit.edu --recv-key 0x" "Get PGP Key"
 
 # vim: ft=muttrc
