@@ -1,3 +1,4 @@
+# Account Settings
 set imap_user = "tim.millican@gmail.com"
 set imap_pass = `pass Mail/tim.millican@gmail.com`
 set from = "tim.millican@gmail.com"
@@ -10,5 +11,7 @@ set record = "imaps://tim.millican@imap.gmail.com/[Gmail]/Sent Mail"
 set smtp_url = "smtp://tim.millican@smtp.gmail.com:587"
 set smtp_pass = `pass Mail/tim.millican@gmail.com`
 
+# Account Bindings
+macro index d s=[GMAIL]/All\ Mail\n "Archived Message."
 
 # vim: ft=muttrc

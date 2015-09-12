@@ -1,3 +1,4 @@
+# Account Settings
 set imap_user = "tim_millican@cable.comcast.com"
 set imap_pass = `pass Comcast/LDAP`
 set from = "tim_millican@cable.comcast.com"

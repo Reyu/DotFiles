@@ -29,6 +29,9 @@
     macro	index	<F12>	"<enter-command>source ~/.mutt/muttrc<enter>"				"Reload ~/.muttrc"
   # Relocate deleted messages in Gmail Archive
     # macro	index	d	s=[GMAIL]/All\ Mail\n	"Archived Message."
+  # switch accounts
+    macro index <F4> "<sync-mailbox><enter-command>source ~/.mutt/account.gmail<enter><change-folder>!<enter>" "Switch to Gmail"
+    macro index <F5> "<sync-mailbox><enter-command>source ~/.mutt/account.work<enter><change-folder>!<enter>" "Switch to Work Mail"
   # Jumping to the next mail that is still unread.
     bind	index	\t	next-unread
   # Edit the Bindings And Macros File
