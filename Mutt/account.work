@@ -12,6 +12,6 @@ set smtp_url = "smtp://tmilli001c@communications.reyuzenfold.com:1025"
 set smtp_pass = `pass Comcast/LDAP`
 
 # Account Bindings
-macro index d s=Trash "Archived Message."
+macro index d s=Archives "Archived Message."
 
 # vim: ft=muttrc
