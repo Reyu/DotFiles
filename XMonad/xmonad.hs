@@ -58,18 +58,24 @@ myWorkspaces = show <$> [1..10]
 myNormalBorderColor  = "#002b36"
 myFocusedBorderColor = "#657b83"
 
+speakersAlsaName = "pci-0000_00_1b.0.analog-surround-51"
+headphonesAlsaName = "usb-Logitech_Logitech_G930_Headset-00.iec958-stereo"
+
+adjustVolume device value = spawn "pactl -- set-sink-volume alsa_output." ++ device ++ " " ++ value
+adjustMute device value = spawn "pactl -- set-sink-mute alsa_output." ++ device ++ " " ++ value
+
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((0                 ,  0x1008FF10  ), spawn "sudo systemctl suspend")
     -- Headphones
-    , ((0                 ,  0x1008FF11  ), spawn "amixer set -c 3 PCM 5%-")
-    , ((0                 ,  0x1008FF12  ), spawn "amixer set -c 3 PCM toggle")
-    , ((0                 ,  0x1008FF13  ), spawn "amixer set -c 3 PCM 5%+")
+    , ((0                 ,  0x1008FF11  ), adjustVolume headphonesAlsaName "5%-")
+    , ((0                 ,  0x1008FF12  ), adjustMute headphonesAlsaName "toggle")
+    , ((0                 ,  0x1008FF13  ), adjustVolume headphonesAlsaName "5%+")
     -- Speakers
-    , ((shiftMask         ,  0x1008FF11  ), spawn "amixer set -c 0 PCM 5%-")
-    , ((shiftMask         ,  0x1008FF12  ), spawn "amixer set -c 0 PCM toggle")
-    , ((shiftMask         ,  0x1008FF13  ), spawn "amixer set -c 0 PCM 5%+")
+    , ((shiftMask         ,  0x1008FF11  ), adjustVolume speakersAlsaName "5%-")
+    , ((shiftMask         ,  0x1008FF12  ), adjustMute speakersAlsaName "toggle")
+    , ((shiftMask         ,  0x1008FF13  ), adjustVolume speakersAlsaName "5%+")
     -- , ((0                 ,  0x1008FF14  ), spawn "/usr/bin/mpc -q toggle")
     -- , ((0                 ,  0x1008FF16  ), spawn "/usr/bin/mpc -q prev")
     -- , ((0                 ,  0x1008FF17  ), spawn "/usr/bin/mpc -q next")
