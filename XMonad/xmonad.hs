@@ -61,8 +61,8 @@ myFocusedBorderColor = "#657b83"
 speakersAlsaName = "pci-0000_00_1b.0.analog-surround-51"
 headphonesAlsaName = "usb-Logitech_Logitech_G930_Headset-00.iec958-stereo"
 
-adjustVolume device value = spawn "pactl -- set-sink-volume alsa_output." ++ device ++ " " ++ value
-adjustMute device value = spawn "pactl -- set-sink-mute alsa_output." ++ device ++ " " ++ value
+adjustVolume device value = spawn $ "pactl -- set-sink-volume alsa_output." ++ device ++ " " ++ value
+adjustMute device value = spawn $ "pactl -- set-sink-mute alsa_output." ++ device ++ " " ++ value
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
