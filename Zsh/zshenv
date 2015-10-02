@@ -5,9 +5,37 @@
 #   Tim Millican <tim.millican@linux.com>
 #
 
-# Ensure that a non-login, non-interactive shell has a defined environment. {{{
-if [[ "$SHLVL" -eq 1 && ! -o LOGIN && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprofile"
+# Paths {{{
+typeset -gU cdpath fpath mailpath path
+
+# Set the the list of directories that cd searches.
+cdpath=(
+   $HOME
+   $HOME/Projects
+   $cdpath
+)
+# Remove non-existent directories
+cdpath=($^cdpath(N-/))
+
+# Set the list of directories that Zsh searches for programs.
+path=(
+  ${HOME}/.local/bin
+  ${HOME}/bin
+  /usr/local/{bin,sbin}
+  /usr/{bin,sbin}
+  /{bin,sbin}
+  $path
+)
+# Remove non-existent directories
+path=($^path(N-/))
+# }}}
+# Editors {{{
+if (( $+commands[nvim] )); then
+    export EDITOR=${commands[nvim]}
+    export VISUAL=${commands[nvim]}
+elif (( $+commands[vim] )); then
+    export EDITOR=${commands[vim]}
+    export VISUAL=${commands[vim]}
 fi
 # }}}
 # Make sure that SSH and GPG agents are accessible {{{
@@ -41,6 +69,9 @@ if [[ -d $HOME/.local/ec2-tools ]];then
     export JAVA_HOME=$(print -l /usr/lib/jvm/java-*-openjdk-*/jre|sort|tail -n1)
     export PATH=$PATH:$EC2_HOME/bin
 fi
+# }}}
+# Extra {{{
+export NNTPSERVER="nntp.aioe.org"
 # }}}
 # Read local configuration {{{
 if [[ -f ${ZDOTDIR:-$HOME}/.zshenv.local ]]; then
