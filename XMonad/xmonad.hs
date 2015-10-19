@@ -105,7 +105,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask,  xK_s        ), sshPrompt myXPConfig )
     , ((modm              ,  xK_t        ), withFocused $ windows . W.sink)
     , ((modm              ,  xK_u        ), bindOn
-        [ ("5", spawnHere   "/usr/bin/firefox -P Work -new-window")
+        [ ("5", spawnHere   "/usr/bin/firefox -P alternate -new-window")
         , ("" , spawnHere "/usr/bin/firefox -P default -new-window")
         ])
     , ((modm .|. shiftMask,  xK_v        ), sendMessage (IncMasterN (-1)))
