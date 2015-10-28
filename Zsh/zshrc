@@ -479,6 +479,11 @@ fi
 if [[ -d ${zdir}/git-flow-completion && $+commands[git-flow] == 1 ]]; then
     source ${zdir}/git-flow-completion/git-flow-completion.zsh
 fi
+
+# python virtualenv wrapper
+if [[ $+commands[virtualenvwrapper.sh] ]]; then
+    source $commands[virtualenvwrapper.sh]
+fi
 # }}}
 # Key Bindings {{{
 bindkey -v
@@ -584,10 +589,16 @@ function prompt_host() {
         print -n '%{%F{166}%}%m%{%f%}'
     fi
 }
+# Python VirtualEnv
+function pyvirtenv() {
+    if [[ ! -z $VIRTUAL_ENV ]]; then
+        print -n "%{%F{33}%}(%{%F{64}%}${VIRTUAL_ENV:t}%{%F{33}%})%{%f%} "
+    fi
+}
 # Prompt funchion
 PROMPT='
 %{%(!,%F{160},%F{37})%}%n%{%f%} at $(prompt_host) in %{%F{64}%B%}%(5~,../%4c,%~)%{%b%f%}$(git_prompt)$(darcs_prompt)
-%(1j,J%j ,)$(prompt_char) '
+$(pyvirtenv)%(1j,J%j ,)$(prompt_char) '
 
 # Load OpenStack RPrompt, if needed. {{{
 if [[ -d ${HOME}/.openstack ]]; then
