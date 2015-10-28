@@ -568,14 +568,9 @@ function preexec {
   # cmd name only, or if this is sudo or ssh, the next cmd
   print -Pn "\e]2;${1[(wr)^(*=*|sudo|ssh|-*)]:gs/%/%%:g}\a"
 }
-# Prompt char changes if in a VCS repo or for VI command modes
+# Prompt char changes if in a VCS repo
 function prompt_char {
-    if [[ $KEYMAP != 'main' ]]; then
-        case $KEYMAP in
-            vicmd) echo '|' ;;
-            *) echo '*' ;;
-        esac
-    elif git branch >/dev/null 2>/dev/null; then
+    if git branch >/dev/null 2>/dev/null; then
         echo '±'
     else
         echo '>'
@@ -590,15 +585,9 @@ function prompt_host() {
     fi
 }
 # Prompt funchion
-function zle-line-init zle-keymap-select {
-    PROMPT='
+PROMPT='
 %{%(!,%F{160},%F{37})%}%n%{%f%} at $(prompt_host) in %{%F{64}%B%}%(5~,../%4c,%~)%{%b%f%}$(git_prompt)$(darcs_prompt)
 %(1j,J%j ,)$(prompt_char) '
-    zle reset-prompt
-}
-zle -N zle-line-init
-zle -N zle-keymap-select
-
 
 # Load OpenStack RPrompt, if needed. {{{
 if [[ -d ${HOME}/.openstack ]]; then
