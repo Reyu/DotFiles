@@ -34,6 +34,7 @@ autocmd BufRead,BufEnter /var/tmp/* set nobackup noundofile nowritebackup
 " {{{ Plugins
 call plug#begin('~/.config/NeoVim/plugged') " {{{
 Plug 'altercation/vim-colors-solarized'
+Plug 'benekastah/neomake'
 Plug 'godlygeek/tabular', { 'on' : 'Tabularize' }
 Plug 'Lokaltog/vim-easymotion'
 Plug 'neovimhaskell/haskell-vim', { 'for' : 'haskell' }
@@ -50,6 +51,7 @@ Plug 'tpope/vim-markdown', { 'for' : 'markdown' }
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'Twinside/vim-haskellConceal', { 'for' : 'haskell' }
+Plug 'vim-utils/vim-man'
 call plug#end() " }}}
 " Plugin Configuration {{{
 " Plugin 'altercation/vim-colors-solarized' {{{
