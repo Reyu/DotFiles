@@ -17,6 +17,9 @@ set modelines=3
 set number
 set relativenumber
 
+" Allow virtual edit in block mode
+set virtualedit=block
+
 " Set terminal title
 " autocmd BufEnter * let &titlestring = expand("%:t")
 set title
