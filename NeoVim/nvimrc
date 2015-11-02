@@ -21,8 +21,7 @@ set relativenumber
 set virtualedit=block
 
 " Set terminal title
-" autocmd BufEnter * let &titlestring = expand("%:t")
-set title
+set title titlestring=NeoVim\ (%F)
 
 " Configure statusline
 set statusline= "Clear statusline, when reloading
