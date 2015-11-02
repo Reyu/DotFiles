@@ -21,6 +21,9 @@ set virtualedit=block
 " Set terminal title
 set title titlestring=NeoVim\ (%F)
 
+" My tab preferences
+set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+
 " Configure statusline
 set statusline= "Clear statusline, when reloading
 set statusline+=[%n]\  "Show buffer number
