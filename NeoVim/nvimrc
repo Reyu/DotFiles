@@ -10,12 +10,10 @@ filetype indent on
 syntax enable
 
 " Turn on Mode Lines
-set modeline
-set modelines=3
+set modeline modelines=3
 
 " Turn on (Relative)Line numbers
-set number
-set relativenumber
+set number relativenumber
 
 " Allow virtual edit in block mode
 set virtualedit=block
