@@ -26,6 +26,7 @@ set title titlestring=NeoVim\ (%F)
 " Configure statusline
 set statusline= "Clear statusline, when reloading
 set statusline+=[%n]\  "Show buffer number
+set statusline+=%(%{exists('*CapsLockStatusline')?CapsLockStatusline():''}\ %) "Show virtual Capslock status (vim-capslock)
 set statusline+=%(%{fugitive#statusline()}\ %) "Show Git branch
 set statusline+=%(%{tagbar#currenttag('[%s]','')}\ %) "Show current ctag
 set statusline+=%.60f "Show file name/relative path
@@ -66,6 +67,7 @@ Plug 'python.vim', { 'for' : 'python' }
 Plug 'python_fold', { 'for' : 'python' }
 Plug 'rodjek/vim-puppet', { 'for': 'puppet' }
 Plug 'tommcdo/vim-exchange'
+Plug 'tpope/vim-capslock'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-fugitive'
