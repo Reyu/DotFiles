@@ -40,17 +40,16 @@ set statusline+=%02B/%03b\ \|\ "Show hex byte of char under cursor
 set statusline+=%l:%c%V\  "Show position/ruler data
 set statusline+=%#ErrorMsg#%{neomake#statusline#QflistStatus('qf:\ ')}%* "Show clist counts
 set statusline+=%P
-
-" Reset auto commands
-autocmd!
-
-" Try to run Neomake on file save
-" This should fail silently
-autocmd BufWritePost * Neomake
-
-" Reload nvimrc when it is modified
-autocmd BufWritePost nvimrc source ~/.nvim/nvimrc
 " General }}}
+" Auto Commands {{{
+augroup nvimrc
+    " Reset auto commands
+    autocmd!
+
+    " Reload nvimrc when it is modified
+    autocmd nvimrc BufWritePost nvimrc source ~/.nvim/nvimrc
+augroup END
+" Auto Commands }}}
 " {{{ Files, backups and undo
 " Keep backups in cache folder, so as not to clutter filesystem.
 set backup
@@ -87,6 +86,11 @@ call plug#end() " }}}
 " Plugin 'altercation/vim-colors-solarized' {{{
 set background=dark
 colorscheme solarized
+" }}}
+" Plugin 'benekastah/neomake' {{{
+" Try to run Neomake on file save
+" This should fail silently
+autocmd nvimrc BufWritePost * Neomake
 " }}}
 " Plugin Configuration }}}
 " Plugins }}}
