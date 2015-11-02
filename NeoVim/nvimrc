@@ -23,6 +23,26 @@ set virtualedit=block
 " Set terminal title
 " autocmd BufEnter * let &titlestring = expand("%:t")
 set title
+
+" Configure statusline
+set statusline= "Clear statusline, when reloading
+set statusline+=[%n]\  "Show buffer number
+set statusline+=%(%{fugitive#statusline()}\ %) "Show Git branch
+set statusline+=%(%{tagbar#currenttag('[%s]','')}\ %) "Show current ctag
+set statusline+=%.60f "Show file name/relative path
+set statusline+=%(\ [%M%R%H%W]%) "Show Modified flag, Readonly flag, Preview flag, and Help buffer flag
+set statusline+=%= "Right ALIGN rest of line
+set statusline+=%{\"\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"\ \|\ \"} "Show encoding/bomb
+set statusline+=%{&ff}\ \|\ "Show fileformat (line ending)
+set statusline+=%Y\ \|\  "Show file type
+set statusline+=%02B/%03b\ \|\ "Show hex byte of char under cursor
+set statusline+=%l:%c%V\  "Show position/ruler data
+set statusline+=%#ErrorMsg#%{neomake#statusline#QflistStatus('qf:\ ')}%* "Show clist counts
+set statusline+=%P
+
+" Try to run Neomake an save
+autocmd BufWritePost * Neomake
+
 " General }}}
 " {{{ Files, backups and undo
 " Keep backups in cache folder, so as not to clutter filesystem.
