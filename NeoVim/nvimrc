@@ -37,7 +37,7 @@ set statusline+=%{\"\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?
 set statusline+=%{&ff}\ \|\ "Show fileformat (line ending)
 set statusline+=%Y\ \|\  "Show file type
 set statusline+=%02B/%03b\ \|\ "Show hex byte of char under cursor
-set statusline+=%l:%c%V\  "Show position/ruler data
+set statusline+=%-11(%l:%c%V%)\  "Show position/ruler data
 set statusline+=%#ErrorMsg#%{neomake#statusline#QflistStatus('qf:\ ')}%* "Show clist counts
 set statusline+=%P
 " General }}}
