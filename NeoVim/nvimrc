@@ -26,11 +26,11 @@ set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 
 " Configure statusline
 set statusline= "Clear statusline, when reloading
-set statusline+=[%n]\  "Show buffer number
-set statusline+=%(%{exists('*CapsLockStatusline')?CapsLockStatusline():''}\ %) "Show virtual Capslock status (vim-capslock)
-set statusline+=%(%{fugitive#statusline()}\ %) "Show Git branch
-set statusline+=%(%{tagbar#currenttag('[%s]','')}\ %) "Show current ctag
-set statusline+=%.60f "Show file name/relative path
+set statusline+=%(\ %n\ %) "Show buffer number
+set statusline+=%(\|\ %{exists('*CapsLockStatusline')?CapsLockStatusline('Caps'):''}\ %) "Show virtual Capslock status (vim-capslock)
+set statusline+=%(\|\ %{fugitive#statusline()}\ %) "Show Git branch
+set statusline+=%(\|\ %{tagbar#currenttag('%s','')}\ %) "Show current ctag
+set statusline+=\|\ %.60f "Show file name/relative path
 set statusline+=%(\ [%M%R%H%W]%) "Show Modified flag, Readonly flag, Preview flag, and Help buffer flag
 set statusline+=%= "Right ALIGN rest of line
 set statusline+=%{\"\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"\ \|\ \"} "Show encoding/bomb
