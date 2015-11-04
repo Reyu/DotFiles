@@ -10,7 +10,7 @@ reset all
 push V
 
 source ~/.mutt/general             # general options
-source ~/.mutt/account.gmail       # my mailboxes
+source ~/.mutt/maildir             # my mailboxes
 source ~/.mutt/headers             # extra header and ignores
 source ~/.mutt/gpg                 # GnuPG options
 source ~/.mutt/bind                # key bindings and macros
@@ -22,7 +22,6 @@ source ~/.mutt/aliases             # mail aliases
 source ~/.mutt/ignores             # boring headers
 source ~/.mutt/unignore            # visible headers
 source ~/.mutt/various             # some baubles
-# source ~/.mutt/patches             # muttng specific options!
 source ~/.mutt/misc-hooks          # Change settings based upon message recipients
 source ~/.mutt/mlists              # Mailinglists
 

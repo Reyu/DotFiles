@@ -119,8 +119,9 @@ set attach_format=" %u%D%I %t%4n %T%.40d%> [%.7m/%.10M, %.6e%?C?, %C?, %s] "
 # NOTE!  with mutt-1.5.6 there is no alternates variable any more.
 # instead, there is now an "alternates" *command*. so now you can give a
 # *list* of "alternates" commands instead of typing up a long value.
-alternates -group tim  "tim.millican@(gmail|linux|reyuzenfold|blackfoxcode).com"
-alternates -group reyu "reyuzenfold@gmail.com|(reyu|admin|(the.)?fox|root|webmaster)@(reyuzenfold|blackfoxcode).com"
+alternates -group tim  "tim\.millican@(gmail|linux|reyuzenfold|blackfoxcode)\.com"
+alternates -group reyu "reyuzenfold@gmail\.com|(reyu|admin|(the\.)?fox|root|webmaster)@(reyuzenfold|blackfoxcode)\.com"
+alternates -group comcast "tim(othy)?_millican@cable\.comcast\.com"
 
 # separator to add between attachments when operating
 set attach_sep="\n"
@@ -176,7 +177,7 @@ set date_format="!%a, %b %d, %Y at %I:%M:%S%p %Z"
 set default_hook="~f %s !~P | (~P ~C %s)"
 
 # ask me before delete
-set delete=ask-yes
+set delete=yes
 
 # untag messages when marking them for deletion
 set delete_untag
@@ -420,7 +421,7 @@ set postponed="~/Mail/postponed"
 set query_command="mu cfind --format=mutt-ab '%s'"
 
 # ask before quit
-set quit=ask-yes
+set quit=yes
 
 # regular expression used in the internal-pager to determine quoted sections
 # *sigh* this catches raster too. why can't people just use a standard,
