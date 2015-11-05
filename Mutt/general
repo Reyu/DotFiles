@@ -191,7 +191,7 @@ set digest_collapse
 set edit_headers
 
 # I use '+10' to start edit at line 10
-set editor="vim -c 'set colorcolumn=80 textwidth=72 formatprg=par\\ w72qe' -c StripWhitespace +10"
+set editor="nvim -c 'set colorcolumn=80 textwidth=72 formatprg=par\\ w72qe' +10"
 
 # try to derive the message's envelope sender from the "From:" header
 set use_envelope_from=yes
