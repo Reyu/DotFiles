@@ -9,15 +9,14 @@
 set pgp_sign_as=0x79141B15
 set pgp_autoinline=yes
 set crypt_autoencrypt=no
-set crypt_autosign=yes
+set crypt_autosign=no
 set pgp_timeout=14400
 set pgp_entry_format="%4n %t%f %[%y/%m/%d] %rl/0x%k %-4a %2c %u"
 set pgp_sort_keys=trust
 set pgp_good_sign="`gettext -d gnupg -s 'Good signature from "' | tr -d '='`"
-set pgp_autosign=yes
+set pgp_autosign=no
 set pgp_use_gpg_agent=yes
 
-# source 'gpg --list-keys | perl -e "while(<>){/(\\b|[<(])([^ \\t]+@[^ \\t]+\.[^ \t]+)(\\b|[>)])/ and $a{$2}=1;}print map qq/send-hook \"~C $_\" set pgp_autoencrypt\n/, keys %a;"|'
 set pgp_decode_command="/usr/bin/gpg %?p?--passphrase-fd 0? --no-verbose --batch --output - %f"
 set pgp_verify_command="/usr/bin/gpg --no-verbose --batch --output - --verify %s %f"
 set pgp_decrypt_command="/usr/bin/gpg --passphrase-fd 0 --no-verbose --batch --output - %f"
@@ -31,5 +30,7 @@ set pgp_verify_key_command="/usr/bin/gpg --no-verbose --batch --fingerprint --ch
 set pgp_list_pubring_command="/usr/bin/gpg --no-verbose --batch --with-colons --list-keys %r"
 set pgp_list_secring_command="/usr/bin/gpg --no-verbose --batch --with-colons --list-secret-keys %r"
 set pgp_getkeys_command="/usr/bin/gpg --recv-keys %r >/dev/null 2>&1"
+
+source "~/.mutt/gpg-hooks|"
 
 # vim: ft=muttrc

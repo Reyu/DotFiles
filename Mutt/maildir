@@ -1,5 +1,5 @@
 set mbox_type=Maildir
-set header_cache=~/.cache/mutt
+# set header_cache=~/.cache/mutt
 set folder=$HOME/Mail
 set spoolfile=+/
 set mask=".*"
