@@ -42,16 +42,21 @@ set statusline+=%(%{&ff}\ \|\ %) "Show fileformat (line ending)
 set statusline+=%(%Y\ \|\ %) "Show file type
 set statusline+=%(%02B/%03b\ \|\ %) "Show hex byte of char under cursor
 set statusline+=%(%-14(%l,%c%V%)\ %P%) "Show position/ruler data
-" General }}}
-" Auto Commands {{{
-augroup nvimrc
-    " Reset auto commands
-    autocmd!
 
-    " Reload nvimrc when it is modified
-    autocmd nvimrc BufWritePost nvimrc source ~/.nvim/nvimrc
+" Create auto command group, and clear it
+augroup nvimrc
+    autocmd!
 augroup END
-" Auto Commands }}}
+
+" Reload nvimrc when it is modified
+autocmd nvimrc BufWritePost nvimrc source ~/.nvim/nvimrc
+
+" Map yo and yO to set paste mode and enter insert on new line
+nnoremap yo :set paste<CR>o
+nnoremap yO :set paste<CR>O
+" Exit paste mode when leaving insert
+autocmd nvimrc InsertLeave * set nopaste
+" General }}}
 " {{{ Files, backups and undo
 " Keep backups in cache folder, so as not to clutter filesystem.
 set backup backupdir=~/.cache/vim/backup,~/tmp,.,~/
