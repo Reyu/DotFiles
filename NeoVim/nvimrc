@@ -54,13 +54,11 @@ augroup END
 " Auto Commands }}}
 " {{{ Files, backups and undo
 " Keep backups in cache folder, so as not to clutter filesystem.
-set backup
-set backupdir=~/.cache/vim/backup,~/tmp,.,~/
+set backup backupdir=~/.cache/vim/backup,~/tmp,.,~/
+set undofile undodir=~/.cache/vim/undo
 set directory=~/.cache/vim/other,~/tmp,.,/var/tmp,/tmp
-set undodir=~/.cache/vim/undo
-set undofile
 " Don't need backups for tmp files (usually sudo -e)
-autocmd BufRead,BufEnter /var/tmp/* set nobackup noundofile nowritebackup
+autocmd nvimrc BufRead,BufEnter /var/tmp/* set nobackup noundofile nowritebackup
 " Files, backups and undo }}}
 " {{{ Plugins
 call plug#begin('~/.config/NeoVim/plugged') " {{{
