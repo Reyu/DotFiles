@@ -82,7 +82,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm              ,  xK_BackSpace), focusUrgent)
     , ((modm .|. shiftMask,  xK_BackSpace), clearUrgents)
     , ((modm              ,  xK_Return   ), windows W.swapMaster)
-    , ((modm .|. shiftMask,  xK_Return   ), spawnHere (myTerminal ++ " tmux new -A -s Primary \\; set-option -t Primary destroy-unattached off"))
+    , ((modm .|. shiftMask,  xK_Return   ), spawnHere (myTerminal ++ " -e tmux"))
     , ((modm              ,  xK_Tab      ), windows W.focusDown)
     , ((modm              ,  xK_space    ), sendMessage NextLayout)
     , ((modm .|. shiftMask,  xK_space    ), setLayout $ XMonad.layoutHook conf)
@@ -201,10 +201,16 @@ myStartupHook =
 -- Set up status bar
 --
 -- Command to launch the bar.
-myBar = "dzen2 " ++ myDzenBaseFmt ++ " -w '1728' -ta 'left'"
-
--- Dzen2 Format
-myDzenBaseFmt = "-x '0' -y '0' -h '16' -xs 1 -fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*' -bg '#002b36' -fg '#657b83'"
+myBar = "dzen2" ++ concatMap (" " ++)
+    [ "-x '0'"
+    , "-y '0'"
+    , "-h '16'"
+    , "-xs 1"
+    , "-fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*'"
+    , "-bg '#002b36'"
+    , "-fg '#657b83'"
+    , "-ta 'left'"
+    ]
 
 myPP = dzenPP
     { ppCurrent         = dzenColor "#859900" "" . wrap "<" "> "
