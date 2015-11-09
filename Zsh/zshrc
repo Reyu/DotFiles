@@ -481,7 +481,7 @@ if [[ -d ${zdir}/git-flow-completion && $+commands[git-flow] == 1 ]]; then
 fi
 
 # python virtualenv wrapper
-if [[ $+commands[virtualenvwrapper.sh] ]]; then
+if [[ $+commands[virtualenvwrapper.sh] == 1 ]]; then
     source $commands[virtualenvwrapper.sh]
 fi
 # }}}
