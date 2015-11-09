@@ -44,18 +44,19 @@ set statusline+=%(%02B/%03b\ \|\ %) "Show hex byte of char under cursor
 set statusline+=%(%-14(%l,%c%V%)\ %P%) "Show position/ruler data
 
 " Create auto command group, and clear it
-augroup nvimrc
+augroup init
+    " Reset auto commands
     autocmd!
 augroup END
 
-" Reload nvimrc when it is modified
-autocmd nvimrc BufWritePost nvimrc source ~/.nvim/nvimrc
+" Reload init when it is modified
+autocmd init BufWritePost ~/.config/nvim/init.vim source <afile>
 
 " Map yo and yO to set paste mode and enter insert on new line
 nnoremap yo :set paste<CR>o
 nnoremap yO :set paste<CR>O
 " Exit paste mode when leaving insert
-autocmd nvimrc InsertLeave * set nopaste
+autocmd init InsertLeave * set nopaste
 " General }}}
 " {{{ Files, backups and undo
 " Keep backups in cache folder, so as not to clutter filesystem.
@@ -63,10 +64,10 @@ set backup backupdir=~/.cache/vim/backup,~/tmp,.,~/
 set undofile undodir=~/.cache/vim/undo
 set directory=~/.cache/vim/other,~/tmp,.,/var/tmp,/tmp
 " Don't need backups for tmp files (usually sudo -e)
-autocmd nvimrc BufRead,BufEnter /var/tmp/* set nobackup noundofile nowritebackup
+autocmd init BufRead,BufEnter /var/tmp/* set nobackup noundofile nowritebackup
 " Files, backups and undo }}}
 " {{{ Plugins
-call plug#begin('~/.config/NeoVim/plugged') " {{{
+call plug#begin('~/.config/nvim/plugged') " {{{
 Plug 'altercation/vim-colors-solarized'
 Plug 'benekastah/neomake'
 Plug 'godlygeek/tabular', { 'on' : 'Tabularize' }
@@ -96,7 +97,7 @@ call togglebg#map("<F5>")
 " Plugin 'benekastah/neomake' {{{
 " Try to run Neomake on file save
 " This should fail silently
-autocmd nvimrc BufWritePost * Neomake
+autocmd init BufWritePost * Neomake
 " }}}
 " Plugin Configuration }}}
 " Plugins }}}
