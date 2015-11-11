@@ -110,7 +110,7 @@ myKeymap host conf =
     , ("M-<Backspace>", focusUrgent)
     , ("M-S-<Backspace>", clearUrgents)
     , ("M-<Return>", windows W.swapMaster)
-    , ("M-S-<Return>", spawnHere (myTerminal ++ " tmux new-session"))
+    , ("M-S-<Return>", spawnHere (myTerminal ++ " -e tmux"))
     , ("M-<Space>", sendMessage NextLayout)
     , ("M-h", sendMessage Shrink)
     , ("M-l", sendMessage Expand)
