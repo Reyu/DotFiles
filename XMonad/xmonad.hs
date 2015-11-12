@@ -58,7 +58,7 @@ myConfig host logPipe = defaultConfig
     , modMask            = if host == Laptop False
                               then modMask defaultConfig
                               else mod4Mask
-    , workspaces         = myWorkspaces
+    , workspaces         = show <$> [1..10]
     , normalBorderColor  = solarizedForeground
     , focusedBorderColor = solarizedBackground
     , layoutHook         = myLayoutHook
@@ -72,20 +72,16 @@ myConfig host logPipe = defaultConfig
                            <+> startupHook defaultConfig
     } `additionalKeysP` myKeys host logPipe
 
+------------------------------------------------------------------------
+-- Usefull common vars
+myTerminal = "st"
 solarizedForeground = "#002b36"
 solarizedBackground = "#657b83"
-myTerminal = "st"
-
--- Key binding to toggle the gap for the bar.
--- toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
-
-------------------------------------------------------------
--- The default number of workspaces (virtual screens) and their names.
-myWorkspaces = show <$> [1..10]
-
 speakersAlsaName = "pci-0000_00_1b.0.analog-surround-51"
 headphonesAlsaName = "usb-Logitech_Logitech_G930_Headset-00.iec958-stereo"
 
+------------------------------------------------------------------------
+-- Helper functions
 adjustVolume device value = spawn $ "pactl -- set-sink-volume alsa_output." ++ device ++ " " ++ value
 adjustMute device value = spawn $ "pactl -- set-sink-mute alsa_output." ++ device ++ " " ++ value
 
@@ -125,7 +121,7 @@ myKeymap host conf =
     , ("M-w", windowPromptGoto myXPConfig )
     , ("M-S-w", sendMessage (IncMasterN 1))
     ]
-    ++
+    ++ -- Window Movement
     [(m ++ "M-" ++ k, windows $ f i)
         | (i, k) <- zip (XMonad.workspaces conf) ["<F" ++ show i ++ ">" | i <- [1..]]
         , (f, m) <- [(W.greedyView, ""), (W.shift, "S-")]
@@ -137,20 +133,7 @@ myKeymap host conf =
     ]
 
 ------------------------------------------------------------------------
--- Mouse bindings: default actions bound to mouse events
---
-myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList
-    -- mod-button1, Set the window to floating mode and move by dragging
-    [ ((modm, button1), \w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster)
-    -- mod-button2, Raise the window to the top of the stack
-    , ((modm, button2), \w -> focus w >> windows W.shiftMaster)
-    -- mod-button3, Set the window to floating mode and resize by dragging
-    , ((modm, button3), \w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster)
-    ]
-
-------------------------------------------------------------------------
 -- Layouts:
---
 myLayoutHook = avoidStrutsOn [U] $
                smartBorders $
                onWorkspace "10" imLayout
@@ -166,7 +149,6 @@ myLayoutHook = avoidStrutsOn [U] $
 
 ------------------------------------------------------------------------
 -- Window rules:
---
 myManageHook = composeAll . concat $
     [ [resource     =? r        --> doIgnore            |   r    <- myIgnores]
     , [className    =? c        --> doCenterFloat       |   c    <- myFloats ]
@@ -188,15 +170,12 @@ myManageHook = composeAll . concat $
 
 ------------------------------------------------------------------------
 -- Startup hook
---
 myStartupHook host logPipe = do
     checkKeymap (myConfig host logPipe) (myKeys host logPipe)
     spawn "tmux new-session -d -s Global weechat \\; set-option -t Global destroy-unattached off"
 
 ------------------------------------------------------------------------
 -- Set up status bar
---
--- Command to launch the bar.
 myBar = "dzen2" ++ concatMap (" " ++)
     [ "-x '0'"
     , "-y '0'"
