@@ -59,8 +59,8 @@ myConfig host logPipe = defaultConfig
                               then modMask defaultConfig
                               else mod4Mask
     , workspaces         = myWorkspaces
-    , normalBorderColor  = solarizedBackground
-    , focusedBorderColor = solarizedForeground
+    , normalBorderColor  = solarizedForeground
+    , focusedBorderColor = solarizedBackground
     , layoutHook         = myLayoutHook
     , manageHook         = myManageHook
                            <+> manageSpawn
@@ -82,10 +82,6 @@ myTerminal = "st"
 ------------------------------------------------------------
 -- The default number of workspaces (virtual screens) and their names.
 myWorkspaces = show <$> [1..10]
-
--- Border colors for unfocused and focused windows, respectively.
-myNormalBorderColor  = solarizedBackground
-myFocusedBorderColor = solarizedForeground
 
 speakersAlsaName = "pci-0000_00_1b.0.analog-surround-51"
 headphonesAlsaName = "usb-Logitech_Logitech_G930_Headset-00.iec958-stereo"
