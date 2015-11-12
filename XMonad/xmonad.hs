@@ -195,11 +195,12 @@ myLoghook logPipe host = dynamicLogWithPP $ defaultPP
     , ppHidden  = dzenColor "#93A1A1" ""
     , ppUrgent  = dzenColor "#B58900" "#DC322F"
     , ppLayout  = dzenColor "#839496" ""
-    , ppTitle   = shorten (case host of Laptop _ -> 45
-                                        Desktop  -> 60)
+    , ppTitle   = shorten 100
     , ppExtras  = [ date "%a %b %d  %I:%M %p"
                   , loadAvg
-                  ]
+                  ] ++
+                  (case host of Laptop _ -> [battery]
+                                Desktop  -> [])
     , ppOrder   = \(ws:l:t:exs) -> [ws,t,l]++exs
     , ppOutput  = hPutStrLn logPipe
     }
