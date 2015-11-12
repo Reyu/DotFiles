@@ -66,7 +66,7 @@ myConfig host logPipe = defaultConfig
                            <+> manageSpawn
                            <+> manageDocks
                            <+> manageHook defaultConfig
-    , logHook            = myLoghook logPipe
+    , logHook            = myLoghook logPipe host
                            <+> logHook defaultConfig
     , startupHook        = myStartupHook host logPipe
                            <+> startupHook defaultConfig
@@ -188,7 +188,7 @@ myBar = "dzen2" ++ concatMap (" " ++)
     , "-e 'onstart=lower'"
     ]
 
-myLoghook h = dynamicLogWithPP $ defaultPP 
+myLoghook logPipe host = dynamicLogWithPP $ defaultPP 
     { ppCurrent         = dzenColor "#859900" "" . wrap "<" "> "
     , ppVisible         = dzenColor "#2AA198" "" . wrap "[" "] "
     , ppHidden          = dzenColor "#93A1A1" "" . wrap "" " "
@@ -197,6 +197,7 @@ myLoghook h = dynamicLogWithPP $ defaultPP
     , ppSep             = dzenColor "#EEE8D5" "" "| "
     , ppLayout          = dzenColor "#839496" "" . wrap "" " "
     , ppTitle           = dzenColor "#839496" ""
+    , ppOutput          = hPutStrLn logPipe
     }
 
 -----------------------------------------------------------------------
