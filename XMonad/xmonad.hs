@@ -114,7 +114,7 @@ myKeymap host conf =
     , ("M-m", windows W.focusMaster)
     , ("M-n", unsafePrompt (myTerminal ++ " -t") myXPConfig )
     , ("M-p", spawn "~/bin/passmenu" )
-    , ("M-q", spawn "xmonad -- recompile; xmonad -- restart")
+    , ("M-q", spawn "xmonad --recompile; xmonad --restart")
     , ("M-S-q", io exitSuccess)
     , ("M-r", runOrRaisePrompt myXPConfig )
     , ("M-s", unsafePrompt myTerminal myXPConfig )
