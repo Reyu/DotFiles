@@ -11,6 +11,7 @@ import XMonad.Actions.PerWorkspaceKeys
 import XMonad.Actions.PhysicalScreens
 import XMonad.Util.Run
 import XMonad.Util.NamedWindows (getName)
+import XMonad.Util.Loggers
 import qualified XMonad.Prompt    as P
 import XMonad.Prompt
 import XMonad.Prompt.Shell
@@ -189,15 +190,18 @@ myBar = "dzen2" ++ concatMap (" " ++)
     ]
 
 myLoghook logPipe host = dynamicLogWithPP $ defaultPP 
-    { ppCurrent         = dzenColor "#859900" "" . wrap "<" "> "
-    , ppVisible         = dzenColor "#2AA198" "" . wrap "[" "] "
-    , ppHidden          = dzenColor "#93A1A1" "" . wrap "" " "
-    , ppHiddenNoWindows = dzenColor "#586E75" "" . wrap "" " "
-    , ppUrgent          = dzenColor "#B58900" "#DC322F" . xmobarStrip
-    , ppSep             = dzenColor "#EEE8D5" "" "| "
-    , ppLayout          = dzenColor "#839496" "" . wrap "" " "
-    , ppTitle           = dzenColor "#839496" ""
-    , ppOutput          = hPutStrLn logPipe
+    { ppCurrent = dzenColor "#859900" ""
+    , ppVisible = dzenColor "#2AA198" ""
+    , ppHidden  = dzenColor "#93A1A1" ""
+    , ppUrgent  = dzenColor "#B58900" "#DC322F"
+    , ppLayout  = dzenColor "#839496" ""
+    , ppTitle   = shorten (case host of Laptop _ -> 45
+                                        Desktop  -> 60)
+    , ppExtras  = [ date "%a %b %d  %I:%M %p"
+                  , loadAvg
+                  ]
+    , ppOrder   = \(ws:l:t:exs) -> [ws,t,l]++exs
+    , ppOutput  = hPutStrLn logPipe
     }
 
 -----------------------------------------------------------------------
