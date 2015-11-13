@@ -60,8 +60,8 @@ myConfig host logPipe = defaultConfig
                               then modMask defaultConfig
                               else mod4Mask
     , workspaces         = show <$> [1..10]
-    , normalBorderColor  = solarizedForeground
-    , focusedBorderColor = solarizedBackground
+    , normalBorderColor  = solarized "base03"
+    , focusedBorderColor = solarized "base00"
     , layoutHook         = myLayoutHook
     , manageHook         = myManageHook
                            <+> manageSpawn
@@ -76,10 +76,29 @@ myConfig host logPipe = defaultConfig
 ------------------------------------------------------------------------
 -- Usefull common vars
 myTerminal = "st"
-solarizedForeground = "#002b36"
-solarizedBackground = "#657b83"
 speakersAlsaName = "pci-0000_00_1b.0.analog-surround-51"
 headphonesAlsaName = "usb-Logitech_Logitech_G930_Headset-00.iec958-stereo"
+
+-- Solarized colors
+solarized :: String -> String
+solarized "base03"  = "#002b36"
+solarized "base02"  = "#073642"
+solarized "base01"  = "#586e75"
+solarized "base00"  = "#657b83"
+solarized "base0"   = "#839496"
+solarized "base1"   = "#93a1a1"
+solarized "base2"   = "#eee8d5"
+solarized "base3"   = "#fdf6e3"
+solarized "yellow"  = "#b58900"
+solarized "orange"  = "#cb4b16"
+solarized "red"     = "#dc322f"
+solarized "magenta" = "#d33682"
+solarized "violet"  = "#6c71c4"
+solarized "blue"    = "#268bd2"
+solarized "cyan"    = "#2aa198"
+solarized "green"   = "#859900"
+solarized _         = solarized "base00" --Use foreground color as default
+
 
 ------------------------------------------------------------------------
 -- Helper functions
@@ -183,46 +202,46 @@ myBar = "dzen2" ++ concatMap (" " ++)
     , "-h '16'"
     , "-xs 1"
     , "-fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*'"
-    , "-bg '#002b36'"
-    , "-fg '#657b83'"
-    , "-ta 'left'"
+    , "-bg '" ++ solarized "base03" ++ "'"
+    , "-fg '" ++ solarized "base00" ++ "'"
+    , "-ta 'center'"
     , "-e 'onstart=lower'"
     ]
 
 myLoghook logPipe host = dynamicLogWithPP $ defaultPP 
-    { ppCurrent = dzenColor "#859900" ""
-    , ppVisible = dzenColor "#2AA198" ""
-    , ppHidden  = dzenColor "#93A1A1" ""
-    , ppUrgent  = dzenColor "#B58900" "#DC322F"
-    , ppLayout  = dzenColor "#839496" ""
+    { ppCurrent = dzenColor (solarized "green") ""
+    , ppVisible = dzenColor (solarized "cyan") ""
+    , ppHidden  = dzenColor (solarized "base1") ""
+    , ppUrgent  = dzenColor (solarized "yellow") (solarized "red")
+    , ppLayout  = dzenColor (solarized "base0") ""
     , ppTitle   = shorten 100
     , ppExtras  = [ date "%a %b %d  %I:%M %p"
                   , loadAvg
                   ] ++
                   (case host of Laptop _ -> [battery]
                                 Desktop  -> [])
-    , ppOrder   = \(ws:l:t:exs) -> [ws,t,l]++exs
+    , ppOrder   = \(ws:l:t:exs) -> [t,l,ws]++exs
     , ppOutput  = hPutStrLn logPipe
     }
 
 -----------------------------------------------------------------------
 -- Colors for text and backgrounds of each tab when in "Tabbed" layout.
 tabConfig = defaultTheme
-    { activeBorderColor   = "#657b83"
-    , activeTextColor     = "#859900"
-    , activeColor         = "#002b36"
-    , inactiveBorderColor = "#002b36"
-    , inactiveTextColor   = "#586E75"
-    , inactiveColor       = "#002b36"
+    { activeBorderColor   = solarized "base00"
+    , activeTextColor     = solarized "green"
+    , activeColor         = solarized "base03"
+    , inactiveBorderColor = solarized "base03"
+    , inactiveTextColor   = solarized "base01"
+    , inactiveColor       = solarized "base03"
     }
 
 -----------------------------------------------------------------------
 -- Prompt Config
 myXPConfig = defaultXPConfig
     { P.font            = "xft:Terminus:pixelsize=14:autohint=true"
-    , bgColor           = "#002B36"
-    , fgColor           = "#657B83"
-    , borderColor       = "#657b83"
+    , bgColor           = solarized "base03"
+    , fgColor           = solarized "base00"
+    , borderColor       = solarized "base00"
     , promptBorderWidth = 1
     }
 mpcXPConfig = myXPConfig
