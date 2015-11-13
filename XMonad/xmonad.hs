@@ -60,8 +60,8 @@ myConfig host logPipe = defaultConfig
                               then modMask defaultConfig
                               else mod4Mask
     , workspaces         = show <$> [1..10]
-    , normalBorderColor  = solarized "base03"
-    , focusedBorderColor = solarized "base00"
+    , normalBorderColor  = solarized "background"
+    , focusedBorderColor = solarized "emphasis"
     , layoutHook         = myLayoutHook
     , manageHook         = myManageHook
                            <+> manageSpawn
@@ -81,23 +81,28 @@ headphonesAlsaName = "usb-Logitech_Logitech_G930_Headset-00.iec958-stereo"
 
 -- Solarized colors
 solarized :: String -> String
-solarized "base03"  = "#002b36"
-solarized "base02"  = "#073642"
-solarized "base01"  = "#586e75"
-solarized "base00"  = "#657b83"
-solarized "base0"   = "#839496"
-solarized "base1"   = "#93a1a1"
-solarized "base2"   = "#eee8d5"
-solarized "base3"   = "#fdf6e3"
-solarized "yellow"  = "#b58900"
-solarized "orange"  = "#cb4b16"
-solarized "red"     = "#dc322f"
-solarized "magenta" = "#d33682"
-solarized "violet"  = "#6c71c4"
-solarized "blue"    = "#268bd2"
-solarized "cyan"    = "#2aa198"
-solarized "green"   = "#859900"
-solarized _         = solarized "base00" --Use foreground color as default
+solarized "base03"       = "#002b36"
+solarized "base02"       = "#073642"
+solarized "base01"       = "#586e75"
+solarized "base00"       = "#657b83"
+solarized "base0"        = "#839496"
+solarized "base1"        = "#93a1a1"
+solarized "base2"        = "#eee8d5"
+solarized "base3"        = "#fdf6e3"
+solarized "yellow"       = "#b58900"
+solarized "orange"       = "#cb4b16"
+solarized "red"          = "#dc322f"
+solarized "magenta"      = "#d33682"
+solarized "violet"       = "#6c71c4"
+solarized "blue"         = "#268bd2"
+solarized "cyan"         = "#2aa198"
+solarized "green"        = "#859900"
+solarized "text"         = solarized "base0"
+solarized "secondary"    = solarized "base01"
+solarized "background"   = solarized "base03"
+solarized "bghighlights" = solarized "base02"
+solarized "emphasis"     = solarized "base1"
+solarized _              = solarized "text" --Use foreground color as default
 
 
 ------------------------------------------------------------------------
@@ -202,8 +207,8 @@ myBar = "dzen2" ++ concatMap (" " ++)
     , "-h '16'"
     , "-xs 1"
     , "-fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*'"
-    , "-bg '" ++ solarized "base03" ++ "'"
-    , "-fg '" ++ solarized "base00" ++ "'"
+    , "-bg '" ++ solarized "background" ++ "'"
+    , "-fg '" ++ solarized "text" ++ "'"
     , "-ta 'center'"
     , "-e 'onstart=lower'"
     ]
@@ -211,9 +216,9 @@ myBar = "dzen2" ++ concatMap (" " ++)
 myLoghook logPipe host = dynamicLogWithPP $ defaultPP 
     { ppCurrent = dzenColor (solarized "green") ""
     , ppVisible = dzenColor (solarized "cyan") ""
-    , ppHidden  = dzenColor (solarized "base1") ""
+    , ppHidden  = dzenColor (solarized "text") ""
     , ppUrgent  = dzenColor (solarized "yellow") (solarized "red")
-    , ppLayout  = dzenColor (solarized "base0") ""
+    , ppLayout  = dzenColor (solarized "text") ""
     , ppTitle   = shorten 100
     , ppExtras  = [ date "%a %b %d  %I:%M %p"
                   , loadAvg
@@ -227,21 +232,21 @@ myLoghook logPipe host = dynamicLogWithPP $ defaultPP
 -----------------------------------------------------------------------
 -- Colors for text and backgrounds of each tab when in "Tabbed" layout.
 tabConfig = defaultTheme
-    { activeBorderColor   = solarized "base00"
+    { activeBorderColor   = solarized "emphasis"
     , activeTextColor     = solarized "green"
-    , activeColor         = solarized "base03"
-    , inactiveBorderColor = solarized "base03"
-    , inactiveTextColor   = solarized "base01"
-    , inactiveColor       = solarized "base03"
+    , activeColor         = solarized "bghighlights"
+    , inactiveBorderColor = solarized "background"
+    , inactiveTextColor   = solarized "text"
+    , inactiveColor       = solarized "background"
     }
 
 -----------------------------------------------------------------------
 -- Prompt Config
 myXPConfig = defaultXPConfig
     { P.font            = "xft:Terminus:pixelsize=14:autohint=true"
-    , bgColor           = solarized "base03"
-    , fgColor           = solarized "base00"
-    , borderColor       = solarized "base00"
+    , bgColor           = solarized "background"
+    , fgColor           = solarized "text"
+    , borderColor       = solarized "emphasis"
     , promptBorderWidth = 1
     }
 mpcXPConfig = myXPConfig
