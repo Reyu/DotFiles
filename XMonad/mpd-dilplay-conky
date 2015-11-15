@@ -1,9 +1,0 @@
-background no
-out_to_console yes
-out_to_x no
-override_utf8_locale yes
-update_interval 1
-total_run_times 0
-
-TEXT
-^fg(\#909090)${mpd_title}^fg() by ^fg(\#909090)${mpd_artist}^fg() from ^fg(\#909090)${mpd_album}^fg()
