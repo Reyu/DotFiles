@@ -184,6 +184,7 @@ mySPFloat = customFloating scratchpadSize
 scratchpads =
     [ NS "htop" (myTerminal ++ " -e htop") (title =? "htop") mySPFloat
     , NS "ghci" (myTerminal ++ " -e ghci") (title =? "ghci") mySPFloat
+    , NS "term" (myTerminal ++ " -t scratch") (title =? "scratch") mySPFloat
     ]
 
 ------------------------------------------------------------------------
@@ -218,6 +219,7 @@ myKeymap host conf =
     -- Scratchpads
     , ("M-s t", namedScratchpadAction scratchpads "htop")
     , ("M-s g", namedScratchpadAction scratchpads "ghci")
+    , ("M-s s", namedScratchpadAction scratchpads "term")
     -- Various Prompts
     , ("M-p p", spawn "~/bin/passmenu" )
     , ("M-p r", runOrRaisePrompt myXPConfig)
