@@ -58,18 +58,19 @@ getHost = do
 main = do
     host <- getHost
     logPipe <- spawnPipe myBar
+    checkTopicConfig (myTopicNames host) (myTopicConfig host)
     xmonad $ myConfig host logPipe
 
 myConfig host logPipe = defaultConfig
     { terminal           = myTerminal
     , focusFollowsMouse  = False
-    , borderWidth        = 2
     , modMask            = if host == Laptop False
                               then modMask defaultConfig
                               else mod4Mask
     , workspaces         = myTopicNames host
     , normalBorderColor  = solarized "background"
     , focusedBorderColor = solarized "emphasis"
+    , borderWidth        = 2
     , layoutHook         = myLayoutHook
     , manageHook         = myManageHook
                            <+> manageSpawn
@@ -152,6 +153,7 @@ myTopics host =
     [ TI "web" "" (spawn "firefox")
     , ti "chat" "" 
     , ti "xmonad" ".config/XMonad"
+    , TI "games" "" (spawn "steam")
     ]
     where
         ti t d = TI t d (spawnShell host (Just t))
@@ -192,8 +194,7 @@ myKeymap host conf =
     , ("M-l", sendMessage Expand)
     , ("M-M1-l", spawn "/usr/bin/xscreensaver-command -activate")
     , ("M-m", windows W.focusMaster)
-    , ("M-n", unsafePrompt (myTerminal ++ " -t") myXPConfig )
-    -- , ("M-p", spawn "~/bin/passmenu" )
+    , ("M-p", spawn "~/bin/passmenu" )
     , ("M-q", spawn "xmonad --recompile; xmonad --restart")
     , ("M-S-q", io exitSuccess)
     , ("M-r", runOrRaisePrompt myXPConfig )
@@ -202,25 +203,33 @@ myKeymap host conf =
     , ("M-t", withFocused $ windows . W.sink)
     , ("M-u", spawnHere "/usr/bin/firefox -P default -new-window")
     , ("M-S-v", sendMessage (IncMasterN (-1)))
-    , ("M-w", windowPromptGoto myXPConfig )
-    , ("M-S-w", sendMessage (IncMasterN 1))
+    -- , ("M-w", windowPromptGoto myXPConfig )
+    -- , ("M-S-w", sendMessage (IncMasterN 1))
     ]
     ++ -- Window Movement
     [ ("M-a", currentTopicAction (myTopicConfig host))
     , ("M-g", promptedGoto host)
-    , ("S-M-g", promptedShift)
+    , ("M-S-g", promptedShift)
     ]
     ++
     [(m ++ "M-" ++ k, f s)
         | (k, s) <- zip [",","."] [0..]
         , (f, m) <- [(viewScreen, ""), (sendToScreen, "S-")]
     ]
-
+    ++ -- Dynamic Workspaces
+    [ ("M-w n", addWorkspacePrompt myXPConfig)
+    , ("M-w S-n", renameWorkspace myXPConfig)
+    , ("M-w C-c", removeWorkspace)
+    -- , ("M-w C-k", killAll >> removeWorkspace)
+    , ("M-y n", promptWSGroupAdd myXPConfig "Name this group: ")
+    , ("M-y g", promptWSGroupView myXPConfig "Go to group: " >> viewScreen 1)
+    , ("M-y d", promptWSGroupForget myXPConfig "Forget group: ")
+    ]
 ------------------------------------------------------------------------
 -- Layouts:
 myLayoutHook = avoidStrutsOn [U] $
                smartBorders $
-               onWorkspace "Chat" imLayout
+               onWorkspace "chat" imLayout
                standardLayouts
     where
         standardLayouts = noBorders Full ||| tiled |||  reflectTiled ||| Mirror tiled ||| Grid
@@ -244,7 +253,6 @@ myManageHook = composeAll . concat $
         -- classnames
         myFloats  = ["Xmessage"]
         myChat    = ["Tkabber","Chat", "Skype", "psi"]
-        myVideo   = ["MPlayer", "xv", "Vlc"]
         -- resources
         myIgnores = ["desktop","desktop_window","notify-osd","trayer","panel"]
         -- a trick for fullscreen but stil allow focusing of other WSs
@@ -255,7 +263,6 @@ myManageHook = composeAll . concat $
 -- Startup hook
 myStartupHook host logPipe = do
     checkKeymap (myConfig host logPipe) (myKeys host logPipe)
-    spawn "tmux new-session -d -s Global weechat \\; set-option -t Global destroy-unattached off"
 
 ------------------------------------------------------------------------
 -- Set up status bar
