@@ -45,7 +45,9 @@ import System.Posix.Unistd
 import XMonad.Util.EZConfig
 import XMonad.Util.WorkspaceCompare
 
-data Host = Desktop | Laptop Bool -- ^ Does the laptop have a Windows key?
+-- Laptop options: First bool: Has windows key?
+-- Second Bool: Is Retina display? (adjusts font sizes)
+data Host = Desktop | Laptop Bool Bool
     deriving (Eq, Show, Read)
 
 getHost :: IO Host
@@ -54,21 +56,21 @@ getHost = do
     return $ case hostName of
         "renard" -> Desktop
         "vulpie" -> Desktop
-        "crevan" -> Laptop True
+        "crevan" -> Laptop True True
         _        -> Desktop
 
 main = do
     host <- getHost
-    logPipe <- spawnPipe myBar
+    logPipe <- spawnPipe (myBar host)
     checkTopicConfig (myTopicNames host) (myTopicConfig host)
     xmonad $ myConfig host logPipe
 
 myConfig host logPipe = defaultConfig
     { terminal           = myTerminal
     , focusFollowsMouse  = False
-    , modMask            = if host == Laptop False
-                              then modMask defaultConfig
-                              else mod4Mask
+    , modMask            = (case host of
+                               Laptop False _ -> modMask defaultConfig
+                               otherwise      -> mod4Mask)
     , workspaces         = myTopicNames host
     , normalBorderColor  = solarized "background"
     , focusedBorderColor = solarized "emphasis"
@@ -302,12 +304,14 @@ myStartupHook host logPipe = do
 
 ------------------------------------------------------------------------
 -- Set up status bar
-myBar = "dzen2" ++ concatMap (" " ++)
+myBar host = "dzen2" ++ concatMap (" " ++)
     [ "-x '0'"
     , "-y '0'"
     , "-h '16'"
     , "-xs 1"
-    , "-fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*'"
+    , (case host of
+          Laptop _ True -> "-fn '-*-terminus-medium-r-*-*-20-*-*-*-*-*-*-*'"
+          otherwise     -> "-fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*'")
     , "-bg '" ++ solarized "background" ++ "'"
     , "-fg '" ++ solarized "text" ++ "'"
     , "-ta 'center'"
@@ -326,8 +330,8 @@ myLoghook logPipe host = dynamicLogWithPP $ defaultPP
                   , loadAvg
                   , maildirNew "~/.maildir"
                   ] ++
-                  (case host of Laptop _ -> [battery]
-                                Desktop  -> [])
+                  (case host of Laptop _ _ -> [battery]
+                                Desktop    -> [])
     , ppOrder   = \(ws:l:t:exs) -> [t,l,ws]++exs
     , ppOutput  = hPutStrLn logPipe
     }
