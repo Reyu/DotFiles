@@ -45,9 +45,9 @@ import System.Posix.Unistd
 import XMonad.Util.EZConfig
 import XMonad.Util.WorkspaceCompare
 
--- Laptop options: First bool: Has windows key?
--- Second Bool: Is Retina display? (adjusts font sizes)
-data Host = Desktop | Laptop Bool Bool
+type HasWinKey = Bool
+type IsRetina = Bool
+data Host = Desktop | Laptop HasWinKey IsRetina
     deriving (Eq, Show, Read)
 
 getHost :: IO Host
