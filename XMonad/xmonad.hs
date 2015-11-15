@@ -156,6 +156,7 @@ myTopics host =
     , TI "skype" "" (spawn "skype")
     , ti "xmonad" ".config/XMonad"
     , TI "games" "" (spawn "steam")
+    , ti "kernel" "/usr/src/linux"
     ]
     where
         ti t d = TI t d (spawnShell host (Just t))
