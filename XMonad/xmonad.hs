@@ -9,14 +9,21 @@ import XMonad.Actions.Submap
 import XMonad.Actions.SpawnOn
 import XMonad.Actions.PerWorkspaceKeys
 import XMonad.Actions.PhysicalScreens
+import XMonad.Actions.TopicSpace
+import XMonad.Actions.DynamicWorkspaces
+import XMonad.Actions.DynamicWorkspaceGroups
+import qualified XMonad.Actions.DynamicWorkspaceOrder as DO
 import XMonad.Util.Run
 import XMonad.Util.NamedWindows (getName)
 import XMonad.Util.Loggers
 import qualified XMonad.Prompt    as P
 import XMonad.Prompt
+import XMonad.Prompt.Man
+import XMonad.Prompt.AppendFile
 import XMonad.Prompt.Shell
 import XMonad.Prompt.Ssh
 import XMonad.Prompt.Window
+import XMonad.Prompt.Workspace
 import XMonad.Prompt.RunOrRaise
 import qualified Network.MPD      as MPD
 import XMonad.Hooks.DynamicLog
@@ -34,6 +41,7 @@ import XMonad.Layout.Grid
 import Data.Ratio ((%))
 import System.Posix.Unistd
 import XMonad.Util.EZConfig
+import XMonad.Util.WorkspaceCompare
 
 data Host = Desktop | Laptop Bool -- ^ Does the laptop have a Windows key?
     deriving (Eq, Show, Read)
@@ -59,7 +67,7 @@ myConfig host logPipe = defaultConfig
     , modMask            = if host == Laptop False
                               then modMask defaultConfig
                               else mod4Mask
-    , workspaces         = show <$> [1..10]
+    , workspaces         = myTopicNames host
     , normalBorderColor  = solarized "background"
     , focusedBorderColor = solarized "emphasis"
     , layoutHook         = myLayoutHook
@@ -76,8 +84,35 @@ myConfig host logPipe = defaultConfig
 ------------------------------------------------------------------------
 -- Usefull common vars
 myTerminal = "st"
+myShell = "zsh"
 speakersAlsaName = "pci-0000_00_1b.0.analog-surround-51"
 headphonesAlsaName = "usb-Logitech_Logitech_G930_Headset-00.iec958-stereo"
+
+------------------------------------------------------------------------
+-- Helper functions
+adjustVolume device value =
+    spawn $ "pactl -- set-sink-volume alsa_output." ++ device ++ " " ++ value
+adjustMute device value =
+    spawn $ "pactl -- set-sink-mute alsa_output." ++ device ++ " " ++ value
+
+spawnShell :: Host -> Maybe String -> X ()
+spawnShell host name =
+    currentTopicDir (myTopicConfig host) >>= spawnShellIn name
+
+spawnShellIn :: Maybe String -> Dir -> X ()
+spawnShellIn Nothing dir =
+    spawn $ myTerminal ++ " -e tmux new -Ac '" ++ dir ++ "'"
+spawnShellIn (Just name) dir =
+    spawn $ myTerminal ++ " -e tmux new -As '" ++ name ++ "' -c '" ++ dir ++ "'"
+
+goto :: Host -> Topic -> X ()
+goto host topic = switchTopic (myTopicConfig host) topic
+
+promptedGoto :: Host -> X ()
+promptedGoto = workspacePrompt myXPConfig . goto
+
+promptedShift :: X ()
+promptedShift = workspacePrompt myXPConfig $ windows . W.shift
 
 -- Solarized colors
 solarized :: String -> String
@@ -104,11 +139,35 @@ solarized "bghighlights" = solarized "base02"
 solarized "emphasis"     = solarized "base1"
 solarized _              = solarized "text" --Use foreground color as default
 
-
 ------------------------------------------------------------------------
--- Helper functions
-adjustVolume device value = spawn $ "pactl -- set-sink-volume alsa_output." ++ device ++ " " ++ value
-adjustMute device value = spawn $ "pactl -- set-sink-mute alsa_output." ++ device ++ " " ++ value
+-- Topic Spaces
+data TopicItem = TI { topicName :: Topic   -- (22b)
+                    , topicDir  :: Dir
+                    , topicAction :: X ()
+                    }
+ 
+-- define some custom topics for use with the TopicSpace module.
+myTopics :: Host -> [TopicItem]
+myTopics host =
+    [ TI "web" "" (spawn "firefox")
+    , ti "chat" "" 
+    , ti "xmonad" ".config/XMonad"
+    ]
+    where
+        ti t d = TI t d (spawnShell host (Just t))
+
+myTopicNames :: Host -> [Topic]
+myTopicNames = map topicName . myTopics
+
+myTopicConfig :: Host -> TopicConfig
+myTopicConfig host = defaultTopicConfig
+    { topicDirs = M.fromList $ map (\(TI n d _) -> (n,d)) myTopics'
+    , defaultTopicAction = const (return ())
+    , defaultTopic = "web"
+    , maxTopicHistory = 10
+    , topicActions = M.fromList $ map (\(TI n _ a) -> (n,a)) myTopics'
+    }
+    where myTopics' = myTopics host
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -134,7 +193,7 @@ myKeymap host conf =
     , ("M-M1-l", spawn "/usr/bin/xscreensaver-command -activate")
     , ("M-m", windows W.focusMaster)
     , ("M-n", unsafePrompt (myTerminal ++ " -t") myXPConfig )
-    , ("M-p", spawn "~/bin/passmenu" )
+    -- , ("M-p", spawn "~/bin/passmenu" )
     , ("M-q", spawn "xmonad --recompile; xmonad --restart")
     , ("M-S-q", io exitSuccess)
     , ("M-r", runOrRaisePrompt myXPConfig )
@@ -147,9 +206,9 @@ myKeymap host conf =
     , ("M-S-w", sendMessage (IncMasterN 1))
     ]
     ++ -- Window Movement
-    [(m ++ "M-" ++ k, windows $ f i)
-        | (i, k) <- zip (XMonad.workspaces conf) ["<F" ++ show i ++ ">" | i <- [1..]]
-        , (f, m) <- [(W.greedyView, ""), (W.shift, "S-")]
+    [ ("M-a", currentTopicAction (myTopicConfig host))
+    , ("M-g", promptedGoto host)
+    , ("S-M-g", promptedShift)
     ]
     ++
     [(m ++ "M-" ++ k, f s)
@@ -161,7 +220,7 @@ myKeymap host conf =
 -- Layouts:
 myLayoutHook = avoidStrutsOn [U] $
                smartBorders $
-               onWorkspace "10" imLayout
+               onWorkspace "Chat" imLayout
                standardLayouts
     where
         standardLayouts = noBorders Full ||| tiled |||  reflectTiled ||| Mirror tiled ||| Grid
@@ -177,8 +236,7 @@ myLayoutHook = avoidStrutsOn [U] $
 myManageHook = composeAll . concat $
     [ [resource     =? r        --> doIgnore            |   r    <- myIgnores]
     , [className    =? c        --> doCenterFloat       |   c    <- myFloats ]
-    , [className    =? c        --> doShift "8"         |   c    <- myVideo  ]
-    , [className    =? chat     --> doShift "10"        |   chat <- myChat   ]
+    , [className    =? chat     --> doShift "Chat"      |   chat <- myChat   ]
     , [isFullscreen             --> myDoFullFloat                           ]
     ]
     where
@@ -220,8 +278,10 @@ myLoghook logPipe host = dynamicLogWithPP $ defaultPP
     , ppUrgent  = dzenColor (solarized "yellow") (solarized "red")
     , ppLayout  = dzenColor (solarized "text") ""
     , ppTitle   = shorten 100
+    , ppSort    = getSortByXineramaRule
     , ppExtras  = [ date "%a %b %d  %I:%M %p"
                   , loadAvg
+                  , maildirNew "~/.maildir"
                   ] ++
                   (case host of Laptop _ -> [battery]
                                 Desktop  -> [])
