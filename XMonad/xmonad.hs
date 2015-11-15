@@ -5,39 +5,41 @@ import qualified Data.Map         as M
 import System.Exit
 import Data.Monoid
 import Control.Applicative ((<$>))
-import XMonad.Actions.Submap
 import XMonad.Actions.SpawnOn
-import XMonad.Actions.PerWorkspaceKeys
 import XMonad.Actions.PhysicalScreens
 import XMonad.Actions.TopicSpace
 import XMonad.Actions.DynamicWorkspaces
 import XMonad.Actions.DynamicWorkspaceGroups
 import qualified XMonad.Actions.DynamicWorkspaceOrder as DO
+import XMonad.Actions.CycleWS
+import XMonad.Actions.WithAll
 import XMonad.Util.Run
 import XMonad.Util.NamedWindows (getName)
 import XMonad.Util.Loggers
+import XMonad.Util.NamedScratchpad
 import qualified XMonad.Prompt    as P
 import XMonad.Prompt
 import XMonad.Prompt.Man
 import XMonad.Prompt.AppendFile
 import XMonad.Prompt.Shell
 import XMonad.Prompt.Ssh
-import XMonad.Prompt.Window
 import XMonad.Prompt.Workspace
 import XMonad.Prompt.RunOrRaise
-import qualified Network.MPD      as MPD
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.UrgencyHook
 import XMonad.Hooks.ManageHelpers
-import XMonad.Hooks.SetWMName
 import XMonad.Layout.NoBorders
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.Reflect
 import XMonad.Layout.IM
 import XMonad.Layout.Tabbed
-import XMonad.Layout.PerWorkspace(onWorkspace)
+import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Grid
+import XMonad.Layout.TwoPane
+import XMonad.Layout.MultiToggle
+import XMonad.Layout.MultiToggle.Instances
+import qualified XMonad.Layout.Magnifier as Mag
 import Data.Ratio ((%))
 import System.Posix.Unistd
 import XMonad.Util.EZConfig
@@ -74,7 +76,6 @@ myConfig host logPipe = defaultConfig
     , layoutHook         = myLayoutHook
     , manageHook         = myManageHook
                            <+> manageSpawn
-                           <+> manageDocks
                            <+> manageHook defaultConfig
     , logHook            = myLoghook logPipe host
                            <+> logHook defaultConfig
@@ -151,7 +152,8 @@ data TopicItem = TI { topicName :: Topic   -- (22b)
 myTopics :: Host -> [TopicItem]
 myTopics host =
     [ TI "web" "" (spawn "firefox")
-    , ti "chat" "" 
+    , ti "irc" "" 
+    , TI "skype" "" (spawn "skype")
     , ti "xmonad" ".config/XMonad"
     , TI "games" "" (spawn "steam")
     ]
@@ -170,6 +172,18 @@ myTopicConfig host = defaultTopicConfig
     , topicActions = M.fromList $ map (\(TI n _ a) -> (n,a)) myTopics'
     }
     where myTopics' = myTopics host
+
+------------------------------------------------------------------------
+-- Scratchpads
+
+-- XXX offset scratchpad windows by a bit --- each one different?
+scratchpadSize = W.RationalRect (1/4) (1/4) (1/2) (1/2)
+mySPFloat = customFloating scratchpadSize
+
+scratchpads =
+    [ NS "htop" (myTerminal ++ " -e htop") (title =? "htop") mySPFloat
+    , NS "ghci" (myTerminal ++ " -e ghci") (title =? "ghci") mySPFloat
+    ]
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -194,65 +208,84 @@ myKeymap host conf =
     , ("M-l", sendMessage Expand)
     , ("M-M1-l", spawn "/usr/bin/xscreensaver-command -activate")
     , ("M-m", windows W.focusMaster)
-    , ("M-p", spawn "~/bin/passmenu" )
     , ("M-q", spawn "xmonad --recompile; xmonad --restart")
     , ("M-S-q", io exitSuccess)
-    , ("M-r", runOrRaisePrompt myXPConfig )
-    , ("M-s", unsafePrompt myTerminal myXPConfig )
-    , ("M-S-s", sshPrompt myXPConfig )
     , ("M-t", withFocused $ windows . W.sink)
     , ("M-u", spawnHere "/usr/bin/firefox -P default -new-window")
-    , ("M-S-v", sendMessage (IncMasterN (-1)))
-    -- , ("M-w", windowPromptGoto myXPConfig )
-    -- , ("M-S-w", sendMessage (IncMasterN 1))
-    ]
-    ++ -- Window Movement
-    [ ("M-a", currentTopicAction (myTopicConfig host))
+    , ("<Print>", spawn "scrot")
+    , ("C-<Print>", spawn "sleep 0.2; scrot -s")
+    -- Scratchpads
+    , ("M-s t", namedScratchpadAction scratchpads "htop")
+    , ("M-s g", namedScratchpadAction scratchpads "ghci")
+    -- Various Prompts
+    , ("M-p p", spawn "~/bin/passmenu" )
+    , ("M-p r", runOrRaisePrompt myXPConfig)
+    , ("M-p e", spawn "exe=`echo | yeganesh -x` && eval \"exec $exe\"") 
+    , ("M-p s", sshPrompt myXPConfig )
+    , ("M-p m", manPrompt myXPConfig)
+    , ("M-p n", appendFilePrompt myXPConfig "$HOME/Notes")
+    -- Dynamic Workspaces
+    , ("M-w n", addWorkspacePrompt myXPConfig)
+    , ("M-w S-n", renameWorkspace myXPConfig)
+    , ("M-w C-c", removeWorkspace)
+    , ("M-w C-k", killAll >> removeWorkspace) 
+    -- Workspace Groups
+    , ("M-y n", promptWSGroupAdd myXPConfig "Name this group: ")
+    , ("M-y g", promptWSGroupView myXPConfig "Go to group: " >> viewScreen 1)
+    , ("M-y d", promptWSGroupForget myXPConfig "Forget group: ")
+    -- Topic actions
+    , ("M-a", currentTopicAction (myTopicConfig host))
+    -- Window Movement
     , ("M-g", promptedGoto host)
     , ("M-S-g", promptedShift)
+    , ("M-z", toggleWS)
+    , ("M-;", nextScreen)
+    , ("M-S-;", swapNextScreen)
+    -- toggles: fullscreen, flip x, flip y, mirror, no borders
+    , ("M-C-<Space>", sendMessage $ Toggle NBFULL)
+    , ("M-C-x", sendMessage $ Toggle REFLECTX)
+    , ("M-C-y", sendMessage $ Toggle REFLECTY)
+    , ("M-C-m", sendMessage $ Toggle MIRROR)
+    , ("M-C-b", sendMessage $ Toggle NOBORDERS)
     ]
-    ++
+    ++ -- Move or shift windows between screens
     [(m ++ "M-" ++ k, f s)
         | (k, s) <- zip [",","."] [0..]
         , (f, m) <- [(viewScreen, ""), (sendToScreen, "S-")]
     ]
-    ++ -- Dynamic Workspaces
-    [ ("M-w n", addWorkspacePrompt myXPConfig)
-    , ("M-w S-n", renameWorkspace myXPConfig)
-    , ("M-w C-c", removeWorkspace)
-    -- , ("M-w C-k", killAll >> removeWorkspace)
-    , ("M-y n", promptWSGroupAdd myXPConfig "Name this group: ")
-    , ("M-y g", promptWSGroupView myXPConfig "Go to group: " >> viewScreen 1)
-    , ("M-y d", promptWSGroupForget myXPConfig "Forget group: ")
-    ]
+
 ------------------------------------------------------------------------
 -- Layouts:
-myLayoutHook = avoidStrutsOn [U] $
-               smartBorders $
-               onWorkspace "chat" imLayout
-               standardLayouts
+myLayoutHook =
+    avoidStrutsOn [U] $
+    mkToggle1 NBFULL $
+    mkToggle1 REFLECTX $
+    mkToggle1 REFLECTY $
+    mkToggle1 NOBORDERS $
+    mkToggle1 MIRROR $
+    smartBorders $
+    onWorkspaces ["web","irc"] (Full ||| tiled) $
+    onWorkspace "skype" (withIM (1%9) skypeRoster skypeLayout) $
+    tiled ||| Mag.magnifier Grid ||| TwoPane (2/100) (1/2) ||| Full
     where
-        standardLayouts = noBorders Full ||| tiled |||  reflectTiled ||| Mirror tiled ||| Grid
-        tiled           = ResizableTall 1 (2/100) (1/2) []
-        reflectTiled    = reflectHoriz tiled
-        imLayout        = withIM (1%9) skypeRoster chatLayouts
-        chatLayouts     = tabbed shrinkText tabConfig ||| Grid ||| tiled
-        skypeRoster     = ClassName "Skype"  `And` Not (Role  "ConversationsWindow")
-
+        tiled       = ResizableTall 1 (2/100) (1/2) []
+        skypeLayout = tabbed shrinkText tabConfig ||| Mag.magnifier Grid ||| tiled
+        skypeRoster = Title "reyuzenfold - Skype™"
+            -- The title is the ONLY property that changes between windows... WTF
 
 ------------------------------------------------------------------------
 -- Window rules:
-myManageHook = composeAll . concat $
-    [ [resource     =? r        --> doIgnore            |   r    <- myIgnores]
-    , [className    =? c        --> doCenterFloat       |   c    <- myFloats ]
-    , [className    =? chat     --> doShift "Chat"      |   chat <- myChat   ]
-    , [isFullscreen             --> myDoFullFloat                           ]
+myManageHook = composeAll $
+    [resource =? r --> doIgnore | r <- myIgnores ]
+    ++
+    [ className =? "Xmessage" --> doCenterFloat
+    , className =? "Skype" --> doShift "skype"
+    , isFullscreen --> myDoFullFloat
+    , manageDocks
+    , namedScratchpadManageHook scratchpads
     ]
     where
-        name      = stringProperty "WM_NAME"
-        -- classnames
-        myFloats  = ["Xmessage"]
-        myChat    = ["Tkabber","Chat", "Skype", "psi"]
+        name = stringProperty "WM_NAME"
         -- resources
         myIgnores = ["desktop","desktop_window","notify-osd","trayer","panel"]
         -- a trick for fullscreen but stil allow focusing of other WSs
@@ -285,7 +318,7 @@ myLoghook logPipe host = dynamicLogWithPP $ defaultPP
     , ppUrgent  = dzenColor (solarized "yellow") (solarized "red")
     , ppLayout  = dzenColor (solarized "text") ""
     , ppTitle   = shorten 100
-    , ppSort    = getSortByXineramaRule
+    , ppSort    = fmap (namedScratchpadFilterOutWorkspace.) DO.getSortByOrder
     , ppExtras  = [ date "%a %b %d  %I:%M %p"
                   , loadAvg
                   , maildirNew "~/.maildir"
