@@ -17,7 +17,6 @@ import XMonad.Util.Run
 import XMonad.Util.NamedWindows (getName)
 import XMonad.Util.Loggers
 import XMonad.Util.NamedScratchpad
-import qualified XMonad.Prompt    as P
 import XMonad.Prompt
 import XMonad.Prompt.Man
 import XMonad.Prompt.AppendFile
@@ -350,7 +349,7 @@ tabConfig = defaultTheme
 -----------------------------------------------------------------------
 -- Prompt Config
 myXPConfig = defaultXPConfig
-    { P.font            = "xft:Terminus:pixelsize=14:autohint=true"
+    { font            = "xft:Terminus:pixelsize=14:autohint=true"
     , bgColor           = solarized "background"
     , fgColor           = solarized "text"
     , borderColor       = solarized "emphasis"
