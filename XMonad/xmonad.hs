@@ -67,9 +67,9 @@ main = do
 myConfig host logPipe = defaultConfig
     { terminal           = myTerminal
     , focusFollowsMouse  = False
-    , modMask            = (case host of
+    , modMask            = case host of
                                Laptop False _ -> modMask defaultConfig
-                               otherwise      -> mod4Mask)
+                               otherwise      -> mod4Mask
     , workspaces         = myTopicNames host
     , normalBorderColor  = solarized "background"
     , focusedBorderColor = solarized "emphasis"
@@ -109,7 +109,7 @@ spawnShellIn (Just name) dir =
     spawn $ myTerminal ++ " -e tmux new -As '" ++ name ++ "' -c '" ++ dir ++ "'"
 
 goto :: Host -> Topic -> X ()
-goto host topic = switchTopic (myTopicConfig host) topic
+goto host = switchTopic (myTopicConfig host)
 
 promptedGoto :: Host -> X ()
 promptedGoto = workspacePrompt myXPConfig . goto
@@ -300,7 +300,7 @@ myManageHook = composeAll $
 
 ------------------------------------------------------------------------
 -- Startup hook
-myStartupHook host logPipe = do
+myStartupHook host logPipe = 
     checkKeymap (myConfig host logPipe) (myKeys host logPipe)
 
 ------------------------------------------------------------------------
@@ -310,9 +310,9 @@ myBar host = "dzen2" ++ concatMap (" " ++)
     , "-y '0'"
     , "-h '16'"
     , "-xs 1"
-    , (case host of
+    , case host of
           Laptop _ True -> "-fn '-*-terminus-medium-r-*-*-20-*-*-*-*-*-*-*'"
-          otherwise     -> "-fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*'")
+          otherwise     -> "-fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*'"
     , "-bg '" ++ solarized "background" ++ "'"
     , "-fg '" ++ solarized "text" ++ "'"
     , "-ta 'center'"
