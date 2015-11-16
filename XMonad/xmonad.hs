@@ -227,7 +227,9 @@ myKeymap host conf =
     , ("M-p e", spawn "exe=`echo | yeganesh -x` && eval \"exec $exe\"") 
     , ("M-p s", sshPrompt myXPConfig )
     , ("M-p m", manPrompt myXPConfig)
-    , ("M-p n", appendFilePrompt myXPConfig "$HOME/Notes")
+    , ("M-p n", appendFilePrompt myXPConfig "Notes")
+    , ("M-p C-n", spawn "echo '' >> Notes && date >> Notes" >>
+        appendFilePrompt myXPConfig "Notes")
     -- Dynamic Workspaces
     , ("M-w n", addWorkspacePrompt myXPConfig)
     , ("M-w S-n", renameWorkspace myXPConfig)
