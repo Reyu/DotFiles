@@ -158,6 +158,9 @@ myTopics host =
     , ti "xmonad" ".config/XMonad"
     , TI "games" "" (spawn "steam")
     , ti "kernel" "/usr/src/linux"
+    , TI "piops" "Projects/PIOPS" (
+        spawn "firefox -new-window http://tkts.sys.comcast.net/secure/Dashboard.jspa"
+        >> spawnShell host (Just "Projects/PIOPS"))
     ]
     where
         ti t d = TI t d (spawnShell host (Just t))
