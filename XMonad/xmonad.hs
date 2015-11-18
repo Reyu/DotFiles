@@ -332,7 +332,12 @@ myLoghook logPipe host = dynamicLogWithPP $ defaultPP
     , ppSort    = fmap (namedScratchpadFilterOutWorkspace.) DO.getSortByOrder
     , ppExtras  = [ date "%a %b %d  %I:%M %p"
                   , loadAvg
-                  , maildirNew "~/.maildir"
+                  , dzenColorL (solarized "green") "" $
+                      wrapL "Inbox: " "" $
+                      maildirNew ".maildir/Inbox"
+                  , dzenColorL (solarized "red") "" $
+                      wrapL "CNOC: " "" $
+                      maildirNew ".maildir/CNOC"
                   ] ++
                   (case host of Laptop _ _ -> [battery]
                                 Desktop    -> [])
