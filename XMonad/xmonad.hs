@@ -71,7 +71,7 @@ myConfig host logPipe = defaultConfig
                                Laptop False _ -> modMask defaultConfig
                                otherwise      -> mod4Mask
     , workspaces         = myTopicNames host
-    , normalBorderColor  = solarized "background"
+    , normalBorderColor  = solarized "secondary"
     , focusedBorderColor = solarized "emphasis"
     , borderWidth        = 2
     , layoutHook         = myLayoutHook
@@ -359,7 +359,7 @@ tabConfig = defaultTheme
 -----------------------------------------------------------------------
 -- Prompt Config
 myXPConfig = defaultXPConfig
-    { font            = "xft:Terminus:pixelsize=14:autohint=true"
+    { font            = "xft:Terminus:pixelsize=16:autohint=true"
     , bgColor           = solarized "background"
     , fgColor           = solarized "text"
     , borderColor       = solarized "emphasis"
