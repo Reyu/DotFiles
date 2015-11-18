@@ -1,10 +1,10 @@
 set mbox_type=Maildir
-# set header_cache=~/.cache/mutt
-set folder=$HOME/Mail
-set spoolfile=+/
+set header_cache=~/.cache/mutt
+set folder=$HOME/.maildir
+set spoolfile=+Inbox
 set mask=".*"
 set record="+Sent"
 set postponed="+Drafts"
 
-mailboxes `zsh -c '(cd ~/Mail;for box in **/cur(:h);do print -n "\"+$box\" ";done)'`
+mailboxes `zsh -c 'print -l **/new(D:h)|grep -Pv "Archive|Drafts|Sent|Trash|(probably-s|S)pam|virus"|xargs printf "+%s "'`
 # vim: ft=muttrc
