@@ -57,4 +57,13 @@
   # Getting PGP/GnuPG-Key from server
     macro pager P "!gpg --keyserver pgp.mit.edu --recv-key 0x" "Get PGP Key"
 
+
+# Bindings for COMPOSE
+  # Select identity to send from
+    bind  compose \eff edit-from
+    macro compose \efr "<edit-from>^UReyu Zenfold <reyu@reyuzenfold.com>\n"
+    macro compose \efp "<edit-from>^UTim Millican <tim.millican@gmail.com>\n"
+    macro compose \efl "<edit-from>^UTim Millican <tim.millican@linux.com>\n"
+    macro compose \efw "<edit-from>^UTim Millican <timothy_millican@cable.comcast.com>\n"
+
 # vim: ft=muttrc
