@@ -1,2 +1,2 @@
 #!/bin/sh
-gpg2 --list-keys --with-colons|grep -Po '(?<=[\b<(])\S+@\S+\.\S+(?=[\b>)])'|sort -u|xargs -n1 -I{} echo send-hook \'~t {}\' \'set pgp_autosign\'
+gpg2 --list-keys --with-colons|grep -Po '(?<=[\b<(])\S+@\S+\.\S+(?=[\b>)])'|uniq|xargs printf "send-hook '~t %s' 'set pgp_autosign'\n"
