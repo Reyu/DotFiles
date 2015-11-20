@@ -24,5 +24,6 @@ source ~/.mutt/unignore            # visible headers
 source ~/.mutt/various             # some baubles
 source ~/.mutt/misc-hooks          # Change settings based upon message recipients
 source ~/.mutt/mlists              # Mailinglists
+source `if [ -f ~/.mutt/host ];then echo ~/.mutt/host;else echo /dev/null;fi` # Any host specific settings
 
 # vim: ft=muttrc
