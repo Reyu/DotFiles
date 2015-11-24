@@ -1,6 +1,6 @@
 # Note: Scoring on a (X-)Header won't work :/
 
-set score_threshold_delete=0    # delete messages with score 0
+# set score_threshold_delete=0    # delete messages with score 0
 set score_threshold_flag=50     # auto-flag messages w/ score >= 50
 set score_threshold_read=5      # mark messages w/ score <= 5 as read
 
@@ -17,10 +17,12 @@ score ~D                                          =0    # this is a deleted emai
 
 # My addresses
 # Messages addressed to me get                    +10
+score '~t reyu@reyuzenfold.com'                   +10
 score '~t tim.millican@gmail.com'                 +10
 score '~t reyuzenfold@gmail.com'                  +10
 score '~t tim_millican@cable.comcast.com'         +10
 # Messages addressed ONLY to me get an additional +10
+score '~t ^reyu@reyuzenfold.com$'                 +10
 score '~t ^tim.millican@gmail.com$'               +10
 score '~t ^reyuzenfold@gmail.com$'                +10
 score '~t ^tim_millican@cable.comcast.com$'       +10

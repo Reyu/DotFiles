@@ -135,7 +135,7 @@ set attach_split
 
 # in the index menu which affect a message will be applied to all
 # tagged messages
-set auto_tag
+unset auto_tag
 
 # mutt will beep whenever it prints a message notifying you of new mail
 unset beep_new
@@ -185,7 +185,6 @@ set delete_untag
 # revattach menu will not show the subparts
 set digest_collapse
 
-
 # allows you to edit the header of your outgoing messages along with
 # the body of your message.
 set edit_headers
@@ -205,9 +204,6 @@ set fast_reply
 # controls whether or not attachments on outgoing messages are saved
 # along with the main body of your message.
 set fcc_attach
-
-# the location of my mailbox
-set folder="~/Mail"
 
 # customize the file browser display to your personal taste
 #  %C  current file number
@@ -321,7 +317,7 @@ set include
 #         right justify the rest of the string and pad with character "X"
 #   %|X
 #         pad to the end of the line with character "X"
-set index_format="%4C %2e/%-2E %Z %H %N [ %-40.40F ] %s %> %{%b %e %Y  %H:%M} | %4c "
+set index_format="%4C %2e/%-2E %Z %H %N [ %-35.40F ] %s %> %{%b %e %Y  %H:%M} | %4c "
 
 # how often (in seconds) mutt should look for new mail.
 # Note: Mutt check the 'spoolfile' and *not* a POP - Server
@@ -337,13 +333,9 @@ set mailcap_sanitize
 # display of wrapped lines in the internal pager.
 set markers
 
-# pecifies the folder into which read mail in your 'spoolfile'
-# folder will be appended
-#set mbox="~/MuttMail/Maildir"
-
 # default mailbox type used when creating new folders. May be any of
 # mbox, MMDF, MH and Maildir
-# set mbox_type=Maildir
+set mbox_type=Maildir
 
 # Mutt should remove my address from the list of recipients when replying to a
 # message
@@ -385,12 +377,7 @@ set pager_context=10
 
 # format of the one-line message 'status' displayed before each
 # message in either the internal or an external pager
-# set pager_format="(Score: %N) %S [%C/%m] %s"
 set pager_format="-%S- [%C/%m] %n (%c) %s"
-# set pager_format="{Score: %N} %S [%C/%T] %n (%l) %s"
-# set pager_format="{Score: %N } [%C/%m] %-18.18n %-50.50s %> %l lines (%c)"
-# set  pager_format="[Status: %S] [Score: %N] [From: %f]"
-# set pager_format="(Score: %N) %S %C/%T?%n: %-20.20n %s"
 
 # determines the number of lines of a mini-index which is shown when in the
 # pager
@@ -504,41 +491,7 @@ set spoolfile="+/Inbox"
 set status_chars="-*%A"
 
 # format of the status line displayed in the index menu
-#  set status_format="%v: %f (%s) [%?M/?%m]  [flags:%?t tagged,?%n new]"
-#  set status_format="%v: %f (%s) [%M/%m]\n[flags:n=%n,D=%d,t=%t,!=%F]"
-#  set status_format="%v: %f (%s) [%M/%m]  [flags:n=%n,t=%t]"
-#  set status_format="%v:    (%s) [%M/%m]  [flags:n=%n,t=%t]"
-#  set status_format="%v:    (%s) [%M/%m]  [flags:n:%n,t:%t,p:%p]"
-#  set status_format="%v:    (%s) [%M/%m]  [flags:%?02n new?,t:%t]"
-#  set status_format="%v: %f (%s) [%M/%m]  [flags:%n new,%?t tagged?]"
-#  set status_format="%v: %f (%s) [%M/%m;%l bytes]  [N=%n,*=%t,post=%p]"
-#  set status_format="%v: %f (%s) [%M/%m] [N=%n,*=%t,post=%p,new=%b]"
-#  set status_format="%v: %f (%s) [%M/%m] [N=%n,*=%t,new=%b]"
-#  set status_format="%v: %f (%s) [%M/%m] [NEW=%n] %?V?[%V]?"
-#  set status_format="%v: %f (%s) [%?M/?%m]  [flags:%?t tagged,?%n new%?p post?]"
-#  set status_format="%v: %f (%s) [%?M/?%m]  [flags:%?t tagged,?%n new]"
-#  set status_format="%v: %f (%s) [%M/%m]\n[flags:n=%n,D=%d,t=%t,!=%F]"
-#  set status_format="%v: %f (%s) [%M/%m]  [flags:n=%n,t=%t]"
-#  set status_format="%v:    (%s) [%M/%m]  [flags:n=%n,t=%t]"
-#  set status_format="%v:    (%s) [%M/%m]  [flags:n:%n,t:%t,p:%p]"
-#  set status_format="%v:    (%s) [%M/%m]  [flags:%?02n new?,t:%t]"
-#  set status_format="%v: %f (%s) [%M/%m]  [flags:%n new,%?t tagged?]"
-#  set status_format="%v: %f (%s) [%M/%m;%l bytes]  [N=%n,*=%t,post=%p]"
-set status_format="[`echo $LOGNAME`@%h] - [New: %n] - [Tagged: %t] - [Size: %l] - [Draft: %p] - [Sort: %s] - [Total: %m]"
-#  set status_format="%r %v [%?M?%M/?%m] %?n?%n new, ?%?p?%p postponed, ?%?t?%t +tagged, ?%?d?%d deleted, ?(%h:%f) %?b?%b more to go.?%> %r"
-#  set status_format="%v: %f (%s) [%M/%m] [N=%n,*=%t,post=%p,new=%b]"
-#  set status_format="%v: %f (%s) [%M/%m] [New=%n,*=%t,fldr=%b]"
-#  set status_format="-%r-%v--[%?M?%M/?%m msgs%?n?, %n new?%?d?, %d del?%?F?, %F flag?%?t?, %t tag?%?p?, %p postp?%?b?, %b inc?%?l?, %l?]--(%f)--%s-%>-%P-"
-#  set status_format="Mailbox: %f (%s) %> [%M/%m] [New=%n FldrNew=%b %t* %lb]"
-#  set status_format="-%r-Mutt: %f [Msgs:%?M?%M/?%m%?n? New:%n?%?o? Old:%o?%?d? Del:%d?%?F? Flag:%F?%?t? Tag:%t?%?p? Post:%p?%?b? Inc:%b? %?l? %l?]---(%s/%S)-%>-(%P)---"
-#  set status_format="-(%v)-(%f=)  (Sorted by %s) (Msgs:%m)-(New:%n)-(Old:%o)-(Tag:%t)-(%P)-"
-#  set status_format="%v @%h:%f%r(%s) [%M/%m(%P of %l)]%> [new=%n|unread=%u|tags=%t|deleted=%d]"
-#  set status_format="-%r-+(%v) %f [Msgs:%?M?%M/?%m%?n? New:%n?%?o? Old:%o?%?d? Del:%d?%?F? Flag:%F?%?t? Tag:%t?%?p? Post:%p?%?b? Inc:%b?%?l? %l?]----%>-(%P)---"
-#  set status_format="-%r- %f= [Msgs:%?M?%M/?%m%?n? New:%n?%?o? Old:%o?%?d? Del:%d?%?F? Flag:%F?%?t? Tag:%t?%?p? Post:%p?%?b? Inc:%b?%?l? %l?]-(%s/%S)-%>-%[%H:%M:%S]-(%P)-"
-#  set status_format="-%r-%v--[%?M?%M/?%m msgs%?n?, %n new?%?d?, %d del?%?F?, %F flag?%?t?, %t tag?%?p?, %p postp?%?b?, %b inc?%?l?, %l?]--(%f)--%s-%>-%P-"
-#  set status_format="%v: %r %f [%?b?%b mailboxes ?%M/%m]  %?p?[post=%p]? %?n?[N=%n]?%?t?[*=%t]? <%s>"
-#  set status_format="-%r %v OpenBSD 3.2 [Msgs:%?M?%M/?%m%?n? New:%n?%?o? Old:%o?%?d? Del:%d?%?F? Flag:%F?%?t? Tag:%t?%?p? Post:%p?%?b? Inc:%b?%?l? %l?]---(%s/%S)-%>-(%P)---"
-#  set status_format="-%r- %f= [Msgs:%?M?%M/?%m%?n? New:%n?%?o? Old:%o?%?d? Del:%d?%?F? Flag:%F?%?t? Tag:%t?%?p? Post:%p?%?b? Inc:%b?%?l? %l?]-(%s/%S)-%>-%[%H:%M:%S]-(%P)-"
+set status_format="-%r- %f= [Msgs:%?M?%M/?%m%?n? New:%n?%?o? Old:%o?%?d? Del:%d?%?F? Flag:%F?%?t? Tag:%t?%?p? Post:%p?%?b? Inc:%b?%?l? %l?]-(%s/%S)-%>-[`echo $LOGNAME`@%h]-(%P)-"
 
 # When unset, mutt won't stop when the user presses the terminal's
 # suspkey, usually `control-Z'.
@@ -555,9 +508,6 @@ set tilde
 # key to be pressed in the main menu before timing out and checking for
 # new mail.  A value of zero or less will cause Mutt to never time out.
 set timeout=20
-
-# /* No Comment */
-#set tmpdir="~/tmp"
 
 # Controls the character used to indicate mail addressed to you.
 #set to_chars="  +LTGCF "
