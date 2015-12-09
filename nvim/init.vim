@@ -70,8 +70,9 @@ autocmd init BufRead,BufEnter /var/tmp/* set nobackup noundofile nowritebackup
 call plug#begin('~/.config/nvim/plugged') " {{{
 Plug 'altercation/vim-colors-solarized'
 Plug 'benekastah/neomake'
-Plug 'godlygeek/tabular', { 'on' : 'Tabularize' }
-Plug 'neovimhaskell/haskell-vim', { 'for' : 'haskell' }
+Plug 'chrisdone/hindent'
+Plug 'godlygeek/tabular'
+" Plug 'neovimhaskell/haskell-vim', { 'for' : ['haskell','lhaskell'] }
 Plug 'majutsushi/tagbar'
 Plug 'pbrisbin/vim-syntax-shakespeare', { 'for' : ['hamlet','julius','casius','lucius'] }
 Plug 'python.vim', { 'for' : 'python' }
@@ -85,8 +86,15 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-markdown', { 'for' : 'markdown' }
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
-Plug 'Twinside/vim-haskellConceal', { 'for' : 'haskell' }
+" Plug 'Twinside/vim-haskellConceal' ", { 'for' : ['haskell','lhaskell'] }
 Plug 'vim-utils/vim-man'
+
+Plug 'dag/vim2hs'
+Plug 'eagletmt/neco-ghc'
+Plug 'scrooloose/syntastic'
+Plug 'eagletmt/ghcmod-vim'
+Plug 'Shougo/vimproc.vim'
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
 call plug#end() " }}}
 " Plugin Configuration {{{
 " Plugin 'altercation/vim-colors-solarized' {{{
@@ -94,10 +102,32 @@ set background=dark
 colorscheme solarized
 call togglebg#map("<F5>")
 " }}}
+" Plugin 'dag/vim2hs' {{{
+let g:haskell_conceal_wide = 0
+" disable all conceals, including the simple ones like
+" lambda and composition
+let g:haskell_conceal              = 0
+" disable concealing of "enumerations": commatized lists like
+" deriving clauses and LANGUAGE pragmas,
+" otherwise collapsed into a single ellipsis
+let g:haskell_conceal_enumerations = 0
+" }}}
 " Plugin 'benekastah/neomake' {{{
 " Try to run Neomake on file save
 " This should fail silently
 autocmd init BufWritePost * Neomake
+" }}}
+" Plugin 'eagletmt/neco-ghc' {{{
+" Disable haskell-vim omnifunc
+let g:ycm_semantic_triggers = {'haskell' : ['.']}
+let g:haskellmode_completion_ghc = 0
+autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+" }}}
+" Plugin 'scrooloose/syntastic' {{{
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
 " }}}
 " Plugin Configuration }}}
 " Plugins }}}
