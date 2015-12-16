@@ -220,6 +220,7 @@ myKeymap host conf =
     , ("M-u", spawnHere "/usr/bin/firefox -P default -new-window")
     , ("<Print>", spawn "scrot")
     , ("C-<Print>", spawn "sleep 0.2; scrot -s")
+    , ("M-S-t", spawn "stoken-type")
     -- Scratchpads
     , ("M-s t", namedScratchpadAction scratchpads "htop")
     , ("M-s g", namedScratchpadAction scratchpads "ghci")
