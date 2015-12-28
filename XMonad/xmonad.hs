@@ -90,16 +90,9 @@ myConfig host logPipe = defaultConfig
 -- Usefull common vars
 myTerminal = "st"
 myShell = "zsh"
-speakersAlsaName = "pci-0000_00_1b.0.analog-surround-51"
-headphonesAlsaName = "usb-Logitech_Logitech_G930_Headset-00.iec958-stereo"
 
 ------------------------------------------------------------------------
 -- Helper functions
-adjustVolume device value =
-    spawn $ "pactl -- set-sink-volume alsa_output." ++ device ++ " " ++ value
-adjustMute device value =
-    spawn $ "pactl -- set-sink-mute alsa_output." ++ device ++ " " ++ value
-
 spawnShell :: Host -> Maybe String -> X ()
 spawnShell host name =
     currentTopicDir (myTopicConfig host) >>= spawnShellIn name
@@ -196,14 +189,10 @@ scratchpads =
 myKeys host logPipe = myKeymap host (myConfig host logPipe)
 myKeymap host conf =
     [
-    -- Volume: Headphones
-      ("<XF86AudioLowerVolume>", adjustVolume headphonesAlsaName "5%-")
-    , ("<XF86AudioMute>", adjustMute headphonesAlsaName "toggle")
-    , ("<XF86AudioRaiseVolume>", adjustVolume headphonesAlsaName "5%+")
-    -- Volume: Speakers
-    , ("S-<XF86AudioLowerVolume>", adjustVolume speakersAlsaName "5%-")
-    , ("S-<XF86AudioMute>", adjustMute speakersAlsaName "toggle")
-    , ("S-<XF86AudioRaiseVolume>", adjustVolume speakersAlsaName "5%+")
+    -- Volume
+      ("<XF86AudioLowerVolume>", spawn "pulse-volume.sh decrease")
+    , ("<XF86AudioMute>", spawn "pulse-volume.sh toggle")
+    , ("<XF86AudioRaiseVolume>", spawn "pulse-volume.sh increase")
     -- General
     , ("M-<Backspace>", focusUrgent)
     , ("M-S-<Backspace>", clearUrgents)
