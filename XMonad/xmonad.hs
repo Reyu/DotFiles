@@ -46,17 +46,18 @@ import XMonad.Util.WorkspaceCompare
 
 type HasWinKey = Bool
 type IsRetina = Bool
-data Host = Desktop | Laptop HasWinKey IsRetina
+type NumScreens = Int
+data Host = Desktop NumScreens | Laptop HasWinKey IsRetina
     deriving (Eq, Show, Read)
 
 getHost :: IO Host
 getHost = do
     hostName <- nodeName `fmap` getSystemID
     return $ case hostName of
-        "renard" -> Desktop
-        "vulpie" -> Desktop
+        "renard" -> Desktop 2
+        "vulpie" -> Desktop 3
         "crevan" -> Laptop True True
-        _        -> Desktop
+        _        -> Desktop 1
 
 main = do
     host <- getHost
@@ -249,8 +250,6 @@ myKeymap host conf =
     , ("M-g", promptedGoto host)
     , ("M-S-g", promptedShift)
     , ("M-z", toggleWS)
-    , ("M-;", nextScreen)
-    , ("M-S-;", swapNextScreen)
     -- toggles: fullscreen, flip x, flip y, mirror, no borders
     , ("M-C-<Space>", sendMessage $ Toggle NBFULL)
     , ("M-C-x", sendMessage $ Toggle REFLECTX)
@@ -260,7 +259,7 @@ myKeymap host conf =
     ]
     ++ -- Move or shift windows between screens
     [(m ++ "M-" ++ k, f s)
-        | (k, s) <- zip [",","."] [0..]
+        | (k, s) <- zip [";",",","."] [0..]
         , (f, m) <- [(viewScreen, ""), (sendToScreen, "S-")]
     ]
 
@@ -341,7 +340,7 @@ myLoghook logPipe host = dynamicLogWithPP $ defaultPP
                       maildirNew ".maildir/CNOC"
                   ] ++
                   (case host of Laptop _ _ -> [battery]
-                                Desktop    -> [])
+                                Desktop _  -> [])
     , ppOrder   = \(ws:l:t:exs) -> [t,l,ws]++exs
     , ppOutput  = hPutStrLn logPipe
     }
