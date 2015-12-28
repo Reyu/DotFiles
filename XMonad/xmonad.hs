@@ -13,6 +13,7 @@ import XMonad.Actions.DynamicWorkspaceGroups
 import qualified XMonad.Actions.DynamicWorkspaceOrder as DO
 import XMonad.Actions.CycleWS
 import XMonad.Actions.WithAll
+import XMonad.Actions.FloatKeys
 import XMonad.Util.Run
 import XMonad.Util.NamedWindows (getName)
 import XMonad.Util.Loggers
@@ -221,7 +222,7 @@ myKeymap host conf =
     , ("M-u", spawnHere "/usr/bin/firefox -P default -new-window")
     , ("<Print>", spawn "scrot")
     , ("C-<Print>", spawn "sleep 0.2; scrot -s")
-    , ("M-S-t", spawn "stoken-type")
+    -- , ("M-S-t", spawn "stoken-type")
     -- Scratchpads
     , ("M-s t", namedScratchpadAction scratchpads "htop")
     , ("M-s g", namedScratchpadAction scratchpads "ghci")
@@ -256,6 +257,20 @@ myKeymap host conf =
     , ("M-C-y", sendMessage $ Toggle REFLECTY)
     , ("M-C-m", sendMessage $ Toggle MIRROR)
     , ("M-C-b", sendMessage $ Toggle NOBORDERS)
+    ]
+    ++ -- Float Window Movement
+    [ ("M-S-" ++ dir, withFocused (keysMoveWindow (dx,dy)))
+      | (dir,dx,dy) <- [ ("h", -20, 0)
+                       , ("n", 20, 0)
+                       , ("c", 0, -20)
+                       , ("t", 0, 20) ]
+    ]
+    ++ -- Float Window Resize
+    [ ("M-C-" ++ dir, withFocused (keysResizeWindow  (dx,dy) (1,1)))
+      | (dir,dx,dy) <- [ ("n", -20, 0)
+                       , ("h", 20, 0)
+                       , ("t", 0, -20)
+                       , ("c", 0, 20) ]
     ]
     ++ -- Move or shift windows between screens
     [(m ++ "M-" ++ k, f s)
