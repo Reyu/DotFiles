@@ -247,12 +247,6 @@ myKeymap host conf =
     , ("M-g", promptedGoto host)
     , ("M-S-g", promptedShift)
     , ("M-z", toggleWS)
-    -- toggles: fullscreen, flip x, flip y, mirror, no borders
-    , ("M-C-<Space>", sendMessage $ Toggle NBFULL)
-    , ("M-C-x", sendMessage $ Toggle REFLECTX)
-    , ("M-C-y", sendMessage $ Toggle REFLECTY)
-    , ("M-C-m", sendMessage $ Toggle MIRROR)
-    , ("M-C-b", sendMessage $ Toggle NOBORDERS)
     ]
     ++ -- Scratchpads
     [ ("M-s " ++ k, namedScratchpadAction scratchpads sp)
@@ -260,6 +254,15 @@ myKeymap host conf =
                    , ("g", "ghci")
                    , ("m", "mail")
                    ]
+    ]
+    ++ -- toggles: fullscreen, flip x, flip y, mirror, no borders
+    [ ("M-C-" ++ k, sendMessage $ f)
+      | (k, f) <- [ ("<Space>", Toggle NBFULL)
+                  , ("x", Toggle REFLECTX)
+                  , ("y", Toggle REFLECTY)
+                  , ("m", Toggle MIRROR)
+                  , ("b", Toggle NOBORDERS)
+                  ]
     ]
     ++ -- Float Window Movement
     [ ("M-S-" ++ dir, withFocused (keysMoveWindow (dx,dy)))
