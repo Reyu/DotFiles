@@ -154,15 +154,13 @@ data TopicItem = TI { topicName :: Topic   -- (22b)
 -- define some custom topics for use with the TopicSpace module.
 myTopics :: Host -> [TopicItem]
 myTopics host =
-    [ TI "web" "" (spawn "firefox")
-    , ti "irc" "" 
-    , TI "skype" "" (spawn "skype")
+    [ TI "web" "." (spawn "firefox")
+    , ti "irc" "." 
+    , ti "work" "Projects"
+    , TI "skype" "." (spawn "skype")
     , ti "xmonad" ".config/XMonad"
-    , TI "games" "" (spawn "steam")
+    , TI "games" "." (spawn "steam")
     , ti "kernel" "/usr/src/linux"
-    , TI "piops" "Projects/PIOPS" (
-        spawn "firefox -new-window http://tkts.sys.comcast.net/secure/Dashboard.jspa"
-        >> spawnShell host (Just "Projects/PIOPS"))
     ]
     where
         ti t d = TI t d (spawnShell host (Just t))
