@@ -223,10 +223,6 @@ myKeymap host conf =
     , ("<Print>", spawn "scrot")
     , ("C-<Print>", spawn "sleep 0.2; scrot -s")
     -- , ("M-S-t", spawn "stoken-type")
-    -- Scratchpads
-    , ("M-s t", namedScratchpadAction scratchpads "htop")
-    , ("M-s g", namedScratchpadAction scratchpads "ghci")
-    , ("M-s m", namedScratchpadAction scratchpads "mail")
     -- Various Prompts
     , ("M-p p", spawn "~/bin/passmenu" )
     , ("M-p r", runOrRaisePrompt myXPConfig)
@@ -257,6 +253,13 @@ myKeymap host conf =
     , ("M-C-y", sendMessage $ Toggle REFLECTY)
     , ("M-C-m", sendMessage $ Toggle MIRROR)
     , ("M-C-b", sendMessage $ Toggle NOBORDERS)
+    ]
+    ++ -- Scratchpads
+    [ ("M-s " ++ k, namedScratchpadAction scratchpads sp)
+      | (k, sp) <- [ ("t", "htop")
+                   , ("g", "ghci")
+                   , ("m", "mail")
+                   ]
     ]
     ++ -- Float Window Movement
     [ ("M-S-" ++ dir, withFocused (keysMoveWindow (dx,dy)))
