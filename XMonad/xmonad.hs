@@ -263,7 +263,7 @@ myKeymap host conf =
                   ]
     ]
     ++ -- Float Window Movement
-    [ ("M-S-" ++ dir, withFocused (keysMoveWindow (dx,dy)))
+    [ ("M-M1-" ++ dir, withFocused (keysMoveWindow (dx,dy)))
       | (dir,dx,dy) <- [ ("h", -20, 0)
                        , ("n", 20, 0)
                        , ("c", 0, -20)
