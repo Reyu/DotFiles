@@ -313,7 +313,6 @@ myManageHook = composeAll $
     , namedScratchpadManageHook scratchpads
     ]
     where
-        name = stringProperty "WM_NAME"
         -- resources
         myIgnores = ["desktop","desktop_window","notify-osd","trayer","panel"]
         -- a trick for fullscreen but stil allow focusing of other WSs
