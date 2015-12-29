@@ -211,6 +211,7 @@ myKeymap host conf =
     , ("M-u", spawnHere "/usr/bin/firefox -P default -new-window")
     , ("<Print>", spawn "scrot")
     , ("C-<Print>", spawn "sleep 0.2; scrot -s")
+    , ("M-b", sendMessage $ ToggleStruts)
     -- , ("M-S-t", spawn "stoken-type")
     -- Various Prompts
     , ("M-p p", spawn "~/bin/passmenu" )
