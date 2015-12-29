@@ -265,7 +265,7 @@ myKeymap host conf =
                        , ("t", 0, -20)
                        , ("c", 0, 20) ]
     ]
-    ++ -- Move or shift windows between screens
+    ++ -- Move focus, or move windows, between screens
     [(m ++ "M-" ++ k, f s)
         | (k, s) <- zip [";",",","."] [0..]
         , (f, m) <- [(viewScreen, ""), (sendToScreen, "S-")]
@@ -320,7 +320,7 @@ myBar host = "dzen2" ++ concatMap (" " ++)
     , "-y '0'"
     , "-h '16'"
     , "-xs 1"
-    , case host of
+    , case host of -- Change font size on Retina display
           Laptop _ True -> "-fn '-*-terminus-medium-r-*-*-20-*-*-*-*-*-*-*'"
           otherwise     -> "-fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*'"
     , "-bg '" ++ solarized "background" ++ "'"
