@@ -173,16 +173,18 @@ myTopicConfig host = defaultTopicConfig
 
 ------------------------------------------------------------------------
 -- Scratchpads
-
--- XXX offset scratchpad windows by a bit --- each one different?
-mySPFloat = customFloating $ W.RationalRect (1/4) (1/4) (1/2) (1/2)
-mySPLargeFloat = customFloating $ W.RationalRect (1/8) (1/8) (3/4) (3/4)
-
 scratchpads =
-    [ NS "htop" (myTerminal ++ " -e htop") (title =? "htop") mySPFloat
-    , NS "ghci" (myTerminal ++ " -e ghci") (title =? "ghci") mySPFloat
-    , NS "mail" (myTerminal ++ " -e mutt") (title =? "mutt") mySPLargeFloat
+    [ ns "htop" "htop" mySPFloat
+    , ns "ghci" "ghci" mySPFloat
+    , ns "mail" "mutt" mySPLargeFloat
     ]
+  where
+    ns n p = NS n (termTmuxStart p) (resource =? p)
+    termTmuxStart n =
+        myTerminal ++ " -c " ++ n ++ " -e tmux new -s " ++ n ++ " " ++ n
+    mySPFloat = customFloating $ W.RationalRect (1/4) (1/4) (1/2) (1/2)
+    mySPLargeFloat = customFloating $ W.RationalRect (1/8) (1/8) (3/4) (3/4)
+    
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
