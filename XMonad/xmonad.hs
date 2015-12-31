@@ -3,6 +3,9 @@ import XMonad
 import qualified XMonad.StackSet  as W
 import qualified Data.Map         as M
 import System.Exit
+import Control.Monad
+import Data.List
+import Data.Maybe 
 import Data.Monoid
 import Control.Applicative ((<$>))
 import XMonad.Actions.SpawnOn
@@ -212,6 +215,7 @@ myKeymap host conf =
     , ("<Print>", spawn "scrot")
     , ("C-<Print>", spawn "sleep 0.2; scrot -s")
     , ("M-b", sendMessage ToggleStruts)
+    , ("M-f", newCodeWS)
     -- , ("M-S-t", spawn "stoken-type")
     -- Various Prompts
     , ("M-p p", spawn "~/bin/passmenu" )
@@ -385,3 +389,17 @@ instance UrgencyHook LibNotifyUrgencyHook where
         name     <- getName w
         Just idx <- W.findTag w <$> gets windowset
         safeSpawn "notify-send" [show name, "workspace " ++ idx]
+
+------------------------------------------------------------------------
+-- Code Workspaces
+newCodeWS :: X ()
+newCodeWS = withWindowSet $ \w -> do
+  let wss = W.workspaces w
+      cws = map W.tag $ filter (\ws -> "code" `isPrefixOf` W.tag ws && isJust (W.stack ws)) wss
+      num = head $ [0..] \\ catMaybes (map (readMaybe . drop 4) cws)
+      new = "code" ++ show num
+  when (not $ new `elem` (map W.tag wss)) $ addWorkspace new
+  windows $ W.view new
+ where readMaybe s = case reads s of
+                       [(r,_)] -> Just r
+                       _       -> Nothing
