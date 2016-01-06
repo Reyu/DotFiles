@@ -216,7 +216,7 @@ myKeymap host conf =
     , ("C-<Print>", spawn "sleep 0.2; scrot -s")
     , ("M-b", sendMessage ToggleStruts)
     , ("M-f", newCodeWS)
-    -- , ("M-S-t", spawn "stoken-type")
+    , ("M-S-t", spawn "stoken-type")
     -- Various Prompts
     , ("M-p p", spawn "~/bin/passmenu" )
     , ("M-p r", runOrRaisePrompt myXPConfig)
