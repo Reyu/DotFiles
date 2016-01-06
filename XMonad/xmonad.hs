@@ -50,18 +50,17 @@ import XMonad.Util.WorkspaceCompare
 
 type HasWinKey = Bool
 type IsRetina = Bool
-type NumScreens = Int
-data Host = Desktop NumScreens | Laptop HasWinKey IsRetina
+data Host = Desktop | Laptop HasWinKey IsRetina
     deriving (Eq, Show, Read)
 
 getHost :: IO Host
 getHost = do
     hostName <- nodeName `fmap` getSystemID
     return $ case hostName of
-        "renard" -> Desktop 2
-        "vulpie" -> Desktop 3
+        "renard" -> Desktop
+        "vulpie" -> Desktop
         "crevan" -> Laptop True True
-        _        -> Desktop 1
+        _        -> Desktop
 
 main = do
     host <- getHost
@@ -354,7 +353,7 @@ myLoghook logPipe host = dynamicLogWithPP $ defaultPP
                       maildirNew ".maildir/CNOC"
                   ] ++
                   (case host of Laptop _ _ -> [battery]
-                                Desktop _  -> [])
+                                Desktop    -> [])
     , ppOrder   = \(ws:l:t:exs) -> [t,l,ws]++exs
     , ppOutput  = hPutStrLn logPipe
     }
