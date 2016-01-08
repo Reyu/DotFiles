@@ -1,0 +1,12 @@
+background no
+double_buffer yes 
+out_to_console yes 
+update_interval 1.0 
+extra_newline no
+ 
+TEXT
+${memperc}% : ${swapperc}% \
+| ${running_processes} : ${running_threads} \
+| ${entropy_perc}% (${entropy_avail}/${entropy_poolsize}) \
+| ${fs_free /} : ${fs_free /home} \
+| ${addrs em1} : ${curl pcaddr.com 10}

@@ -50,23 +50,27 @@ import XMonad.Util.WorkspaceCompare
 
 type HasWinKey = Bool
 type IsRetina = Bool
-data Host = Desktop | Laptop HasWinKey IsRetina
+type StatusBarDisplay = Int
+data Host = Desktop StatusBarDisplay | Laptop HasWinKey IsRetina
     deriving (Eq, Show, Read)
 
 getHost :: IO Host
 getHost = do
     hostName <- nodeName `fmap` getSystemID
     return $ case hostName of
-        "renard" -> Desktop
-        "vulpie" -> Desktop
+        "renard" -> Desktop 2
+        "vulpie" -> Desktop 3
         "crevan" -> Laptop True True
-        _        -> Desktop
+        _        -> Desktop (-1)
 
 main = do
     host <- getHost
-    logPipe <- spawnPipe (myBar host)
+    logPipe <- spawnPipe (myBar host False)
+    statusBar <- spawnPipe (conkyCommand ++ myBar host True)
     checkTopicConfig (myTopicNames host) (myTopicConfig host)
     xmonad $ myConfig host logPipe
+  where
+    conkyCommand = "pkill conky;conky -c ~/.xmonad/conky_statusbar|"
 
 myConfig host logPipe = defaultConfig
     { terminal           = myTerminal
@@ -321,11 +325,15 @@ myStartupHook host logPipe =
 
 ------------------------------------------------------------------------
 -- Set up status bar
-myBar host = "dzen2" ++ concatMap (" " ++)
+myBar host isSecondary = "dzen2" ++ concatMap (" " ++)
     [ "-x '0'"
     , "-y '0'"
     , "-h '16'"
-    , "-xs 1"
+    , if isSecondary
+      then case host of 
+            Desktop s -> if s /= (-1) then "-xs " ++ show s else ""
+            otherwise -> ""
+      else "-xs 1"
     , case host of -- Change font size on Retina display
           Laptop _ True -> "-fn '-*-terminus-medium-r-*-*-20-*-*-*-*-*-*-*'"
           otherwise     -> "-fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*'"
@@ -353,7 +361,7 @@ myLoghook logPipe host = dynamicLogWithPP $ defaultPP
                       maildirNew ".maildir/CNOC"
                   ] ++
                   (case host of Laptop _ _ -> [battery]
-                                Desktop    -> [])
+                                Desktop _  -> [])
     , ppOrder   = \(ws:l:t:exs) -> [t,l,ws]++exs
     , ppOutput  = hPutStrLn logPipe
     }
