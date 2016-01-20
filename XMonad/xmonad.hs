@@ -161,6 +161,7 @@ myTopics host =
     , ti "xmonad" ".config/XMonad"
     , TI "games" "." (spawn "steam")
     , ti "kernel" "/usr/src/linux"
+    , TI "virt" "." (spawn "virt-manager")
     ]
     where
         ti t d = TI t d (spawnShell host (Just t))
