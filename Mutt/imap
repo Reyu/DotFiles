@@ -1,0 +1,7 @@
+set imap_authenticators="login"
+set ssl_starttls
+set spoolfile="imaps://reyu@mail.reyuzenfold.com/Inbox"
+set folder="imaps://mail.reyuzenfold.com/Inbox/"
+set record="=Sent"
+set postponed="=Drafts"
+mailboxes =CNOC =Jira =Monitoring =SAMS =Lists/Gentoo/User =Lists/Gentoo/Hardened =Lists/Gentoo/Announce =Lists/Tasker =List/Vim =Lists/ZFS

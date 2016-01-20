@@ -33,6 +33,7 @@
     macro index \e\\ ":set simple_search='~b %s'\r<search-reverse>"
   # Archive message
     macro index d "<save-message>=Archive<enter>" "Archive Message"
+  # Notmuch Mail shortcuts
     macro index <F8> \
        "<enter-command>set my_old_pipe_decode=\$pipe_decode my_old_wait_key=\$wait_key nopipe_decode nowait_key<enter>\
        <shell-escape>notmuch-mutt -r --prompt search<enter>\
@@ -57,9 +58,6 @@
 # Bindings for PAGER (Message Pager)
   # Jumping to the next mail that is still unread ('\t' means <TAB> (Tabulator)!).
     bind pager \t next-unread
-  # Pager movement
-    bind pager gg top
-    bind pager G bottom
   # urlview rulez
     macro pager \ew "|urlview\n"
   # Change »pager_index_lines«
