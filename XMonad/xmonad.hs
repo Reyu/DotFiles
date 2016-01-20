@@ -357,10 +357,10 @@ myLoghook logPipe host = dynamicLogWithPP $ defaultPP
                   , loadAvg
                   , dzenColorL (solarized "green") "" $
                       wrapL "Inbox: " "" $
-                      maildirNew ".maildir/Inbox"
+                      maildirUnread ".maildir/Inbox"
                   , dzenColorL (solarized "red") "" $
                       wrapL "CNOC: " "" $
-                      maildirNew ".maildir/CNOC"
+                      maildirUnread ".maildir/CNOC"
                   ] ++
                   (case host of Laptop _ _ -> [battery]
                                 Desktop _  -> [])
