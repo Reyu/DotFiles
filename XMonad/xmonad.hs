@@ -47,6 +47,7 @@ import Data.Ratio ((%))
 import System.Posix.Unistd
 import XMonad.Util.EZConfig
 import XMonad.Util.WorkspaceCompare
+import XMonad.Hooks.EwmhDesktops
 
 type HasWinKey = Bool
 type IsRetina = Bool
@@ -68,7 +69,7 @@ main = do
     logPipe <- spawnPipe (myBar host False)
     statusBar <- spawnPipe (conkyCommand ++ myBar host True)
     checkTopicConfig (myTopicNames host) (myTopicConfig host)
-    xmonad $ myConfig host logPipe
+    xmonad $ ewmh $ myConfig host logPipe
   where
     conkyCommand = "pkill conky;conky -c ~/.xmonad/conky_statusbar|"
 
