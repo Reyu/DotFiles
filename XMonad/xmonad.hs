@@ -7,7 +7,6 @@ import Control.Monad
 import Data.List
 import Data.Maybe 
 import Data.Monoid
-import Control.Applicative ((<$>))
 import XMonad.Actions.SpawnOn
 import XMonad.Actions.PhysicalScreens
 import XMonad.Actions.TopicSpace
@@ -24,7 +23,6 @@ import XMonad.Util.NamedScratchpad
 import XMonad.Prompt
 import XMonad.Prompt.Man
 import XMonad.Prompt.AppendFile
-import XMonad.Prompt.Shell
 import XMonad.Prompt.Ssh
 import XMonad.Prompt.Workspace
 import XMonad.Prompt.RunOrRaise
@@ -46,7 +44,6 @@ import qualified XMonad.Layout.Magnifier as Mag
 import Data.Ratio ((%))
 import System.Posix.Unistd
 import XMonad.Util.EZConfig
-import XMonad.Util.WorkspaceCompare
 import XMonad.Hooks.EwmhDesktops
 
 type HasWinKey = Bool
@@ -64,10 +61,11 @@ getHost = do
         "crevan" -> Laptop True True
         _        -> Desktop (-1)
 
+main :: IO ()
 main = do
     host <- getHost
     logPipe <- spawnPipe (myBar host False)
-    statusBar <- spawnPipe (conkyCommand ++ myBar host True)
+    _ <- spawnPipe (conkyCommand ++ myBar host True)
     checkTopicConfig (myTopicNames host) (myTopicConfig host)
     xmonad $ ewmh $ myConfig host logPipe
   where
@@ -77,8 +75,8 @@ myConfig host logPipe = defaultConfig
     { terminal           = myTerminal
     , focusFollowsMouse  = False
     , modMask            = case host of
-                               Laptop False _ -> modMask defaultConfig
-                               otherwise      -> mod4Mask
+                               Laptop False _ -> modMask def
+                               _              -> mod4Mask
     , workspaces         = myTopicNames host
     , normalBorderColor  = solarized "secondary"
     , focusedBorderColor = solarized "emphasis"
@@ -86,29 +84,29 @@ myConfig host logPipe = defaultConfig
     , layoutHook         = myLayoutHook
     , manageHook         = myManageHook
                            <+> manageSpawn
-                           <+> manageHook defaultConfig
+                           <+> manageHook def
     , logHook            = myLoghook logPipe host
-                           <+> logHook defaultConfig
+                           <+> logHook def
     , startupHook        = myStartupHook host logPipe
-                           <+> startupHook defaultConfig
+                           <+> startupHook def
     } `additionalKeysP` myKeys host logPipe
 
 ------------------------------------------------------------------------
 -- Usefull common vars
+myTerminal :: String
 myTerminal = "st"
-myShell = "zsh"
 
 ------------------------------------------------------------------------
 -- Helper functions
 spawnShell :: Host -> Maybe String -> X ()
-spawnShell host name =
-    currentTopicDir (myTopicConfig host) >>= spawnShellIn name
+spawnShell host name' =
+    currentTopicDir (myTopicConfig host) >>= spawnShellIn name'
 
 spawnShellIn :: Maybe String -> Dir -> X ()
 spawnShellIn Nothing dir =
     spawn $ myTerminal ++ " -e tmux new -Ac '" ++ dir ++ "'"
-spawnShellIn (Just name) dir =
-    spawn $ myTerminal ++ " -e tmux new -As '" ++ name ++ "' -c '" ++ dir ++ "'"
+spawnShellIn (Just name') dir =
+    spawn $ myTerminal ++ " -e tmux new -As '" ++ name' ++ "' -c '" ++ dir ++ "'"
 
 goto :: Host -> Topic -> X ()
 goto host = switchTopic (myTopicConfig host)
@@ -170,7 +168,7 @@ myTopicNames :: Host -> [Topic]
 myTopicNames = map topicName . myTopics
 
 myTopicConfig :: Host -> TopicConfig
-myTopicConfig host = defaultTopicConfig
+myTopicConfig host = def
     { topicDirs = M.fromList $ map (\(TI n d _) -> (n,d)) myTopics'
     , defaultTopicAction = const (return ())
     , defaultTopic = "web"
@@ -181,6 +179,7 @@ myTopicConfig host = defaultTopicConfig
 
 ------------------------------------------------------------------------
 -- Scratchpads
+scratchpads :: [NamedScratchpad]
 scratchpads =
     [ ns "htop" "htop" mySPFloat
     , ns "ghci" "ghci" mySPFloat
@@ -304,11 +303,13 @@ myLayoutHook =
 
 ------------------------------------------------------------------------
 -- Window rules:
+myManageHook :: Query (Endo WindowSet)
 myManageHook = composeAll $
     [resource =? r --> doIgnore | r <- myIgnores ]
     ++
     [ className =? "Xmessage" --> doCenterFloat
     , className =? "Skype" --> doShift "skype"
+    , className =? "Steam" --> doShift "games"
     , isFullscreen --> myDoFullFloat
     , manageDocks
     , namedScratchpadManageHook scratchpads
@@ -327,6 +328,7 @@ myStartupHook host logPipe =
 
 ------------------------------------------------------------------------
 -- Set up status bar
+myBar :: Host -> Bool -> String
 myBar host isSecondary = "dzen2" ++ concatMap (" " ++)
     [ "-x '0'"
     , "-y '0'"
@@ -334,11 +336,11 @@ myBar host isSecondary = "dzen2" ++ concatMap (" " ++)
     , if isSecondary
       then case host of 
             Desktop s -> if s /= (-1) then "-xs " ++ show s else ""
-            otherwise -> ""
+            _         -> ""
       else "-xs 1"
     , case host of -- Change font size on Retina display
           Laptop _ True -> "-fn '-*-terminus-medium-r-*-*-20-*-*-*-*-*-*-*'"
-          otherwise     -> "-fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*'"
+          _             -> "-fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*'"
     , "-bg '" ++ solarized "background" ++ "'"
     , "-fg '" ++ solarized "text" ++ "'"
     , "-ta 'center'"
@@ -381,23 +383,23 @@ tabConfig = defaultTheme
 
 -----------------------------------------------------------------------
 -- Prompt Config
-myXPConfig = defaultXPConfig
+myXPConfig :: XPConfig
+myXPConfig = def
     { font            = "xft:Terminus:pixelsize=16:autohint=true"
     , bgColor           = solarized "background"
     , fgColor           = solarized "text"
     , borderColor       = solarized "emphasis"
     , promptBorderWidth = 1
     }
-mpcXPConfig = myXPConfig
 
 ------------------------------------------------------------------------
 -- Urgency Hook
 data LibNotifyUrgencyHook = LibNotifyUrgencyHook deriving (Read, Show)
 instance UrgencyHook LibNotifyUrgencyHook where
     urgencyHook LibNotifyUrgencyHook w = do
-        name     <- getName w
+        name'    <- getName w
         Just idx <- W.findTag w <$> gets windowset
-        safeSpawn "notify-send" [show name, "workspace " ++ idx]
+        safeSpawn "notify-send" [show name', "workspace " ++ idx]
 
 ------------------------------------------------------------------------
 -- Code Workspaces
@@ -405,9 +407,9 @@ newCodeWS :: X ()
 newCodeWS = withWindowSet $ \w -> do
   let wss = W.workspaces w
       cws = map W.tag $ filter (\ws -> "code" `isPrefixOf` W.tag ws && isJust (W.stack ws)) wss
-      num = head $ [0..] \\ catMaybes (map (readMaybe . drop 4) cws)
+      num = head $ [0..] \\ mapMaybe (readMaybe . drop 4) cws
       new = "code" ++ show num
-  when (not $ new `elem` (map W.tag wss)) $ addWorkspace new
+  unless (new `elem` map W.tag wss) $ addWorkspace new
   windows $ W.view new
  where readMaybe s = case reads s of
                        [(r,_)] -> Just r
