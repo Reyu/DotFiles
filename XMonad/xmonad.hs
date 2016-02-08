@@ -199,9 +199,9 @@ myKeys host logPipe = myKeymap host (myConfig host logPipe)
 myKeymap host conf =
     [
     -- Volume
-      ("<XF86AudioLowerVolume>", spawn "pulse-volume.sh decrease")
-    , ("<XF86AudioMute>", spawn "pulse-volume.sh toggle")
-    , ("<XF86AudioRaiseVolume>", spawn "pulse-volume.sh increase")
+      ("<XF86AudioLowerVolume>", spawn "~/bin/pulse-volume.sh decrease")
+    , ("<XF86AudioMute>", spawn "~/bin/pulse-volume.sh toggle")
+    , ("<XF86AudioRaiseVolume>", spawn "~/bin/pulse-volume.sh increase")
     -- General
     , ("M-<Backspace>", focusUrgent)
     , ("M-S-<Backspace>", clearUrgents)
