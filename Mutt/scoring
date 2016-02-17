@@ -21,11 +21,13 @@ score '~t reyu@reyuzenfold.com'                   +10
 score '~t tim.millican@gmail.com'                 +10
 score '~t reyuzenfold@gmail.com'                  +10
 score '~t tim_millican@cable.comcast.com'         +10
+score '~t timothy_millican@cable.comcast.com'     +10
 # Messages addressed ONLY to me get an additional +10
 score '~t ^reyu@reyuzenfold.com$'                 +10
 score '~t ^tim.millican@gmail.com$'               +10
 score '~t ^reyuzenfold@gmail.com$'                +10
 score '~t ^tim_millican@cable.comcast.com$'       +10
+score '~t ^timothy_millican@cable.comcast.com$'   +10
 
 # Work mail
 score '~l'                                        -5
