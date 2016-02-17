@@ -10,7 +10,7 @@ reset all
 push V
 
 source ~/.mutt/general             # general options
-source ~/.mutt/imap                # my mailboxes
+source ~/.mutt/maildir             # my mailboxes
 source ~/.mutt/headers             # extra header and ignores
 source ~/.mutt/gpg                 # GnuPG options
 source ~/.mutt/bind                # key bindings and macros
