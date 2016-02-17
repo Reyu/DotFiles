@@ -16,9 +16,8 @@
     macro generic <F12> "<enter-command>source ~/.mutt/muttrc<enter>" "Reload ~/.muttrc"
 
 # Bindings for INDEX
-  # switch accounts
-    macro index <F4> "<sync-mailbox><enter-command>source ~/.mutt/account.gmail<enter><change-folder>!<enter>" "Switch to Gmail"
-    macro index <F5> "<sync-mailbox><enter-command>source ~/.mutt/account.work<enter><change-folder>!<enter>" "Switch to Work Mail"
+  # Sync Mail
+    macro index \er "!notmuch new\r" "Sync with mailserver"
   # Jumping to the next mail that is still unread.
     bind index \t next-unread
   # Edit the Bindings And Macros File
