@@ -184,6 +184,7 @@ scratchpads =
     [ ns "htop" "htop" mySPFloat
     , ns "ghci" "ghci" mySPFloat
     , ns "mail" "mutt" mySPLargeFloat
+    , NS "volume" "pavucontrol" (className =? "Pavucontrol") mySPLargeFloat
     ]
   where
     ns n p = NS n (termTmuxStart p) (resource =? p)
@@ -251,6 +252,7 @@ myKeymap host conf =
       | (k, sp) <- [ ("t", "htop")
                    , ("g", "ghci")
                    , ("m", "mail")
+                   , ("v", "volume")
                    ]
     ]
     ++ -- toggles: fullscreen, flip x, flip y, mirror, no borders
