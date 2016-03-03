@@ -75,7 +75,7 @@ myConfig host logPipe = defaultConfig
     { terminal           = myTerminal
     , focusFollowsMouse  = False
     , modMask            = case host of
-                               Laptop False _ -> modMask def
+                               Laptop False _ -> modMask defaultConfig
                                _              -> mod4Mask
     , workspaces         = myTopicNames host
     , normalBorderColor  = solarized "secondary"
@@ -84,11 +84,11 @@ myConfig host logPipe = defaultConfig
     , layoutHook         = myLayoutHook
     , manageHook         = myManageHook
                            <+> manageSpawn
-                           <+> manageHook def
+                           <+> manageHook defaultConfig
     , logHook            = myLoghook logPipe host
-                           <+> logHook def
+                           <+> logHook defaultConfig
     , startupHook        = myStartupHook host logPipe
-                           <+> startupHook def
+                           <+> startupHook defaultConfig
     } `additionalKeysP` myKeys host logPipe
 
 ------------------------------------------------------------------------
@@ -168,7 +168,7 @@ myTopicNames :: Host -> [Topic]
 myTopicNames = map topicName . myTopics
 
 myTopicConfig :: Host -> TopicConfig
-myTopicConfig host = def
+myTopicConfig host = defaultTopicConfig
     { topicDirs = M.fromList $ map (\(TI n d _) -> (n,d)) myTopics'
     , defaultTopicAction = const (return ())
     , defaultTopic = "web"
@@ -384,7 +384,7 @@ tabConfig = defaultTheme
 -----------------------------------------------------------------------
 -- Prompt Config
 myXPConfig :: XPConfig
-myXPConfig = def
+myXPConfig = defaultXPConfig
     { font            = "xft:Terminus:pixelsize=16:autohint=true"
     , bgColor           = solarized "background"
     , fgColor           = solarized "text"
