@@ -152,7 +152,7 @@ data TopicItem = TI { topicName :: Topic   -- (22b)
 -- define some custom topics for use with the TopicSpace module.
 myTopics :: Host -> [TopicItem]
 myTopics host =
-    [ TI "web" "." (spawn "firefox")
+    [ TI "web" "." (spawn "google-chrome-stable")
     , ti "irc" "." 
     , ti "work" "Projects"
     , TI "skype" "." (spawn "skype")
@@ -217,7 +217,7 @@ myKeymap host conf =
     , ("M-q", spawn "xmonad --recompile; xmonad --restart")
     , ("M-S-q", io exitSuccess)
     , ("M-t", withFocused $ windows . W.sink)
-    , ("M-u", spawnHere "/usr/bin/firefox -P default -new-window")
+    , ("M-u", spawnHere "/usr/bin/google-chrome-stable")
     , ("<Print>", spawn "scrot")
     , ("C-<Print>", spawn "sleep 0.2; scrot -s")
     , ("M-b", sendMessage ToggleStruts)
