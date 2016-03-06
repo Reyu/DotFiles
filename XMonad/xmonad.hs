@@ -306,6 +306,7 @@ myLayoutHook =
     mkToggle1 MIRROR $
     smartBorders $
     onWorkspaces ["web","irc"] (Full ||| tiled) $
+    onWorkspaces ["code" ++ show i | i <- [0..10]] (Full ||| TwoPane (2/100) (1/2)) $
     onWorkspace "skype" (withIM (1%9) skypeRoster skypeLayout) $
     tiled ||| Mag.magnifier Grid ||| TwoPane (2/100) (1/2) ||| Full
     where
