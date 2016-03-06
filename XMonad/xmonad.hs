@@ -223,30 +223,40 @@ myKeymap host conf =
     , ("M-b", sendMessage ToggleStruts)
     , ("M-f", newCodeWS)
     , ("M-S-t", spawn "stoken-type")
-    -- Various Prompts
-    , ("M-p p", spawn "~/bin/passmenu" )
-    , ("M-p r", runOrRaisePrompt myXPConfig)
-    , ("M-p e", spawn "exe=`echo | yeganesh -x` && eval \"exec $exe\"") 
-    , ("M-p s", sshPrompt myXPConfig )
-    , ("M-p m", manPrompt myXPConfig)
-    , ("M-p n", appendFilePrompt myXPConfig "Notes")
-    , ("M-p C-n", spawn "echo '' >> Notes && date >> Notes" >>
-        appendFilePrompt myXPConfig "Notes")
-    -- Dynamic Workspaces
-    , ("M-w n", addWorkspacePrompt myXPConfig)
-    , ("M-w S-n", renameWorkspace myXPConfig)
-    , ("M-w C-c", removeWorkspace)
-    , ("M-w C-k", killAll >> removeWorkspace) 
-    -- Workspace Groups
-    , ("M-y n", promptWSGroupAdd myXPConfig "Name this group: ")
-    , ("M-y g", promptWSGroupView myXPConfig "Go to group: " >> viewScreen 1)
-    , ("M-y d", promptWSGroupForget myXPConfig "Forget group: ")
     -- Topic actions
     , ("M-a", currentTopicAction (myTopicConfig host))
     -- Window Movement
     , ("M-g", promptedGoto host)
     , ("M-S-g", promptedShift)
     , ("M-z", toggleWS)
+    ] -- I have the rest in list-comprehension groups, because they make
+      -- it easier for me, personally, to read.
+    ++ -- Various Prompts
+    [ ("M-p " ++ k, f)
+      | (k, f) <- [ ("p",   spawn "~/bin/passmenu" )
+                  , ("r",   runOrRaisePrompt myXPConfig)
+                  , ("e",   spawn "exe=`echo | yeganesh -x` && eval \"exec $exe\"") 
+                  , ("s",   sshPrompt myXPConfig )
+                  , ("m",   manPrompt myXPConfig)
+                  , ("n",   appendFilePrompt myXPConfig "Notes")
+                  , ("C-n", spawn "echo '' >> Notes && date >> Notes" >>
+                            appendFilePrompt myXPConfig "Notes")
+                  ]
+    ]
+    ++ -- Workspace Groups
+    [ ("M-y " ++ k, f)
+      | (k, f) <- [ ("n", promptWSGroupAdd myXPConfig "Name this group: ")
+                  , ("g", promptWSGroupView myXPConfig "Go to group: " >> viewScreen 1)
+                  , ("d", promptWSGroupForget myXPConfig "Forget group: ")
+                  ]
+    ]
+    ++ -- Dynamic Workspaces
+    [ ("M-w " ++ k, f)
+      | (k, f) <- [ ("n",   addWorkspacePrompt myXPConfig)
+                  , ("S-n", renameWorkspace myXPConfig)
+                  , ("C-c", removeWorkspace)
+                  , ("C-k", killAll >> removeWorkspace) 
+                  ]
     ]
     ++ -- Scratchpads
     [ ("M-s " ++ k, namedScratchpadAction scratchpads sp)
