@@ -1,3 +1,14 @@
+" {{{ Pre-setup
+" This should only have things that needs to be setup/initialized before loading plugins
+" -----
+" augroup for any auto commands set in this file
+"   This lets the group be cleared when reloading the configfile, so commands
+"   don't recurse/stack
+augroup init
+    " Clear the group
+    autocmd!
+augroup end
+" Pre-setup }}}
 " {{{ Plugins
 " Load plugins first, so they are availible to later code
 set runtimepath^=~/.config/nvim/repos/github.com/Shougo/dein.vim
@@ -42,6 +53,12 @@ if dein#tap('vim-colors-solarized') " {{{
     call togglebg#map("<F5>")
 endif
 " }}}
+if dein#tap('neomake') " {{{
+    " Try to run Neomake on file save
+    " This should fail silently
+    autocmd init BufWritePost * Neomake
+endif
+" }}}
 if dein#tap('vim2hs') " {{{
     let g:haskell_conceal_wide = 0
     " disable all conceals, including the simple ones like
@@ -53,18 +70,11 @@ if dein#tap('vim2hs') " {{{
     let g:haskell_conceal_enumerations = 0
 endif
 " }}}
-" if dein#tap('neomake') " {{{
-"     " Try to run Neomake on file save
-"     " This should fail silently
-"     autocmd! Neomake
-"     autocmd init BufWritePost * Neomake
-" endif
-" }}}
 if dein#tap('neco-ghc') " {{{
     " Disable haskell-vim omnifunc
     let g:ycm_semantic_triggers = {'haskell' : ['.']}
     let g:haskellmode_completion_ghc = 0
-    autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+    autocmd init FileType haskell setlocal omnifunc=necoghc#omnifunc
 endif
 " }}}
 if dein#tap('syntastic') " {{{
@@ -153,19 +163,19 @@ let mapleader=","
 " Configure statusline
 set statusline= "Clear statusline, when reloading
 set statusline+=%(\ %n\ %) "Show buffer number
-if dein#tap('tpope/vim-capslock')
+if dein#tap('vim-capslock')
     set statusline+=%(\|\ %{exists('*CapsLockStatusline')?CapsLockStatusline('Caps'):''}\ %) "Show virtual Capslock status (vim-capslock)
 endif
-if dein#tap('tpope/vim-fugitive')
+if dein#tap('vim-fugitive')
     set statusline+=%(\|\ %{fugitive#statusline()}\ %) "Show Git branch
 endif
-if dein#tap('majutsushi/tagbar')
+if dein#tap('tagbar')
     set statusline+=%(\|\ %{tagbar#currenttag('%s','')}\ %) "Show current ctag
 endif
 set statusline+=%(\|\ %.60f%) "Show file name/relative path
 set statusline+=%(\ [%M%R%H%W]%) "Show Modified flag, Readonly flag, Preview flag, and Help buffer flag
 set statusline+=%= "Right ALIGN rest of line
-if dein#tap('benekastah/neomake')
+if dein#tap('neomake')
     set statusline+=%(%#ErrorMsg#%{neomake#statusline#QflistStatus('qf:\ ')}%*\|\ %) "Show clist counts
 endif
 set statusline+=%{\"\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"\ \|\ \"} "Show encoding/bomb
@@ -174,18 +184,13 @@ set statusline+=%(%Y\ \|\ %) "Show file type
 set statusline+=%(%02B/%03b\ \|\ %) "Show hex byte of char under cursor
 set statusline+=%(%-14(%l,%c%V%)\ %P%) "Show position/ruler data
 
-" Create auto command group, and clear it
-augroup init
-    " Reset auto commands
-    autocmd!
-augroup END
-
 " Reload init when it is modified
 autocmd init BufWritePost ~/.config/nvim/init.vim source <afile>
 
 " Map yo and yO to set paste mode and enter insert on new line
 nnoremap yo :set paste<CR>o
 nnoremap yO :set paste<CR>O
+
 " Exit paste mode when leaving insert
 autocmd init InsertLeave * set nopaste
 " General }}}
