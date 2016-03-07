@@ -16,6 +16,7 @@ call dein#begin(expand('~/.config/nvim')) " {{{
 call dein#add('altercation/vim-colors-solarized')
 call dein#add('benekastah/neomake')
 call dein#add('chrisdone/hindent', { 'on_ft': 'haskell' })
+call dein#add('ctrlpvim/ctrlp.vim')
 call dein#add('dag/vim2hs', { 'on_ft': 'haskell' })
 call dein#add('eagletmt/ghcmod-vim', { 'on_ft': 'haskell' })
 call dein#add('eagletmt/neco-ghc', { 'on_ft': 'haskell' })
