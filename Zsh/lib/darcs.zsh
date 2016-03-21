@@ -17,7 +17,7 @@ function darcs_prompt() {
         zstyle -s ':prompt:addon:vcs:darcs:status:clean' suffix csuffix || csuffix=''
 
         # Print branch (or SHA) with indications of clean/dirty/untracked
-        if [[ -n "$(command darcs whatsnew --summary|grep -P '^A|^R|^M')" ]]; then
+        if [[ -n "$(command darcs whatsnew --summary|grep -E '^A|^R|^M')" ]]; then
             print -n " ${prefix}${dprefix}*${dsuffix}${suffix}"
         else
             print -n " ${prefix}${cprefix}*${csuffix}${suffix}"
