@@ -595,10 +595,16 @@ function pyvirtenv() {
         print -n "%{%F{33}%}(%{%F{64}%}${VIRTUAL_ENV:t}%{%F{33}%})%{%f%} "
     fi
 }
+function reset-prompt-and-accept-line() {
+    zle reset-prompt
+    zle accept-line
+}
+zle -N reset-prompt-and-accept-line
+bindkey '^m' reset-prompt-and-accept-line
 # Prompt funchion
 PROMPT='
 %{%(!,%F{160},%F{37})%}%n%{%f%} at $(prompt_host) in %{%F{64}%B%}%(5~,../%4c,%~)%{%b%f%}$(git_prompt)$(darcs_prompt)
-$(pyvirtenv)%(1j,J%j ,)$(prompt_char) '
+[%D{%L:%M:%S}] $(pyvirtenv)%(1j,J%j ,)$(prompt_char) '
 
 # Load OpenStack RPrompt, if needed. {{{
 if [[ -d ${HOME}/.openstack ]]; then
