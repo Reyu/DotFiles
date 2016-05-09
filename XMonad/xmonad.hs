@@ -22,8 +22,9 @@ import XMonad.Util.Loggers
 import XMonad.Util.NamedScratchpad
 import XMonad.Prompt
 import XMonad.Prompt.Man
-import XMonad.Prompt.AppendFile
+-- import XMonad.Prompt.AppendFile
 import XMonad.Prompt.Ssh
+import XMonad.Prompt.Shell
 import XMonad.Prompt.Workspace
 import XMonad.Prompt.RunOrRaise
 import XMonad.Hooks.DynamicLog
@@ -239,9 +240,10 @@ myKeymap host conf =
                   , ("e",   spawn "exe=`echo | yeganesh -x` && eval \"exec $exe\"") 
                   , ("s",   sshPrompt myXPConfig )
                   , ("m",   manPrompt myXPConfig)
-                  , ("n",   appendFilePrompt myXPConfig "Notes")
-                  , ("C-n", spawn "echo '' >> Notes && date >> Notes" >>
-                            appendFilePrompt myXPConfig "Notes")
+                  , ("n",   prompt ("~/.local/src/todo.txt_cli-2.9/todo.sh" ++ " -d ~/.config/todo.cfg" ++ " add") myXPConfig)
+                  -- , ("n",   appendFilePrompt myXPConfig "Notes")
+                  -- , ("C-n", spawn "echo '' >> Notes && date >> Notes" >>
+                  --           appendFilePrompt myXPConfig "Notes")
                   ]
     ]
     ++ -- Workspace Groups
