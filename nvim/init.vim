@@ -15,6 +15,7 @@ set runtimepath^=~/.config/nvim/repos/github.com/Shougo/dein.vim
 call dein#begin(expand('~/.config/nvim')) " {{{
 call dein#add('altercation/vim-colors-solarized')
 call dein#add('benekastah/neomake')
+call dein#add('chase/vim-ansible-yaml')
 call dein#add('chrisdone/hindent', { 'on_ft': 'haskell' })
 call dein#add('ctrlpvim/ctrlp.vim')
 call dein#add('dag/vim2hs', { 'on_ft': 'haskell' })
