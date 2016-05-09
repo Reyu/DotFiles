@@ -127,6 +127,7 @@ if dein#tap('deoplete.nvim') " {{{
 endif " }}}
 if dein#tap('UltiSnips') " {{{
     let g:UltiSnipsEditSplit="vertical"
+    let g:ultisnips_python_style="sphinx"
 endif " }}}
 " Plugin Configuration }}}
 " Plugins }}}
