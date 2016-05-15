@@ -220,12 +220,12 @@ myKeymap host conf =
     , ("M-<Space>", sendMessage NextLayout)
     , ("M-h", sendMessage Shrink)
     , ("M-l", sendMessage Expand)
-    , ("M-M1-l", spawn "/usr/bin/i3lock -d -i ~/Pictures/LockScreen.png")
+    , ("M-M1-l", spawn "in/i3lock -d -i ~/Pictures/LockScreen.png")
     , ("M-m", windows W.focusMaster)
     , ("M-q", spawn "xmonad --recompile; xmonad --restart")
     , ("M-S-q", io exitSuccess)
     , ("M-t", withFocused $ windows . W.sink)
-    , ("M-u", spawnHere "/usr/bin/firefox -P default -new-window")
+    , ("M-u", spawnHere "firefox -P default -new-window")
     , ("<Print>", spawn "scrot")
     , ("C-<Print>", spawn "sleep 0.2; scrot -s")
     , ("M-b", sendMessage ToggleStruts)
@@ -252,7 +252,7 @@ myKeymap host conf =
     -- it easier for me, personally, to read.
     ++ -- Various Prompts
     [ ("M-p " ++ k, f)
-      | (k, f) <- [ ("p",   spawn "~/bin/passmenu" )
+      | (k, f) <- [ ("p",   spawn "~/.xmonad/bin/passmenu" )
                   , ("r",   runOrRaisePrompt myXPConfig)
                   , ("e",   spawn "exe=`echo | yeganesh -x` && eval \"exec $exe\"") 
                   , ("s",   sshPrompt myXPConfig )
