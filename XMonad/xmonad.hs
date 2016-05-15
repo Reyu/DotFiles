@@ -50,17 +50,19 @@ import XMonad.Hooks.EwmhDesktops
 type HasWinKey = Bool
 type IsRetina = Bool
 type StatusBarDisplay = Int
-data Host = Desktop StatusBarDisplay | Laptop HasWinKey IsRetina
-    deriving (Eq, Show, Read)
+data AudioSystem = Alsa | Pulse
+    deriving (Eq)
+data Host = Desktop StatusBarDisplay AudioSystem | Laptop HasWinKey IsRetina AudioSystem
+    deriving (Eq)
 
 getHost :: IO Host
 getHost = do
     hostName <- nodeName `fmap` getSystemID
     return $ case hostName of
-        "renard" -> Desktop 2
-        "vulpie" -> Desktop 3
-        "crevan" -> Laptop True True
-        _        -> Desktop (-1)
+        "renard" -> Desktop 2 Alsa
+        "vulpie" -> Desktop 3 Pulse
+        "crevan" -> Laptop True True Pulse
+        _        -> Desktop (-1) Pulse
 
 main :: IO ()
 main = do
@@ -76,14 +78,14 @@ myConfig host logPipe = defaultConfig
     { terminal           = myTerminal
     , focusFollowsMouse  = False
     , modMask            = case host of
-                               Laptop False _ -> modMask defaultConfig
-                               _              -> mod4Mask
+                               Laptop False _ _ -> modMask defaultConfig
+                               _                -> mod4Mask
     , workspaces         = myTopicNames host
     , normalBorderColor  = solarized "secondary"
     , focusedBorderColor = solarized "emphasis"
     , borderWidth        = 2
     , layoutHook         = myLayoutHook
-    , manageHook         = myManageHook
+    , manageHook         = myManageHook host
                            <+> manageSpawn
                            <+> manageHook defaultConfig
     , logHook            = myLoghook logPipe host
@@ -180,12 +182,14 @@ myTopicConfig host = defaultTopicConfig
 
 ------------------------------------------------------------------------
 -- Scratchpads
-scratchpads :: [NamedScratchpad]
-scratchpads =
+scratchpads :: Host -> [NamedScratchpad]
+scratchpads host =
     [ ns "htop" "htop" mySPFloat
     , ns "ghci" "ghci" mySPFloat
     , ns "mail" "mutt" mySPLargeFloat
-    , NS "volume" "pavucontrol" (className =? "Pavucontrol") mySPLargeFloat
+    , case audioSystem of
+          Alsa  -> ns "volume" "alsamixer" mySPLargeFloat
+          Pulse -> NS "volume" "pavucontrol" (className =? "Pavucontrol") mySPLargeFloat
     , ns "calendar" "ikhal" mySPLargeFloat
     ]
   where
@@ -194,6 +198,9 @@ scratchpads =
         myTerminal ++ " -c " ++ n ++ " -e tmux new -s " ++ n ++ " " ++ n
     mySPFloat = customFloating $ W.RationalRect (1/4) (1/4) (1/2) (1/2)
     mySPLargeFloat = customFloating $ W.RationalRect (1/8) (1/8) (3/4) (3/4)
+    audioSystem = case host of
+                      Desktop _ as  -> as
+                      Laptop _ _ as -> as
     
 
 ------------------------------------------------------------------------
@@ -201,10 +208,10 @@ scratchpads =
 myKeys host logPipe = myKeymap host (myConfig host logPipe)
 myKeymap host conf =
     [
-    -- Volume
-      ("<XF86AudioLowerVolume>", spawn "~/bin/pulse-volume.sh decrease")
-    , ("<XF86AudioMute>", spawn "~/bin/pulse-volume.sh toggle")
-    , ("<XF86AudioRaiseVolume>", spawn "~/bin/pulse-volume.sh increase")
+    -- Media Keys
+      ("<XF86AudioPlay>", spawn "mpc toggle")
+    , ("<XF86AudioNext>", spawn "mpc next")
+    , ("<XF86AudioPrev>", spawn "mpc prev")
     -- General
     , ("M-<Backspace>", focusUrgent)
     , ("M-S-<Backspace>", clearUrgents)
@@ -230,8 +237,19 @@ myKeymap host conf =
     , ("M-g", promptedGoto host)
     , ("M-S-g", promptedShift)
     , ("M-z", toggleWS)
-    ] -- I have the rest in list-comprehension groups, because they make
-      -- it easier for me, personally, to read.
+    ]
+    ++ -- Volume
+    case audioSystem of
+        Alsa  -> [ ("<XF86AudioLowerVolume>", spawn "amixer set Master 1%-")
+                 , ("<XF86AudioMute>",        spawn "amixer set Master toggle")
+                 , ("<XF86AudioRaiseVolume>", spawn "amixer set Master 1%+")
+                 ]
+        Pulse -> [ ("<XF86AudioLowerVolume>", spawn "~/.xmonad/bin/pulse-volume.sh decrease")
+                 , ("<XF86AudioMute>",        spawn "~/.xmonad/bin/pulse-volume.sh toggle")
+                 , ("<XF86AudioRaiseVolume>", spawn "~/.xmonad/bin/pulse-volume.sh increase")
+                 ]
+    -- I have the rest in list-comprehension groups, because they make
+    -- it easier for me, personally, to read.
     ++ -- Various Prompts
     [ ("M-p " ++ k, f)
       | (k, f) <- [ ("p",   spawn "~/bin/passmenu" )
@@ -261,7 +279,7 @@ myKeymap host conf =
                   ]
     ]
     ++ -- Scratchpads
-    [ ("M-s " ++ k, namedScratchpadAction scratchpads sp)
+    [ ("M-s " ++ k, namedScratchpadAction (scratchpads host) sp)
       | (k, sp) <- [ ("t", "htop")
                    , ("g", "ghci")
                    , ("m", "mail")
@@ -297,6 +315,10 @@ myKeymap host conf =
         | (k, s) <- zip [";",",","."] [0..]
         , (f, m) <- [(viewScreen, ""), (sendToScreen, "S-")]
     ]
+  where
+    audioSystem = case host of
+                      Desktop _ as  -> as
+                      Laptop _ _ as -> as
 
 ------------------------------------------------------------------------
 -- Layouts:
@@ -320,8 +342,8 @@ myLayoutHook =
 
 ------------------------------------------------------------------------
 -- Window rules:
-myManageHook :: Query (Endo WindowSet)
-myManageHook = composeAll $
+myManageHook :: Host -> Query (Endo WindowSet)
+myManageHook host = composeAll $
     [resource =? r --> doIgnore | r <- myIgnores ]
     ++
     [ className =? "Xmessage" --> doCenterFloat
@@ -329,7 +351,7 @@ myManageHook = composeAll $
     , className =? "Steam" --> doShift "games"
     , isFullscreen --> myDoFullFloat
     , manageDocks
-    , namedScratchpadManageHook scratchpads
+    , namedScratchpadManageHook (scratchpads host)
     ]
     where
         -- resources
@@ -352,12 +374,12 @@ myBar host isSecondary = "dzen2" ++ concatMap (" " ++)
     , "-h '16'"
     , if isSecondary
       then case host of 
-            Desktop s -> if s /= (-1) then "-xs " ++ show s else ""
-            _         -> ""
+            Desktop s _ -> if s /= (-1) then "-xs " ++ show s else ""
+            _           -> ""
       else "-xs 1"
     , case host of -- Change font size on Retina display
-          Laptop _ True -> "-fn '-*-terminus-medium-r-*-*-20-*-*-*-*-*-*-*'"
-          _             -> "-fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*'"
+          Laptop _ True _ -> "-fn '-*-terminus-medium-r-*-*-20-*-*-*-*-*-*-*'"
+          _               -> "-fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*'"
     , "-bg '" ++ solarized "background" ++ "'"
     , "-fg '" ++ solarized "text" ++ "'"
     , "-ta 'center'"
@@ -381,8 +403,8 @@ myLoghook logPipe host = dynamicLogWithPP $ defaultPP
                       wrapL "CNOC: " "" $
                       maildirUnread ".maildir/CNOC"
                   ] ++
-                  (case host of Laptop _ _ -> [battery]
-                                Desktop _  -> [])
+                  (case host of Laptop _ _ _ -> [battery]
+                                Desktop _ _  -> [])
     , ppOrder   = \(ws:l:t:exs) -> [t,l,ws]++exs
     , ppOutput  = hPutStrLn logPipe
     }
