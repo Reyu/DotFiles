@@ -64,6 +64,11 @@ getHost = do
         "crevan" -> Laptop True True Pulse
         _        -> Desktop (-1) Pulse
 
+getAudioSystem :: Host -> AudioSystem
+getAudioSystem host = case host of
+                          Desktop _ as  -> as
+                          Laptop _ _ as -> as
+
 main :: IO ()
 main = do
     host <- getHost
@@ -187,7 +192,7 @@ scratchpads host =
     [ ns "htop" "htop" mySPFloat
     , ns "ghci" "ghci" mySPFloat
     , ns "mail" "mutt" mySPLargeFloat
-    , case audioSystem of
+    , case getAudioSystem host of
           Alsa  -> ns "volume" "alsamixer" mySPLargeFloat
           Pulse -> NS "volume" "pavucontrol" (className =? "Pavucontrol") mySPLargeFloat
     , ns "calendar" "ikhal" mySPLargeFloat
@@ -198,10 +203,6 @@ scratchpads host =
         myTerminal ++ " -c " ++ n ++ " -e tmux new -s " ++ n ++ " " ++ n
     mySPFloat = customFloating $ W.RationalRect (1/4) (1/4) (1/2) (1/2)
     mySPLargeFloat = customFloating $ W.RationalRect (1/8) (1/8) (3/4) (3/4)
-    audioSystem = case host of
-                      Desktop _ as  -> as
-                      Laptop _ _ as -> as
-    
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -239,7 +240,7 @@ myKeymap host conf =
     , ("M-z", toggleWS)
     ]
     ++ -- Volume
-    case audioSystem of
+    case getAudioSystem host of
         Alsa  -> [ ("<XF86AudioLowerVolume>", spawn "amixer set Master 1%-")
                  , ("<XF86AudioMute>",        spawn "amixer set Master toggle")
                  , ("<XF86AudioRaiseVolume>", spawn "amixer set Master 1%+")
@@ -315,10 +316,6 @@ myKeymap host conf =
         | (k, s) <- zip [";",",","."] [0..]
         , (f, m) <- [(viewScreen, ""), (sendToScreen, "S-")]
     ]
-  where
-    audioSystem = case host of
-                      Desktop _ as  -> as
-                      Laptop _ _ as -> as
 
 ------------------------------------------------------------------------
 -- Layouts:
