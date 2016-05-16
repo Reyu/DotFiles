@@ -221,7 +221,7 @@ myKeymap host conf =
     , ("M-<Space>", sendMessage NextLayout)
     , ("M-h", sendMessage Shrink)
     , ("M-l", sendMessage Expand)
-    , ("M-M1-l", spawn "in/i3lock -d -i ~/Pictures/LockScreen.png")
+    , ("M-M1-l", spawn "i3lock -d -i ~/Pictures/LockScreen.png")
     , ("M-m", windows W.focusMaster)
     , ("M-q", spawn "xmonad --recompile; xmonad --restart")
     , ("M-S-q", io exitSuccess)
