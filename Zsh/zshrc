@@ -711,7 +711,7 @@ fi
 compinit -i
 
 # Give a Fortune!
-if [[ -z $SSH_CONNECTION && $USER != 'root' && $SHLVL -le 2 ]]; then
+if [[ -z $SSH_CONNECTION && $USER != 'root' && $SHLVL -le 2 && -z $NO_FORTUNE ]]; then
     fortune
 fi
 
