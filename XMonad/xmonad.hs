@@ -372,8 +372,8 @@ myBar host isSecondary = "dzen2" ++ concatMap (" " ++)
             _           -> ""
       else "-xs 1"
     , case host of -- Change font size on Retina display
-          Laptop _ True _ -> "-fn '-*-terminus-medium-r-*-*-20-*-*-*-*-*-*-*'"
-          _               -> "-fn '-*-terminus-medium-r-*-*-13-*-*-*-*-*-*-*'"
+          Laptop _ True _ -> "-fn '-*-Source Code Pro-medium-r-*-*-20-*-*-*-*-*-*-*'"
+          _               -> "-fn '-*-Source Code Pro-medium-r-*-*-10-*-*-*-*-*-*-*'"
     , "-bg '" ++ solarized "background" ++ "'"
     , "-fg '" ++ solarized "text" ++ "'"
     , "-ta 'center'"
@@ -418,7 +418,7 @@ tabConfig = defaultTheme
 -- Prompt Config
 myXPConfig :: XPConfig
 myXPConfig = defaultXPConfig
-    { font            = "xft:Terminus:pixelsize=16:autohint=true"
+    { font            = "xft:Source Code Pro:pixelsize=16:autohint=true"
     , bgColor           = solarized "background"
     , fgColor           = solarized "text"
     , borderColor       = solarized "emphasis"
