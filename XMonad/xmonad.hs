@@ -161,9 +161,8 @@ data TopicItem = TI { topicName :: Topic   -- (22b)
 myTopics :: Host -> [TopicItem]
 myTopics host =
     [ TI "web" "." (spawn "firefox")
-    , ti "irc" "." 
+    , TI "chat" "." (spawnShell host (Just "irc") >> spawn "/home/reyu/.local/src/Telegram/Telegram")
     , ti "work" "Projects"
-    , TI "skype" "." (spawn "skype")
     , ti "xmonad" ".config/XMonad"
     , TI "games" "." (spawn "steam")
     , ti "kernel" "/usr/src/linux"
@@ -329,11 +328,11 @@ myLayoutHook =
     onWorkspaces ["web","irc"] (Full ||| tiled) $
     onWorkspaces ["code" ++ show i | i <- [0..10]] (Full ||| TwoPane (2/100) (1/2)) $
     onWorkspace "games" Full $
-    onWorkspace "skype" (withIM (1%9) skypeRoster skypeLayout) $
+    onWorkspace "chat" (withIM (1%9) skypeRoster chatLayout) $
     tiled ||| Mag.magnifier Grid ||| TwoPane (2/100) (1/2) ||| Full
     where
         tiled       = ResizableTall 1 (2/100) (1/2) []
-        skypeLayout = tabbed shrinkText tabConfig ||| Mag.magnifier Grid ||| tiled
+        chatLayout  = tabbed shrinkText tabConfig ||| Mag.magnifier Grid ||| tiled
         skypeRoster = Title "reyuzenfold - Skype™"
             -- The title is the ONLY property that changes between windows... WTF
 
