@@ -5,7 +5,7 @@ import qualified Data.Map         as M
 import System.Exit
 import Control.Monad
 import Data.List
-import Data.Maybe 
+import Data.Maybe
 import Data.Monoid
 import XMonad.Actions.SpawnOn
 import XMonad.Actions.PhysicalScreens
@@ -22,7 +22,6 @@ import XMonad.Util.Loggers
 import XMonad.Util.NamedScratchpad
 import XMonad.Prompt
 import XMonad.Prompt.Man
--- import XMonad.Prompt.AppendFile
 import XMonad.Prompt.Ssh
 import XMonad.Prompt.Shell
 import XMonad.Prompt.Workspace
@@ -52,7 +51,8 @@ type IsRetina = Bool
 type StatusBarDisplay = Int
 data AudioSystem = Alsa | Pulse
     deriving (Eq)
-data Host = Desktop StatusBarDisplay AudioSystem | Laptop HasWinKey IsRetina AudioSystem
+data Host = Desktop StatusBarDisplay AudioSystem
+          | Laptop HasWinKey IsRetina AudioSystem
     deriving (Eq)
 
 getHost :: IO Host
@@ -250,18 +250,15 @@ myKeymap host conf =
                  , ("<XF86AudioRaiseVolume>", spawn "~/.xmonad/bin/pulse-volume.sh increase")
                  ]
     -- I have the rest in list-comprehension groups, because they make
-    -- it easier for me, personally, to read.
+    -- it easier, for me personally, to read.
     ++ -- Various Prompts
     [ ("M-p " ++ k, f)
-      | (k, f) <- [ ("p",   spawn "~/.xmonad/bin/passmenu" )
+      | (k, f) <- [ ("p",   spawn "~/.xmonad/bin/passmenu")
                   , ("r",   runOrRaisePrompt myXPConfig)
-                  , ("e",   spawn "exe=`echo | yeganesh -x` && eval \"exec $exe\"") 
-                  , ("s",   sshPrompt myXPConfig )
+                  , ("e",   spawn "exe=`echo | yeganesh -x` && eval \"exec $exe\"")
+                  , ("s",   sshPrompt myXPConfig)
                   , ("m",   manPrompt myXPConfig)
                   , ("n",   prompt ("~/.local/src/todo.txt_cli-2.9/todo.sh" ++ " -d ~/.config/todo.cfg" ++ " add") myXPConfig)
-                  -- , ("n",   appendFilePrompt myXPConfig "Notes")
-                  -- , ("C-n", spawn "echo '' >> Notes && date >> Notes" >>
-                  --           appendFilePrompt myXPConfig "Notes")
                   ]
     ]
     ++ -- Workspace Groups
@@ -276,7 +273,7 @@ myKeymap host conf =
       | (k, f) <- [ ("n",   addWorkspacePrompt myXPConfig)
                   , ("S-n", renameWorkspace myXPConfig)
                   , ("C-c", removeWorkspace)
-                  , ("C-k", killAll >> removeWorkspace) 
+                  , ("C-k", killAll >> removeWorkspace)
                   ]
     ]
     ++ -- Scratchpads
@@ -299,17 +296,19 @@ myKeymap host conf =
     ]
     ++ -- Float Window Movement
     [ ("M-M1-" ++ dir, withFocused (keysMoveWindow (dx,dy)))
-      | (dir,dx,dy) <- [ ("h", -20, 0)
-                       , ("n", 20, 0)
-                       , ("c", 0, -20)
-                       , ("t", 0, 20) ]
+      | (dir,dx,dy) <- [ ("h", -20,   0)
+                       , ("n",  20,   0)
+                       , ("c",   0, -20)
+                       , ("t",   0,  20)
+                       ]
     ]
     ++ -- Float Window Resize
     [ ("M-C-" ++ dir, withFocused (keysResizeWindow  (dx,dy) (1,1)))
-      | (dir,dx,dy) <- [ ("n", -20, 0)
-                       , ("h", 20, 0)
-                       , ("t", 0, -20)
-                       , ("c", 0, 20) ]
+      | (dir,dx,dy) <- [ ("n", -20,   0)
+                       , ("h",  20,   0)
+                       , ("t",   0, -20)
+                       , ("c",   0,  20)
+                       ]
     ]
     ++ -- Move focus, or move windows, between screens
     [(m ++ "M-" ++ k, f s)
@@ -354,13 +353,11 @@ myManageHook host = composeAll $
     where
         -- resources
         myIgnores = ["desktop","desktop_window","notify-osd","trayer","panel"]
-        -- a trick for fullscreen but stil allow focusing of other WSs
-        myDoFullFloat :: ManageHook
         myDoFullFloat = doF W.focusDown <+> doFullFloat
 
 ------------------------------------------------------------------------
 -- Startup hook
-myStartupHook host logPipe = 
+myStartupHook host logPipe =
     checkKeymap (myConfig host logPipe) (myKeys host logPipe)
 
 ------------------------------------------------------------------------
@@ -371,7 +368,7 @@ myBar host isSecondary = "dzen2" ++ concatMap (" " ++)
     , "-y '0'"
     , "-h '16'"
     , if isSecondary
-      then case host of 
+      then case host of
             Desktop s _ -> if s /= (-1) then "-xs " ++ show s else ""
             _           -> ""
       else "-xs 1"
@@ -384,7 +381,7 @@ myBar host isSecondary = "dzen2" ++ concatMap (" " ++)
     , "-e 'onstart=lower'"
     ]
 
-myLoghook logPipe host = dynamicLogWithPP $ defaultPP 
+myLoghook logPipe host = dynamicLogWithPP $ defaultPP
     { ppCurrent = dzenColor (solarized "green") ""
     , ppVisible = dzenColor (solarized "cyan") ""
     , ppHidden  = dzenColor (solarized "text") ""
