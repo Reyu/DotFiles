@@ -317,7 +317,7 @@ set include
 #         right justify the rest of the string and pad with character "X"
 #   %|X
 #         pad to the end of the line with character "X"
-set index_format="%4C %2e/%-2E %Z %H %N [ %-35.40F ] %s %> %{%b %e %Y  %H:%M} | %4c "
+set index_format="%4C %2e/%-2E %Z %H %N [ %-35.40F ] %s %> %{%d%b%y %H:%M %z} | %4c "
 
 # how often (in seconds) mutt should look for new mail.
 # Note: Mutt check the 'spoolfile' and *not* a POP - Server
@@ -377,7 +377,8 @@ set pager_context=10
 
 # format of the one-line message 'status' displayed before each
 # message in either the internal or an external pager
-set pager_format="-%S- [%C/%m] %n (%c) %s"
+# set pager_format="-%S- [%C/%m] %n (%c) %s"
+set pager_format="%4C %Z %[!%b %e at %I:%M %p]  %.20n  %s%* -- (%P)"
 
 # determines the number of lines of a mini-index which is shown when in the
 # pager
