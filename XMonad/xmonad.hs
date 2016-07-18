@@ -325,10 +325,10 @@ myLayoutHook =
     mkToggle1 NOBORDERS $
     mkToggle1 MIRROR $
     smartBorders $
-    onWorkspaces ["web","irc"] (Full ||| tiled) $
-    onWorkspaces ["code" ++ show i | i <- [0..10]] (Full ||| TwoPane (2/100) (1/2)) $
-    onWorkspace "games" Full $
+    onWorkspace "web" (Full ||| tiled) $
     onWorkspace "chat" (withIM (1%9) skypeRoster chatLayout) $
+    onWorkspace "games" (noBorders Full) $
+    onWorkspaces ["code" ++ show i | i <- [0..10]] (noBorders Full ||| TwoPane (2/100) (1/2)) $
     tiled ||| Mag.magnifier Grid ||| TwoPane (2/100) (1/2) ||| Full
     where
         tiled       = ResizableTall 1 (2/100) (1/2) []
