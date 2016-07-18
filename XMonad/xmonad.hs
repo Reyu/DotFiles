@@ -325,14 +325,14 @@ myLayoutHook =
     mkToggle1 NOBORDERS $
     mkToggle1 MIRROR $
     smartBorders $
-    onWorkspace "web" (Full ||| tiled) $
+    onWorkspace "web" (noBorders Full ||| tiled) $
     onWorkspace "chat" (withIM (1%9) skypeRoster chatLayout) $
     onWorkspace "games" (noBorders Full) $
     onWorkspaces ["code" ++ show i | i <- [0..10]] (noBorders Full ||| TwoPane (2/100) (1/2)) $
-    tiled ||| Mag.magnifier Grid ||| TwoPane (2/100) (1/2) ||| Full
+    noBorders Full ||| tiled ||| Mag.magnifier Grid ||| TwoPane (2/100) (1/2)
     where
         tiled       = ResizableTall 1 (2/100) (1/2) []
-        chatLayout  = tabbed shrinkText tabConfig ||| Mag.magnifier Grid ||| tiled
+        chatLayout  = noBorders $ tabbed shrinkText tabConfig ||| Mag.magnifier Grid ||| tiled
         skypeRoster = Title "reyuzenfold - Skype™"
             -- The title is the ONLY property that changes between windows... WTF
 
