@@ -456,7 +456,7 @@ set sig_dashes
 
 # Use `fortune´ for random signatures
 #  Note: The trailing Pipe ('|') is important!
-set signature="/usr/bin/fortune -s|"
+set signature="~/.signature"
 
 # simple search into a real search pattern
 set simple_search="~f %s | ~C %s | ~s %s"
