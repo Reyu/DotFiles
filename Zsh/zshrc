@@ -138,7 +138,7 @@ else
     alias ls='ls -G'
 fi
 
-# Prompt Styles
+# Default Prompt Styles
 zstyle ':prompt:addon:openstack:tenant:default' 'color' 'green'
 zstyle ':prompt:addon:openstack:tenant:openstack' 'color' 'yellow'
 zstyle ':prompt:addon:openstack:user:default' 'color' 'green'
@@ -657,6 +657,7 @@ if [[ -d ${HOME}/.openstack ]]; then
 fi # }}}
 # }}}
 # Aliases {{{
+alias ni='nvim'
 alias :q='exit' # I do this on accident enough... Might as well make it work.
 alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow'
 alias mmv='noglob zmv -W'
