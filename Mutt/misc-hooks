@@ -1,11 +1,11 @@
 folder-hook '.'          'set sort_aux=date-received'
 folder-hook 'Inbox'      'set sort_aux=score'
-folder-hook 'List*'      'push <limit>~N|~O<enter>'
+folder-hook 'List*'      'push <limit>~U<enter>'
 folder-hook 'Archive'    'push <undelete-pattern>~D<enter>'
-folder-hook 'Monitoring' 'push <limit>~N|~O<enter>'
-folder-hook 'Jira'       'push <limit>~N|~O<enter>'
-folder-hook 'Commons'    'push <limit>~N|~O<enter>'
-folder-hook 'SAMS'       'push <limit>~N|~O<enter>'
-folder-hook 'CNOC'       'push <limit>~N|~O<enter>'
+folder-hook 'Monitoring' 'push <limit>~U<enter>'
+folder-hook 'Jira'       'push <limit>~U<enter>'
+folder-hook 'Commons'    'push <limit>~U<enter>'
+folder-hook 'SAMS'       'push <limit>~U<enter>'
+folder-hook 'CNOC'       'push <limit>~U<enter>'
 
 # vim: ft=muttrc

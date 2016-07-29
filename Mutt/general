@@ -39,7 +39,7 @@ unset hide_top_limited
 unset implicit_autoview
 unset keep_flagged
 unset maildir_trash
-unset mark_old
+# unset mark_old
 unset metoo
 unset menu_scroll
 unset meta_key
