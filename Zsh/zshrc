@@ -694,7 +694,6 @@ fi
 # The shell globbing pattern below should only return private keys in the
 # configuration directory that are marked executable. It should not return any
 # other standard ssh files, even if the are set +x
-source ${HOME}/.ssh-agent.env &> /dev/null
 for key in $(print ${HOME}/.ssh/*~config~authorized_keys~known_hosts~*.pub(*N)); do
     if ! $(ssh-add -l | grep -q $key); then
         ssh-add $key
