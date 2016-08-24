@@ -43,12 +43,12 @@ elif (( $+commands[vim] )); then
 fi
 # }}}
 # Make sure that SSH and GPG agents are accessible {{{
-RUNNING_AGENT_PID=$(pgrep -u ${UID} ssh-agent)
-if [[ -z "${SSH_AGENT_PID}" || -z "${SSH_AUTH_SOCK}" || "${SSH_AGENT_PID}" -ne "${RUNNING_AGENT_PID}" ]]; then
+RUNNING_AGENT_PID="$(pgrep -u ${UID} ssh-agent)"
+if [[ -z "${SSH_AGENT_PID}" || -z "${SSH_AUTH_SOCK}" || "${SSH_AGENT_PID}" != "${RUNNING_AGENT_PID}" ]]; then
     unset SSH_AGENT_PID SSH_AUTH_SOCK
     if [[ -r ${HOME}/.ssh-agent.env ]]; then
         source ${HOME}/.ssh-agent.env
-        if [[ "${SSH_AGENT_PID}" -ne "${RUNNING_AGENT_PID}" ]]; then
+        if [[ "${SSH_AGENT_PID}" != "${RUNNING_AGENT_PID}" ]]; then
             rm ${HOME}/.ssh-agent.env
             unset SSH_AGENT_PID SSH_AUTH_SOCK
             pkill -u ${UID} ssh-agent
