@@ -678,6 +678,11 @@ if (( $+commands[docker] ))     ; then alias docker='sudo docker'               
 if (( $+commands[cowsay] ))     ; then alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow' ; fi
 if (( $+commands[xclip] ))      ; then alias -g CLIP='$(xclip -o -sel clip)'                        ; fi
 if (( $+commands[runhaskell] )) ; then alias -s hs=runhaskell                                       ; fi
+if [[ -f ${HOME}/.local/todo.txt/todo.sh ]]; then
+    alias todo="~/.local/todo.txt/todo.sh -d ~/.config/todo.cfg"
+    alias t=todo
+    source ~/.local/todo.txt/todo_completion
+fi
 
 # Load package manager based Aliases {{{
 if (( $+commands[emerge] )); then
