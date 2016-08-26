@@ -258,6 +258,7 @@ myKeymap host conf =
                   , ("s",   sshPrompt myXPConfig)
                   , ("m",   manPrompt myXPConfig)
                   , ("n",   prompt ("~/.local/src/todo.txt_cli-2.9/todo.sh" ++ " -d ~/.config/todo.cfg" ++ " add") myXPConfig)
+                  , ("t",   prompt (myTerminal ++ " -e tmux new -s ") myXPConfig)
                   ]
     ]
     ++ -- Workspace Groups
