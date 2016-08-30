@@ -89,9 +89,9 @@ endif
 " }}}
 if dein#tap('syntastic') " {{{
     let g:syntastic_always_populate_loc_list = 1
-    let g:syntastic_auto_loc_list = 1
     let g:syntastic_check_on_open = 1
     let g:syntastic_check_on_wq = 0
+    let g:syntastic_auto_loc_list = 1
 endif
 " }}}
 if dein#tap('nerdtree') " {{{
@@ -187,7 +187,12 @@ set statusline+=%(\|\ %.60f%) "Show file name/relative path
 set statusline+=%(\ [%M%R%H%W]%) "Show Modified flag, Readonly flag, Preview flag, and Help buffer flag
 set statusline+=%= "Right ALIGN rest of line
 if dein#tap('neomake')
+    set statusline+=%#warningmsg#
     set statusline+=%(%#ErrorMsg#%{neomake#statusline#QflistStatus('qf:\ ')}%*\|\ %) "Show clist counts
+    set statusline+=%*
+endif
+if dein#tap('syntastic')
+    set statusline+=%(%{SyntasticStatuslineFlag()}\ \|\ %)
 endif
 set statusline+=%{\"\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"\ \|\ \"} "Show encoding/bomb
 set statusline+=%(%{&ff}\ \|\ %) "Show fileformat (line ending)
