@@ -21,6 +21,7 @@ call dein#add('ctrlpvim/ctrlp.vim')
 call dein#add('dag/vim2hs', { 'on_ft': 'haskell' })
 call dein#add('eagletmt/ghcmod-vim', { 'on_ft': 'haskell' })
 call dein#add('eagletmt/neco-ghc', { 'on_ft': 'haskell' })
+call dein#add('ervandew/supertab.git')
 call dein#add('garbas/vim-snipmate.git')
 call dein#add('godlygeek/tabular')
 call dein#add('honza/vim-snippets')
@@ -92,6 +93,18 @@ if dein#tap('syntastic') " {{{
 endif " }}}
 if dein#tap('nerdtree') " {{{
     map <Leader>n :NERDTreeToggle<CR>
+endif " }}}
+if dein#tap('supertab') " {{{
+    let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
+    if has("gui_running")
+      imap <c-space> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
+    else " no gui
+      if has("unix")
+        inoremap <Nul> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
+      endif
+    endif
+    let g:haskellmode_completion_ghc = 1
+    autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
 endif " }}}
 if dein#tap('tabular') " {{{
     let g:haskell_tabular = 1
