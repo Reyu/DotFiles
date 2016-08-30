@@ -12,7 +12,7 @@ augroup end
 " {{{ Plugins
 " Load plugins first, so they are availible to later code
 set runtimepath^=~/.config/nvim/repos/github.com/Shougo/dein.vim
-call dein#begin(expand('~/.config/nvim')) " {{{
+call dein#begin(expand('~/.config/nvim'))
 call dein#add('altercation/vim-colors-solarized')
 call dein#add('benekastah/neomake')
 call dein#add('chase/vim-ansible-yaml')
@@ -50,20 +50,18 @@ call dein#add('vim-pandoc/vim-pandoc-syntax')
 call dein#end()
 if dein#check_install()
     call dein#install()
-endif " }}}
-" Plugin Configuration {{{
+endif " 
+" Plugin Configuration
 if dein#tap('vim-colors-solarized') " {{{
     set background=dark
     colorscheme solarized
     call togglebg#map("<F5>")
-endif
-" }}}
+endif " }}}
 if dein#tap('neomake') " {{{
     " Try to run Neomake on file save
     " This should fail silently
     autocmd init BufWritePost * Neomake
-endif
-" }}}
+endif " }}}
 if dein#tap('vim2hs') " {{{
     let g:haskell_conceal_wide = 0
     " disable all conceals, including the simple ones like
@@ -73,8 +71,7 @@ if dein#tap('vim2hs') " {{{
     " deriving clauses and LANGUAGE pragmas,
     " otherwise collapsed into a single ellipsis
     let g:haskell_conceal_enumerations = 0
-endif
-" }}}
+endif " }}}
 if dein#tap('ghcmod-vim') " {{{
     map <silent> tw :GhcModTypeInsert<CR>
     map <silent> tw :GhcModSplitFunCase<CR>
@@ -86,26 +83,22 @@ if dein#tap('neco-ghc') " {{{
     let g:ycm_semantic_triggers = {'haskell' : ['.']}
     let g:haskellmode_completion_ghc = 0
     autocmd init FileType haskell setlocal omnifunc=necoghc#omnifunc
-endif
-" }}}
+endif " }}}
 if dein#tap('syntastic') " {{{
     let g:syntastic_always_populate_loc_list = 1
     let g:syntastic_check_on_open = 1
     let g:syntastic_check_on_wq = 0
     let g:syntastic_auto_loc_list = 1
-endif
-" }}}
+endif " }}}
 if dein#tap('nerdtree') " {{{
     map <Leader>n :NERDTreeToggle<CR>
-endif
-" }}}
+endif " }}}
 if dein#tap('tabular') " {{{
     let g:haskell_tabular = 1
     vmap <Leader>a= :Tabularize /=<CR>
     vmap <Leader>a; :Tabularize /::<CR>
     vmap <Leader>a- :Tabularize /-><CR>
-endif
-" }}}
+endif " }}}
 if dein#tap('ctrlp.vim') " {{{
     noremap <c-b> :CtrlPBuffer<cr>
     let g:ctrlp_custom_ignore = '\v[\/]dist$'
@@ -115,8 +108,7 @@ if dein#tap('ctrlp.vim') " {{{
         \ 2: ['_darcs', 'cd %s && darcs show files'],
         \ },
       \ }
-endif
-" }}}
+endif " }}}
 if dein#tap('neosnippet') " {{{
     " Plugin key-mappings.
     imap <C-k>     <Plug>(neosnippet_expand_or_jump)
@@ -143,7 +135,6 @@ if dein#tap('UltiSnips') " {{{
     let g:UltiSnipsEditSplit="vertical"
     let g:ultisnips_python_style="sphinx"
 endif " }}}
-" Plugin Configuration }}}
 " Plugins }}}
 " {{{ General
 " Sets how many lines of history VIM has to remember
