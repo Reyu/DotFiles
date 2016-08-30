@@ -106,9 +106,14 @@ if dein#tap('tabular') " {{{
 endif
 " }}}
 if dein#tap('ctrlp.vim') " {{{
-    map <silent> <Leader>t :CtrlP()<CR>
-    noremap <Leader>b<space> :CtrlPBuffer<cr>
+    noremap <c-b> :CtrlPBuffer<cr>
     let g:ctrlp_custom_ignore = '\v[\/]dist$'
+    let g:ctrlp_user_command = {
+      \ 'types': {
+        \ 1: ['.git', 'cd %s && git ls-files'],
+        \ 2: ['_darcs', 'cd %s && darcs show files'],
+        \ },
+      \ }
 endif
 " }}}
 if dein#tap('neosnippet') " {{{
