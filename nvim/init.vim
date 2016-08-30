@@ -74,6 +74,12 @@ if dein#tap('vim2hs') " {{{
     let g:haskell_conceal_enumerations = 0
 endif
 " }}}
+if dein#tap('ghcmod-vim') " {{{
+    map <silent> tw :GhcModTypeInsert<CR>
+    map <silent> tw :GhcModSplitFunCase<CR>
+    map <silent> tw :GhcModType<CR>
+    map <silent> tw :GhcModTypeClear<CR>
+endif "}}}
 if dein#tap('neco-ghc') " {{{
     " Disable haskell-vim omnifunc
     let g:ycm_semantic_triggers = {'haskell' : ['.']}
