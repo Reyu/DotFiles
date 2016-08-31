@@ -257,7 +257,7 @@ myKeymap host conf =
                   , ("e",   spawn "exe=`echo | yeganesh -x` && eval \"exec $exe\"")
                   , ("s",   sshPrompt myXPConfig)
                   , ("m",   manPrompt myXPConfig)
-                  , ("n",   prompt ("~/.local/src/todo.txt_cli-2.9/todo.sh" ++ " -d ~/.config/todo.cfg" ++ " add") myXPConfig)
+                  , ("n",   prompt ("~/.local/todo.txt/todo.sh" ++ " -d ~/.config/todo.cfg" ++ " add") myXPConfig)
                   , ("t",   prompt (myTerminal ++ " -e tmux new -s ") myXPConfig)
                   ]
     ]
