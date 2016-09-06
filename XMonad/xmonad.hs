@@ -102,7 +102,7 @@ myConfig host logPipe = defaultConfig
 ------------------------------------------------------------------------
 -- Usefull common vars
 myTerminal :: String
-myTerminal = "st"
+myTerminal = "urxvtc"
 
 ------------------------------------------------------------------------
 -- Helper functions
@@ -199,7 +199,7 @@ scratchpads host =
   where
     ns n p = NS n (termTmuxStart p) (resource =? p)
     termTmuxStart n =
-        myTerminal ++ " -c " ++ n ++ " -e tmux new -s " ++ n ++ " " ++ n
+        myTerminal ++ " -name " ++ n ++ " -e tmux new -s " ++ n ++ " " ++ n
     mySPFloat = customFloating $ W.RationalRect (1/4) (1/4) (1/2) (1/2)
     mySPLargeFloat = customFloating $ W.RationalRect (1/8) (1/8) (3/4) (3/4)
 
