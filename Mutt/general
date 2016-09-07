@@ -532,4 +532,26 @@ set wrapmargin=10
 # When writing a mailbox, a message will be printed every write_inc messages to indicate progress.
 set write_inc=10
 
+# Enable the sidebar
+set sidebar_visible
+set sidebar_width=20
+
+# This specifies the delimiter between the sidebar (if visible) and other
+# screens. Defaults is ``|''
+macro index B ':toggle sidebar_visible<enter>'
+macro pager B ':toggle sidebar_visible<enter>'
+
+# color of folders with new mail
+  color sidebar_new  yellow black
+# for boxes with flagged mail
+  color sidebar_flagged black brightred
+
+# ctrl-n, ctrl-p to select next, prev folder
+# ctrl-o to open selected folder
+macro index \cW ':push <sidebar-prev-new><sidebar-open><enter>'
+macro index \cE ':push <sidebar-next-new><sidebar-open><enter>'
+macro index \cP ':push <sidebar-prev><enter>'
+macro index \cN ':push <sidebar-next><enter>'
+macro index \cO ':push <sidebar-open><enter>'
+
 # vim: ft=muttrc
