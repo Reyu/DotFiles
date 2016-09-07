@@ -114,7 +114,7 @@ myConfig host logPipe =
 -- Usefull common vars
 myTerminal
   :: String
-myTerminal = "urxvtc"
+myTerminal = "st"
 
 ------------------------------------------------------------------------
 -- Helper functions
@@ -219,9 +219,9 @@ scratchpads host =
         NS "volume" "pavucontrol" (className =? "Pavucontrol") mySPLargeFloat
   , ns "calendar" "ikhal" mySPLargeFloat]
   where
-    ns n p = NS n (termTmuxStart p) (resource =? p)
+    ns n p = NS n (termTmuxStart p) (className =? p)
     termTmuxStart n =
-      myTerminal ++ " -name " ++ n ++ " -e tmux new -s " ++ n ++ " " ++ n
+      myTerminal ++ " -c " ++ n ++ " -e tmux new -s " ++ n ++ " " ++ n
     mySPFloat = customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2)
     mySPLargeFloat =
       customFloating $ W.RationalRect (1 / 8) (1 / 8) (3 / 4) (3 / 4)
