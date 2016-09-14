@@ -198,7 +198,7 @@ set list_reply = yes
 # maildir files when the header cache is in use.  This incurs one
 # stat(2) per message every time the folder is opened.
 set maildir_header_cache_verify = no
-#set header_cache=~/.mutt/header_cache
+set header_cache=~/.mutt/header_cache
 
 # If your terminal is so wide that the lines are embarrasingly long, you
 # can also set a maximum line length:
