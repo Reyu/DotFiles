@@ -173,9 +173,6 @@ set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 " Don't use the mouse. Ever.
 set mouse=
 
-" Set Leader key
-let mapleader=","
-
 " Configure statusline
 set statusline= "Clear statusline, when reloading
 set statusline+=%(\ %n\ %) "Show buffer number
