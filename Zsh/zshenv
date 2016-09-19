@@ -62,7 +62,7 @@ if [[ -z "${SSH_AGENT_PID}" || -z "${SSH_AUTH_SOCK}" || "${SSH_AGENT_PID}" != "$
 fi
 unset RUNNING_AGENT_PID
 
-gpg-connect-agent /bye
+gpg-connect-agent /bye &> /dev/null
 export GPG_TTY=$(tty)
 # }}}
 # EC2 Tools {{{
