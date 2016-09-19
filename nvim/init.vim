@@ -21,6 +21,7 @@ call dein#add('ctrlpvim/ctrlp.vim')
 call dein#add('dag/vim2hs', { 'on_ft': 'haskell' })
 call dein#add('eagletmt/ghcmod-vim', { 'on_ft': 'haskell' })
 call dein#add('eagletmt/neco-ghc', { 'on_ft': 'haskell' })
+call dein#add('easymotion/vim-easymotion')
 call dein#add('ervandew/supertab.git')
 call dein#add('garbas/vim-snipmate.git')
 call dein#add('godlygeek/tabular')
@@ -77,6 +78,20 @@ if dein#tap('ghcmod-vim') " {{{
     map <silent> ts :GhcModSplitFunCase<CR>
     map <silent> tq :GhcModType<CR>
     map <silent> te :GhcModTypeClear<CR>
+endif "}}}
+if dein#tap('vim-easymotion') " {{{
+    let g:EasyMotion_smartcase = 1
+    map <Leader> <Plug>(easymotion-prefix)
+    nmap s <Plug>(easymotion-overwin-f)
+    map  / <Plug>(easymotion-sn)
+    omap / <Plug>(easymotion-tn)
+    map  n <Plug>(easymotion-next)
+    map  N <Plug>(easymotion-prev)
+    map <Leader>l <Plug>(easymotion-lineforward)
+    map <Leader>j <Plug>(easymotion-j)
+    map <Leader>k <Plug>(easymotion-k)
+    map <Leader>h <Plug>(easymotion-linebackward)
+    let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
 endif "}}}
 if dein#tap('neco-ghc') " {{{
     " Disable haskell-vim omnifunc
