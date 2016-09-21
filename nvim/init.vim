@@ -74,10 +74,10 @@ if dein#tap('vim2hs') " {{{
     let g:haskell_conceal_enumerations = 0
 endif " }}}
 if dein#tap('ghcmod-vim') " {{{
-    map <silent> tw :GhcModTypeInsert<CR>
-    map <silent> ts :GhcModSplitFunCase<CR>
-    map <silent> tq :GhcModType<CR>
-    map <silent> te :GhcModTypeClear<CR>
+    map <silent> <Leader>tw :GhcModTypeInsert<CR>
+    map <silent> <Leader>ts :GhcModSplitFunCase<CR>
+    map <silent> <Leader>tq :GhcModType<CR>
+    map <silent> <Leader>te :GhcModTypeClear<CR>
 endif "}}}
 if dein#tap('vim-easymotion') " {{{
     let g:EasyMotion_smartcase = 1
