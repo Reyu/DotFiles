@@ -701,7 +701,7 @@ fi
 # other standard ssh files, even if the are set +x
 add_keys=()
 for key in $(print ${HOME}/.ssh/*~config~authorized_keys~known_hosts~*.pub(*N)); do
-    if ! $(ssh-add -l | grep -q $key); then
+    if ! $(ssh-add -l | grep -q "$(ssh-keygen -l -f $key|cut -d' ' -f2)"); then
         add_keys+=$key
     fi
 done
