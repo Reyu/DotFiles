@@ -11,8 +11,16 @@ augroup end
 " Pre-setup }}}
 " {{{ Plugins
 " Load plugins first, so they are availible to later code
-set runtimepath^=~/.config/nvim/repos/github.com/Shougo/dein.vim
-call dein#begin(expand('~/.config/nvim'))
+let s:dein_path = expand('~/.cache/nvim/')
+let s:dein_repo = s:dein_path.'repos/github.com/Shougo/dein.vim'
+if isdirectory(s:dein_repo)
+    " Dein-managed Dein (prefered)
+    exe 'set rtp+='.s:dein_repo
+else
+    " Minimal bootstrap
+    set rtp+=~/.config/nvim/dein.vim
+endif
+call dein#begin(expand('~/.cache/nvim'))
 call dein#add('altercation/vim-colors-solarized')
 call dein#add('benekastah/neomake')
 call dein#add('chase/vim-ansible-yaml')
