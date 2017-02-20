@@ -484,6 +484,14 @@ fi
 if [[ $+commands[virtualenvwrapper.sh] == 1 ]]; then
     source $commands[virtualenvwrapper.sh]
 fi
+# Make sure we are still in the virtual env if, for example, we open a subshell
+if [[ -n $VIRTUAL_ENV ]]; then
+    if (( $+commands[virtualenvwrapper.sh] )); then
+        workon $VIRTUAL_ENV(:t)
+    else
+        source $VIRTUAL_ENV/bin/activate
+    fi
+fi
 # }}}
 # Key Bindings {{{
 bindkey -v
