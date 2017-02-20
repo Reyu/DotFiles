@@ -657,7 +657,6 @@ if [[ -d ${HOME}/.openstack ]]; then
 fi # }}}
 # }}}
 # Aliases {{{
-alias ni='nvim'
 alias :q='exit' # I do this on accident enough... Might as well make it work.
 alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow'
 alias mmv='noglob zmv -W'
@@ -673,6 +672,7 @@ alias -s zsh=$commands[zsh]
 alias -s pl=$commands[perl]
 alias -s sh=$commands[sh]
 
+if (( $+commands[nvim] ))       ; then alias ni='nvim'; alias nis='nvim -S Session.vim'             ; fi
 if (( $+commands[hub] ))        ; then eval $(hub alias -s)                                         ; fi
 if (( $+commands[docker] ))     ; then alias docker='sudo docker'                                   ; fi
 if (( $+commands[cowsay] ))     ; then alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow' ; fi
