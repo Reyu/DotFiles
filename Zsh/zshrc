@@ -657,7 +657,6 @@ if [[ -d ${HOME}/.openstack ]]; then
 fi # }}}
 # }}}
 # Aliases {{{
-alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow'
 alias mmv='noglob zmv -W'
 alias -g ISODATE='$(date --iso-8601=date)'
 alias -g PL='| ${PAGER}'
@@ -677,6 +676,9 @@ if (( $+commands[docker] ))     ; then alias docker='sudo docker'               
 if (( $+commands[cowsay] ))     ; then alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow' ; fi
 if (( $+commands[xclip] ))      ; then alias -g CLIP='$(xclip -o -sel clip)'                        ; fi
 if (( $+commands[runhaskell] )) ; then alias -s hs=runhaskell                                       ; fi
+if [[ -f ~/.local/share/cowsay/cows/fox.cow ]]; then
+    alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow'
+fi
 if [[ -f ${HOME}/.local/todo.txt/todo.sh ]]; then
     alias todo="~/.local/todo.txt/todo.sh -d ~/.config/todo.cfg"
     alias t=todo
