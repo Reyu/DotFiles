@@ -222,6 +222,9 @@ nnoremap yO :set paste<CR>O
 
 " Exit paste mode when leaving insert
 autocmd init InsertLeave * set nopaste
+
+" Split windows below, or to the right of, the current window
+set splitbelow splitright
 " General }}}
 " {{{ Files, backups and undo
 " Keep backups in cache folder, so as not to clutter filesystem.
