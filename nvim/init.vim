@@ -11,11 +11,11 @@ augroup end
 " Pre-setup }}}
 " {{{ Plugins
 " Load plugins first, so they are availible to later code
-let s:dein_path = expand('~/.cache/nvim/')
-let s:dein_repo = s:dein_path.'repos/github.com/Shougo/dein.vim'
+let s:dein_path = expand('~/.cache/nvim')
+let s:dein_repo = s:dein_path.'/repos/github.com/Shougo/dein.vim'
 if isdirectory(s:dein_repo)
     " Dein-managed Dein (prefered)
-    exe 'set rtp+='.s:dein_repo
+    execute 'set rtp+='.s:dein_repo
 else
     " Minimal bootstrap
     set rtp+=~/.config/nvim/dein.vim
