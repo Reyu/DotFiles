@@ -679,6 +679,7 @@ alias -s pl=$commands[perl]
 alias -s sh=$commands[sh]
 
 if (( $+commands[nvim] ))       ; then alias ni='nvim'; alias nis='nvim -S Session.vim'             ; fi
+if (( $+commands[emacs] ))      ; then alias emacs='emacs -nw'                                      ; fi
 if (( $+commands[hub] ))        ; then eval $(hub alias -s)                                         ; fi
 if (( $+commands[docker] ))     ; then alias docker='sudo docker'                                   ; fi
 if (( $+commands[cowsay] ))     ; then alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow' ; fi
