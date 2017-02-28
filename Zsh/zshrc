@@ -494,7 +494,7 @@ if [[ -n $VIRTUAL_ENV ]]; then
 fi
 # }}}
 # Key Bindings {{{
-bindkey -v
+bindkey -e
 
 # zsh-history-substring-search
 if (( $+widgets[history-substring-search-up] )); then
