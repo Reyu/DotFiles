@@ -101,6 +101,8 @@
 (use-package org
   :config
   (setq org-directory "~/org-files"
+	org-agenda-files (list (concat org-directory "/home.org")
+			       (concat org-directory "/work.org"))
         org-default-notes-file (concat org-directory "/todo.org"))
   :bind
   ("C-c l" . org-store-link)
