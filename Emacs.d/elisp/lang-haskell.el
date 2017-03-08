@@ -29,4 +29,10 @@
       ;; reformat the buffer using hindent on save
       (setq hindent-reformat-buffer-on-save t))))
 
+;; shakespeare-mode - mode for editing hamlet, lucius, and julius files
+;; https://github.com/CodyReichert/shakespeare-mode
+(use-package shakespeare-mode
+  :ensure t)
+
+
 (provide 'lang-haskell)
