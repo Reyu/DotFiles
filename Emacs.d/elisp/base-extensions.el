@@ -166,4 +166,7 @@
   :config
   (yas-global-mode 1))
 
+(use-package darcsum
+  :ensure t)
+
 (provide 'base-extensions)
