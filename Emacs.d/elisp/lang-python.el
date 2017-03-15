@@ -28,6 +28,12 @@
 (use-package pyvenv
   :ensure t)
 
+(use-package sphinx-doc
+  :ensure t)
+
+(use-package python-docstring
+  :ensure t)
+
 ;; (use-package pyenv-mode
 ;;   :init
 ;;   (add-to-list 'exec-path "~/.pyenv/shims")
