@@ -57,6 +57,7 @@ if dein#load_state(s:dein_path)
     call dein#add('vim-utils/vim-man')
     call dein#add('vim-pandoc/vim-pandoc')
     call dein#add('vim-pandoc/vim-pandoc-syntax')
+    call dein#disable('altercation/vim-colors-solarized')
     call dein#end()
     call dein#save_state()
 endif
