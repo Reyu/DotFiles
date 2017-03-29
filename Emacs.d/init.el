@@ -23,3 +23,5 @@
 (require 'lang-web)
 (require 'lang-haskell)
 (require 'lang-other)
+
+(require 'password-store)
