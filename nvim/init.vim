@@ -22,7 +22,6 @@ else
 endif
 if dein#load_state(s:dein_path)
     call dein#begin(s:dein_path)
-    call dein#add('altercation/vim-colors-solarized')
     call dein#add('benekastah/neomake')
     call dein#add('chase/vim-ansible-yaml')
     call dein#add('cloudhead/neovim-ghcid', { 'on_ft': 'haskell' })
@@ -57,19 +56,13 @@ if dein#load_state(s:dein_path)
     call dein#add('vim-utils/vim-man')
     call dein#add('vim-pandoc/vim-pandoc')
     call dein#add('vim-pandoc/vim-pandoc-syntax')
-    call dein#disable('altercation/vim-colors-solarized')
     call dein#end()
     call dein#save_state()
 endif
 if dein#check_install()
     call dein#install()
-endif " 
+endif "
 " Plugin Configuration
-if dein#tap('vim-colors-solarized') " {{{
-    set background=dark
-    colorscheme solarized
-    call togglebg#map("<F5>")
-endif " }}}
 if dein#tap('neomake') " {{{
     " Try to run Neomake on file save
     " This should fail silently
@@ -184,6 +177,9 @@ set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 
 " Don't use the mouse. Ever.
 set mouse=
+
+" Use dark background for colorscheme
+set background=dark
 
 " Configure statusline
 set statusline= "Clear statusline, when reloading
