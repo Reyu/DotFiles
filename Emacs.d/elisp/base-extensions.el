@@ -175,4 +175,9 @@
 (use-package darcsum
   :ensure t)
 
+(use-package org-jira
+  :ensure t
+  :config
+  (setq jiralib-url "https://jira.walmart.com"))
+
 (provide 'base-extensions)
