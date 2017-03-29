@@ -22,3 +22,4 @@
 (require 'lang-python)
 (require 'lang-web)
 (require 'lang-haskell)
+(require 'lang-other)
