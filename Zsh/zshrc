@@ -6,6 +6,11 @@
 #
 
 # Prepend Stuff {{{
+if [[ -f ${HOME}/.zshenv ]]
+then
+    source ${HOME}/.zshenv
+fi
+
 # Where are we?
 zdir=$(print ${ZDOTDIR:-$HOME}/.zshrc(:A:h))
 
