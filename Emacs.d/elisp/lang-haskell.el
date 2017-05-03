@@ -10,7 +10,7 @@
     "Hook for `haskell-mode'."
     (set (make-local-variable 'company-backends)
          '((company-intero company-files))))
-  (add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
+    (add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
   (add-hook 'haskell-mode-hook 'company-mode)
   (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
 
