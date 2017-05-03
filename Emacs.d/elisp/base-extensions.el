@@ -106,7 +106,7 @@
 
 (use-package org
   :config
-  (setq org-directory "~/org-files"
+  (setq org-directory "~/Documents/OrgFiles"
 	org-agenda-files (list (concat org-directory "/home.org")
 			       (concat org-directory "/work.org"))
         org-default-notes-file (concat org-directory "/todo.org"))
@@ -118,7 +118,8 @@
   :config
   (org-projectile:per-repo)
   (setq org-projectile:per-repo-filename "todo.org"
-	org-agenda-files (append org-agenda-files (org-projectile:todo-files))))
+	org-agenda-files (append org-agenda-files (org-projectile:todo-files)))
+  (add-to-list 'org-capture-templates (org-projectile:project-todo-entry)))
 
 (use-package org-bullets
   :config
