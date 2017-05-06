@@ -89,6 +89,15 @@
 
 (use-package magit-popup)
 
+(use-package magit-gitflow
+  :ensure t
+  :init
+  (add-hook 'magit-mode-hook 'turn-on-magit-gitflow))
+
+(use-package magithub
+  :after magit
+  :config (magithub-feature-autoinject t))
+
 (use-package multiple-cursors
   :bind
   ("C-S-c C-S-c" . mc/edit-lines)
@@ -109,7 +118,9 @@
   (setq org-directory "~/Documents/OrgFiles"
 	org-agenda-files (list (concat org-directory "/home.org")
 			       (concat org-directory "/work.org"))
-        org-default-notes-file (concat org-directory "/todo.org"))
+        org-default-notes-file (concat org-directory "/todo.org")
+	org-lowest-priority           69
+	org-enforce-todo-dependencies t)
   :bind
   ("C-c l" . org-store-link)
   ("C-c a" . org-agenda))

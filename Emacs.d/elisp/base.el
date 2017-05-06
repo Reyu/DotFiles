@@ -32,6 +32,8 @@
       visible-bell                        nil
       ring-bell-function                  'ignore
       custom-file                         "~/.emacs.d/.custom.el"
+      line-number-mode                    t
+      column-number-mode                  t
       ;; http://ergoemacs.org/emacs/emacs_stop_cursor_enter_prompt.html
       minibuffer-prompt-properties
       '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)
