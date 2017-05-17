@@ -34,7 +34,11 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 export WORKON_HOME=~/Projects/.python_virtual_environments
 # }}}
 # Editors {{{
-if (( $+commands[emacs] )); then
+
+if (( $+commands[emacsclient] )); then
+    export EDITOR=${commands[emacsclient]}
+    export VISUAL=${commands[emacsclient]}
+elif (( $+commands[emacs] )); then
     export EDITOR="${commands[emacs]} -nw"
     export VISUAL="${commands[emacs]} -nw"
 elif (( $+commands[nvim] )); then
