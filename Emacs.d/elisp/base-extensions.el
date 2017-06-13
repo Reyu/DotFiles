@@ -115,8 +115,14 @@
 
 (use-package org
   :config
-  (setq org-directory "~/Documents/OrgFiles"
-	org-agenda-files (list (concat org-directory "/home.org")
+  (cond
+   ((string-equal system-type "gnu/linux")
+    (setq org-directory "~/Documents/OrgFiles"))
+   ((string-equal system-type "darwin")
+    (setq org-directory "~/Documents/OrgFiles"))
+   ((string-equal system-type "windows-nt")
+    (setq org-directory "~/../../Documents/OrgFiles")))
+  (setq org-agenda-files (list (concat org-directory "/home.org")
 			       (concat org-directory "/work.org"))
         org-default-notes-file (concat org-directory "/todo.org")
 	org-lowest-priority           69
