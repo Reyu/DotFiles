@@ -6,6 +6,8 @@
 #
 
 # Prepend Stuff {{{
+[[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' && return
+
 if [[ -f ${HOME}/.zshenv ]]
 then
     source ${HOME}/.zshenv
@@ -505,62 +507,62 @@ bindkey -e
 if (( $+widgets[history-substring-search-up] )); then
     bindkey "$key_info[Up]" history-substring-search-up
     bindkey "$key_info[Down]" history-substring-search-down
-    bindkey -M vicmd 'k' history-substring-search-up
-    bindkey -M vicmd 'j' history-substring-search-down
+    # bindkey -M vicmd 'k' history-substring-search-up
+    # bindkey -M vicmd 'j' history-substring-search-down
 fi
 
 # Clear Line
 bindkey '\el' clear-line
 
-# Edit command in an external editor.
-bindkey -M vicmd "v" edit-command-line
-bindkey -M viins "^v" edit-command-line
+# # Edit command in an external editor.
+# bindkey -M vicmd "v" edit-command-line
+# bindkey -M viins "^v" edit-command-line
 
-# Undo/Redo
-bindkey -M vicmd "u" undo
-bindkey -M vicmd "$key_info[Control]R" redo
+# # Undo/Redo
+# bindkey -M vicmd "u" undo
+# bindkey -M vicmd "$key_info[Control]R" redo
 
-if (( $+widgets[history-incremental-pattern-search-backward] )); then
-  bindkey -M vicmd "?" history-incremental-pattern-search-backward
-  bindkey -M vicmd "/" history-incremental-pattern-search-forward
-else
-  bindkey -M vicmd "?" history-incremental-search-backward
-  bindkey -M vicmd "/" history-incremental-search-forward
-fi
+# if (( $+widgets[history-incremental-pattern-search-backward] )); then
+#   bindkey -M vicmd "?" history-incremental-pattern-search-backward
+#   bindkey -M vicmd "/" history-incremental-pattern-search-forward
+# else
+#   bindkey -M vicmd "?" history-incremental-search-backward
+#   bindkey -M vicmd "/" history-incremental-search-forward
+# fi
 
-bindkey -M viins "$key_info[Home]" beginning-of-line
-bindkey -M viins "$key_info[End]" end-of-line
+# bindkey -M viins "$key_info[Home]" beginning-of-line
+# bindkey -M viins "$key_info[End]" end-of-line
 
-bindkey -M viins "$key_info[Insert]" overwrite-mode
-bindkey -M viins "$key_info[Delete]" delete-char
-bindkey -M viins "$key_info[Backspace]" backward-delete-char
+# bindkey -M viins "$key_info[Insert]" overwrite-mode
+# bindkey -M viins "$key_info[Delete]" delete-char
+# bindkey -M viins "$key_info[Backspace]" backward-delete-char
 
-bindkey -M viins "$key_info[Left]" backward-char
-bindkey -M viins "$key_info[Right]" forward-char
+# bindkey -M viins "$key_info[Left]" backward-char
+# bindkey -M viins "$key_info[Right]" forward-char
 
-# Clear screen.
-bindkey -M viins "$key_info[Control]L" clear-screen
+# # Clear screen.
+# bindkey -M viins "$key_info[Control]L" clear-screen
 
-# Expand command name to full path.
-for key in "$key_info[Escape]"{E,e}
-    bindkey -M viins "$key" expand-cmd-path
+# # Expand command name to full path.
+# for key in "$key_info[Escape]"{E,e}
+#     bindkey -M viins "$key" expand-cmd-path
 
-# Duplicate the previous word.
-for key in "$key_info[Escape]"{M,m}
-    bindkey -M viins "$key" copy-prev-shell-word
+# # Duplicate the previous word.
+# for key in "$key_info[Escape]"{M,m}
+#     bindkey -M viins "$key" copy-prev-shell-word
 
-# Bind Shift + Tab to go to the previous menu item.
-bindkey -M viins "$key_info[BackTab]" reverse-menu-complete
+# # Bind Shift + Tab to go to the previous menu item.
+# bindkey -M viins "$key_info[BackTab]" reverse-menu-complete
 
-# Complete in the middle of word.
-bindkey -M viins "$key_info[Control]I" expand-or-complete
+# # Complete in the middle of word.
+# bindkey -M viins "$key_info[Control]I" expand-or-complete
 
-# Display an indicator when completing.
-bindkey -M viins "$key_info[Control]I" \
-    expand-or-complete-with-indicator
+# # Display an indicator when completing.
+# bindkey -M viins "$key_info[Control]I" \
+#     expand-or-complete-with-indicator
 
-# Insert 'sudo ' at the beginning of the line.
-bindkey -M viins "$key_info[Control]X$key_info[Control]S" prepend-sudo
+# # Insert 'sudo ' at the beginning of the line.
+# bindkey -M viins "$key_info[Control]X$key_info[Control]S" prepend-sudo
 
 # Auto expand global aliases
 bindkey " " globalias
@@ -578,13 +580,19 @@ precmd () {print -Pn "\033]0%~\007"}
 # Write some info to terminal title.
 # This is seen when the shell prompts for input.
 function precmd {
-    print -Pn "\e]2;%~%(1j, - %j job%(2j|s|),)\a"
+    if [[ -z $EMACS ]]
+    then
+	print -Pn "\e]2;%~%(1j, - %j job%(2j|s|),)\a"
+    fi
 }
 # Write command and args to terminal title.
 # This is seen while the shell waits for a command to complete.
 function preexec {
   # cmd name only, or if this is sudo or ssh, the next cmd
-  print -Pn "\e]2;${1[(wr)^(*=*|sudo|ssh|-*)]:gs/%/%%:g}\a"
+    if [[ -z $EMACS ]]
+    then
+	print -Pn "\e]2;${1[(wr)^(*=*|sudo|ssh|-*)]:gs/%/%%:g}\a"
+    fi
 }
 # Prompt char changes if in a VCS repo
 function prompt_char {
