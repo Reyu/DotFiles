@@ -60,7 +60,7 @@ if [[ -d $HOME/.local/ec2-tools ]];then
 fi
 # }}}
 # Extra {{{
-export NNTPSERVER="nntp.aioe.org"
+export NNTPSERVER="news.giganews.commands"
 # }}}
 # Read local configuration {{{
 if [[ -f ${ZDOTDIR:-$HOME}/.zshenv.local ]]; then
