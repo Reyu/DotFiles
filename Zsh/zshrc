@@ -8,11 +8,6 @@
 # Prepend Stuff {{{
 [[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' && return
 
-if [[ -f ${HOME}/.zshenv ]]
-then
-    source ${HOME}/.zshenv
-fi
-
 # Where are we?
 zdir=$(print ${ZDOTDIR:-$HOME}/.zshrc(:A:h))
 

@@ -49,27 +49,7 @@ elif (( $+commands[vim] )); then
 fi
 # }}}
 # Make sure that SSH and GPG agents are accessible {{{
-RUNNING_AGENT_PID="$(pgrep -u ${UID} ssh-agent)"
-if [[ -z "${SSH_AGENT_PID}" || -z "${SSH_AUTH_SOCK}" || "${SSH_AGENT_PID}" != "${RUNNING_AGENT_PID}" ]]; then
-    unset SSH_AGENT_PID SSH_AUTH_SOCK
-    if [[ -r ${HOME}/.ssh-agent.env ]]; then
-        source ${HOME}/.ssh-agent.env
-        if [[ "${SSH_AGENT_PID}" != "${RUNNING_AGENT_PID}" ]]; then
-            rm ${HOME}/.ssh-agent.env
-            unset SSH_AGENT_PID SSH_AUTH_SOCK
-            pkill -u ${UID} ssh-agent
-            eval $(ssh-agent|grep -v echo|tee ${HOME}/.ssh-agent.env)
-        fi
-    else
-        rm -f ${HOME}/.ssh-agent.env
-        pkill -u ${UID} ssh-agent
-        eval $(ssh-agent|grep -v echo|tee ${HOME}/.ssh-agent.env)
-    fi
-fi
-unset RUNNING_AGENT_PID
-
-gpg-connect-agent /bye &> /dev/null
-export GPG_TTY=$(tty)
+eval `keychain -q --agents gpg,ssh --eval id_rsa`
 # }}}
 # EC2 Tools {{{
 if [[ -f $HOME/.aws_keys ]]; then
