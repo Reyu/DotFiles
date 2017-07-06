@@ -48,6 +48,7 @@
       fringes-outside-margins            t
       x-select-enable-clipboard          t
       use-package-always-ensure          t)
+(load custom-file)
 
 (ignore-errors
   (require 'ansi-color)
