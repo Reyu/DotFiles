@@ -25,3 +25,4 @@
 (require 'lang-other)
 
 (require 'password-store)
+(require 'keychain-environment)
