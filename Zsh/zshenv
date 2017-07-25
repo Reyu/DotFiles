@@ -5,63 +5,6 @@
 #   Tim Millican <tim.millican@linux.com>
 #
 
-# Paths {{{
-typeset -gU cdpath fpath mailpath path
-
-# Set the the list of directories that cd searches.
-cdpath=(
-   $HOME
-   $HOME/Projects
-   $cdpath
-)
-# Remove non-existent directories
-cdpath=($^cdpath(N-/))
-
-# Set the list of directories that Zsh searches for programs.
-path=(
-  ${HOME}/.local/bin
-  ${HOME}/bin
-  /usr/local/{bin,sbin}
-  /usr/{bin,sbin}
-  /{bin,sbin}
-  $path
-)
-# Remove non-existent directories
-path=($^path(N-/))
-
-# Python VirtualEnv Wrapper
-export VIRTUAL_ENV_DISABLE_PROMPT=1
-export WORKON_HOME=~/Projects/.python_virtual_environments
-# }}}
-# Editors {{{
-if (( $+commands[emacsclient] )); then
-    export VISUAL="${commands[emacsclient]} -c"
-    export ALTERNATE_EDITOR=${commands[emacs]}
-elif (( $+commands[emacs] )); then
-    export VISUAL="${commands[emacs]} -nw"
-elif (( $+commands[nvim] )); then
-    export VISUAL=${commands[nvim]}
-elif (( $+commands[vim] )); then
-    export VISUAL=${commands[vim]}
-fi
-# }}}
-# Make sure that SSH and GPG agents are accessible {{{
-eval `keychain -q --agents gpg,ssh --eval id_rsa`
-# }}}
-# EC2 Tools {{{
-if [[ -f $HOME/.aws_keys ]]; then
-    export AWS_ACCESS_KEY=$(cat $HOME/.aws_keys|head -n1)
-    export AWS_SECRET_KEY=$(cat $HOME/.aws_keys|tail -n1)
-fi
-if [[ -d $HOME/.local/ec2-tools ]];then
-    export EC2_HOME=$HOME/.local/ec2-tools
-    export JAVA_HOME=$(print -l /usr/lib/jvm/java-*-openjdk-*/jre|sort|tail -n1)
-    export PATH=$PATH:$EC2_HOME/bin
-fi
-# }}}
-# Extra {{{
-export NNTPSERVER="news.giganews.commands"
-# }}}
 # Read local configuration {{{
 if [[ -f ${ZDOTDIR:-$HOME}/.zshenv.local ]]; then
     source ${ZDOTDIR:-$HOME}/.zshenv.local
