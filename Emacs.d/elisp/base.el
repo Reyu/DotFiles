@@ -91,5 +91,10 @@
 ;; Delete trailing whitespace before save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
+;; Some environment variabes
+(setenv "WORKON_HOME" "~/Projects/.python_virtual_environments")
+
+
+
 (provide 'base)
 ;;; base ends here

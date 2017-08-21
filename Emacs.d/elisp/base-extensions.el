@@ -122,10 +122,10 @@
     (setq org-directory "~/Documents/OrgFiles"))
    ((string-equal system-type "windows-nt")
     (setq org-directory "~/../../Documents/OrgFiles")))
-  (setq org-agenda-files (list (concat org-directory "/home.org")
-			       (concat org-directory "/work.org"))
-        org-default-notes-file (concat org-directory "/todo.org")
-	org-lowest-priority           69
+  (setq org-agenda-files (directory-files org-directory t ".org$" t))
+  (if (file-exists-p (concat org-directory "/todo.org"))
+      org-default-notes-file (concat org-directory "/todo.org"))
+  (setq	org-lowest-priority           69
 	org-enforce-todo-dependencies t)
   :bind
   ("C-c l" . org-store-link)
@@ -134,7 +134,7 @@
 (use-package org-projectile
   :config
   (org-projectile:per-repo)
-  (setq org-projectile:per-repo-filename "todo.org"
+  (setq org-projectile:per-repo-filename "ToDo"
 	org-agenda-files (append org-agenda-files (org-projectile:todo-files)))
   (add-to-list 'org-capture-templates (org-projectile:project-todo-entry)))
 
@@ -150,7 +150,9 @@
 (use-package projectile
   :config
   (setq projectile-known-projects-file
-        (expand-file-name "projectile-bookmarks.eld" temp-dir))
+        (expand-file-name "projectile-bookmarks.eld" temp-dir)
+	projectile-switch-project-action 'projectile-find-file-dwim
+	projectile-completion-system 'ido)
 
   (setq projectile-completion-system 'ivy)
 
