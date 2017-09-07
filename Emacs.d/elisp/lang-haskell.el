@@ -17,7 +17,9 @@
   ;; intero-mode for a complete IDE solution to haskell
   ;; commercialhaskell.github.io/intero
   (use-package intero
-    :config (add-hook 'haskell-mode-hook 'intero-mode))
+    :config
+    (add-hook 'haskell-mode-hook 'intero-mode)
+    (setq intero-blacklist "*/.config"))
 
   ;; hindent - format haskell code automatically
   ;; https://github.com/chrisdone/hindent
