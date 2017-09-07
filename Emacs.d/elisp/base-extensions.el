@@ -133,10 +133,17 @@
 
 (use-package org-projectile
   :config
-  (org-projectile:per-repo)
-  (setq org-projectile:per-repo-filename "ToDo"
-	org-agenda-files (append org-agenda-files (org-projectile:todo-files)))
-  (add-to-list 'org-capture-templates (org-projectile:project-todo-entry)))
+  (progn
+    (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+    (push (org-projectile-project-todo-entry) org-capture-templates)
+    (org-projectile-per-project)
+    (setq org-projectile-per-project-filepath "ToDo.org"
+	  org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+    (add-to-list 'org-capture-templates (org-projectile-project-todo-entry)))
+  :bind
+  ("C-c c" . org-capture)
+  ("C-c n p" . org-projectile-project-todo-completing-read)
+  :ensure t)
 
 (use-package org-bullets
   :config
@@ -199,5 +206,8 @@
   :ensure t
   :config
   (setq jiralib-url "https://jira.walmart.com"))
+
+(use-package org-brain
+  :ensure t)
 
 (provide 'base-extensions)
