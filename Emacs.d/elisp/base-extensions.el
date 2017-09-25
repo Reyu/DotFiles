@@ -137,7 +137,7 @@
     (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
     (push (org-projectile-project-todo-entry) org-capture-templates)
     (org-projectile-per-project)
-    (setq org-projectile-per-project-filepath "ToDo.org"
+    (setq org-projectile-per-project-filepath "TODO"
 	  org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
     (add-to-list 'org-capture-templates (org-projectile-project-todo-entry)))
   :bind
@@ -208,6 +208,8 @@
   (setq jiralib-url "https://jira.walmart.com"))
 
 (use-package org-brain
+  :bind
+  ("C-c b" . org-brain-visualize)
   :ensure t)
 
 (provide 'base-extensions)
