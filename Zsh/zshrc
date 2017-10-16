@@ -496,68 +496,79 @@ if [[ -n $VIRTUAL_ENV ]]; then
 fi
 # }}}
 # Key Bindings {{{
-bindkey -e
+source ${HOME}/.config/MyConfig
+if [[ ${KEY_MODE} == "vim" ]]
+then
+    bindkey -v
+    export KEYTIMEOUT=1
+else
+    bindkey -e
+fi
 
 # zsh-history-substring-search
 if (( $+widgets[history-substring-search-up] )); then
-    bindkey "$key_info[Up]" history-substring-search-up
-    bindkey "$key_info[Down]" history-substring-search-down
-    # bindkey -M vicmd 'k' history-substring-search-up
-    # bindkey -M vicmd 'j' history-substring-search-down
+    bindkey -M vicmd 'k' history-substring-search-up
+    bindkey -M vicmd 'j' history-substring-search-down
+    bindkey -M emacs "$key_info[Up]" history-substring-search-up
+    bindkey -M emacs "$key_info[Down]" history-substring-search-down
 fi
 
 # Clear Line
 bindkey '\el' clear-line
 
-# # Edit command in an external editor.
-# bindkey -M vicmd "v" edit-command-line
-# bindkey -M viins "^v" edit-command-line
+# Edit command in an external editor.
+bindkey -M vicmd "v" edit-command-line
+bindkey -M viins "^v" edit-command-line
 
-# # Undo/Redo
-# bindkey -M vicmd "u" undo
-# bindkey -M vicmd "$key_info[Control]R" redo
+# Undo/Redo
+bindkey -M vicmd "u" undo
+bindkey -M vicmd "$key_info[Control]R" redo
 
-# if (( $+widgets[history-incremental-pattern-search-backward] )); then
-#   bindkey -M vicmd "?" history-incremental-pattern-search-backward
-#   bindkey -M vicmd "/" history-incremental-pattern-search-forward
-# else
-#   bindkey -M vicmd "?" history-incremental-search-backward
-#   bindkey -M vicmd "/" history-incremental-search-forward
-# fi
+if (( $+widgets[history-incremental-pattern-search-backward] )); then
+    bindkey -M vicmd "?" history-incremental-pattern-search-backward
+    bindkey -M vicmd "/" history-incremental-pattern-search-forward
+else
+    bindkey -M vicmd "?" history-incremental-search-backward
+    bindkey -M vicmd "/" history-incremental-search-forward
+fi
 
-# bindkey -M viins "$key_info[Home]" beginning-of-line
-# bindkey -M viins "$key_info[End]" end-of-line
+bindkey -M viins "$key_info[Home]" beginning-of-line
+bindkey -M viins "$key_info[End]" end-of-line
 
-# bindkey -M viins "$key_info[Insert]" overwrite-mode
-# bindkey -M viins "$key_info[Delete]" delete-char
-# bindkey -M viins "$key_info[Backspace]" backward-delete-char
+bindkey -M viins "$key_info[Insert]" overwrite-mode
+bindkey -M viins "$key_info[Delete]" delete-char
+bindkey -M viins "$key_info[Backspace]" backward-delete-char
 
-# bindkey -M viins "$key_info[Left]" backward-char
-# bindkey -M viins "$key_info[Right]" forward-char
+bindkey -M viins "$key_info[Left]" backward-char
+bindkey -M viins "$key_info[Right]" forward-char
 
-# # Clear screen.
-# bindkey -M viins "$key_info[Control]L" clear-screen
+# Clear screen.
+bindkey -M viins "$key_info[Control]L" clear-screen
 
-# # Expand command name to full path.
-# for key in "$key_info[Escape]"{E,e}
-#     bindkey -M viins "$key" expand-cmd-path
+# Expand command name to full path.
+for key in "$key_info[Escape]"{E,e}
+do
+    bindkey -M viins "$key" expand-cmd-path
+done
 
-# # Duplicate the previous word.
-# for key in "$key_info[Escape]"{M,m}
-#     bindkey -M viins "$key" copy-prev-shell-word
+# Duplicate the previous word.
+for key in "$key_info[Escape]"{M,m}
+do
+    bindkey -M viins "$key" copy-prev-shell-word
+done
 
-# # Bind Shift + Tab to go to the previous menu item.
-# bindkey -M viins "$key_info[BackTab]" reverse-menu-complete
+# Bind Shift + Tab to go to the previous menu item.
+bindkey -M viins "$key_info[BackTab]" reverse-menu-complete
 
-# # Complete in the middle of word.
-# bindkey -M viins "$key_info[Control]I" expand-or-complete
+# Complete in the middle of word.
+bindkey -M viins "$key_info[Control]I" expand-or-complete
 
-# # Display an indicator when completing.
-# bindkey -M viins "$key_info[Control]I" \
-#     expand-or-complete-with-indicator
+# Display an indicator when completing.
+bindkey -M viins "$key_info[Control]I" \
+    expand-or-complete-with-indicator
 
-# # Insert 'sudo ' at the beginning of the line.
-# bindkey -M viins "$key_info[Control]X$key_info[Control]S" prepend-sudo
+# Insert 'sudo ' at the beginning of the line.
+bindkey -M viins "$key_info[Control]X$key_info[Control]S" prepend-sudo
 
 # Auto expand global aliases
 bindkey " " globalias
@@ -568,109 +579,114 @@ bindkey -M isearch " " magic-space # normal space during searches
 bindkey '^Z' fancy-ctrl-z
 # }}}
 # Prompt {{{
-source ${zdir}/lib/git.zsh
-source ${zdir}/lib/darcs.zsh
-
-precmd () {print -Pn "\033]0%~\007"}
-# Write some info to terminal title.
-# This is seen when the shell prompts for input.
-function precmd {
-    if [[ -z $EMACS ]]
-    then
-	print -Pn "\e]2;%~%(1j, - %j job%(2j|s|),)\a"
-    fi
-}
-# Write command and args to terminal title.
-# This is seen while the shell waits for a command to complete.
-function preexec {
-  # cmd name only, or if this is sudo or ssh, the next cmd
-    if [[ -z $EMACS ]]
-    then
-	print -Pn "\e]2;${1[(wr)^(*=*|sudo|ssh|-*)]:gs/%/%%:g}\a"
-    fi
-}
-# Prompt char changes if in a VCS repo
-function prompt_char {
-    if git branch >/dev/null 2>/dev/null; then
-        echo '±'
-    else
-        echo '>'
-    fi
-}
-# Print the system hostname, use a different color if remote
-function prompt_host() {
-    if [[ -z $SSH_CONNECTION ]]; then
-        print -n '%{%F{136}%}%m%{%f%}'
-    else
-        print -n '%{%F{166}%}%m%{%f%}'
-    fi
-}
-# Python VirtualEnv
-function pyvirtenv() {
-    if [[ ! -z $VIRTUAL_ENV ]]; then
-        print -n "%{%F{33}%}(%{%F{64}%}${VIRTUAL_ENV:t}%{%F{33}%})%{%f%} "
-    fi
-}
-function reset-prompt-and-accept-line() {
-    zle reset-prompt
-    zle accept-line
-}
-zle -N reset-prompt-and-accept-line
-bindkey '^m' reset-prompt-and-accept-line
-# Prompt funchion
-PROMPT='
+if [[ ${USE_PROMPT} == "powerline" ]]
+then
+    source ${HOME}/.local/lib64/python3.4/site-packages/powerline/bindings/zsh/powerline.zsh
+else
+    source ${zdir}/lib/git.zsh
+    source ${zdir}/lib/darcs.zsh
+    
+    precmd () {print -Pn "\033]0%~\007"}
+    # Write some info to terminal title.
+    # This is seen when the shell prompts for input.
+    function precmd {
+        if [[ -z $EMACS ]]
+        then
+	    print -Pn "\e]2;%~%(1j, - %j job%(2j|s|),)\a"
+        fi
+    }
+    # Write command and args to terminal title.
+    # This is seen while the shell waits for a command to complete.
+    function preexec {
+        # cmd name only, or if this is sudo or ssh, the next cmd
+        if [[ -z $EMACS ]]
+        then
+            print -Pn "\e]2;${1[(wr)^(*=*|sudo|ssh|-*)]:gs/%/%%:g}\a"
+        fi
+    }
+    # Prompt char changes if in a VCS repo
+    function prompt_char {
+        if git branch >/dev/null 2>/dev/null; then
+            echo '±'
+        else
+            echo '>'
+        fi
+    }
+    # Print the system hostname, use a different color if remote
+    function prompt_host() {
+        if [[ -z $SSH_CONNECTION ]]; then
+            print -n '%{%F{136}%}%m%{%f%}'
+        else
+            print -n '%{%F{166}%}%m%{%f%}'
+        fi
+    }
+    # Python VirtualEnv
+    function pyvirtenv() {
+        if [[ ! -z $VIRTUAL_ENV ]]; then
+            print -n "%{%F{33}%}(%{%F{64}%}${VIRTUAL_ENV:t}%{%F{33}%})%{%f%} "
+        fi
+    }
+    function reset-prompt-and-accept-line() {
+        zle reset-prompt
+        zle accept-line
+    }
+    zle -N reset-prompt-and-accept-line
+    bindkey '^m' reset-prompt-and-accept-line
+    # Prompt funchion
+    PROMPT='
 %{%(!,%F{160},%F{37})%}%n%{%f%} at $(prompt_host) in %{%F{64}%B%}%(5~,../%4c,%~)%{%b%f%}$(git_prompt)$(darcs_prompt)
 [%D{%L:%M:%S}] $(pyvirtenv)%(1j,J%j ,)$(prompt_char) '
 
-# Load OpenStack RPrompt, if needed. {{{
-if [[ -d ${HOME}/.openstack ]]; then
-    set_rprompt() {
-        # Get OpenStack Tennant Name, if set
-        if [[ -z $OS_TENANT_NAME ]]; then
-            tenant_txt=""
-        else
-            zstyle -s ":prompt:addon:openstack:tenant:$OS_TENANT_NAME" color color || \
-                zstyle -s ":prompt:addon:openstack:tenant:default" color color
-            tenant_txt=" %B%F{green}(%b%F{${color}}$OS_TENANT_NAME%B%F{green})%b%f"
-        fi
+    # Load OpenStack RPrompt, if needed. {{{
+    # if [[ -d ${HOME}/.openstack ]]; then
+    #     set_rprompt() {
+    #         # Get OpenStack Tennant Name, if set
+    #         if [[ -z $OS_TENANT_NAME ]]; then
+    #             tenant_txt=""
+    #         else
+    #             zstyle -s ":prompt:addon:openstack:tenant:$OS_TENANT_NAME" color color || \
+        #                 zstyle -s ":prompt:addon:openstack:tenant:default" color color
+    #             tenant_txt=" %B%F{green}(%b%F{${color}}$OS_TENANT_NAME%B%F{green})%b%f"
+    #         fi
 
-        # Set marker if using OpenStack token
-        if [[ -z $OS_SERVICE_TOKEN ]]; then
-            zstyle -s ':prompt:addon:openstack:token:none' color color || \
-                color="blue"
-            zstyle -s ':prompt:addon:openstack:token:none' symbol symbol || \
-                symbol="!"
-        else
-            zstyle -s ':prompt:addon:openstack:token:used' color color || \
-                color="magonta"
-            zstyle -s ':prompt:addon:openstack:token:used' symbol symbol || \
-                symbol="@"
-        fi
-        token="%B%F{${color}}${symbol}%b%f"
+    #         # Set marker if using OpenStack token
+    #         if [[ -z $OS_SERVICE_TOKEN ]]; then
+    #             zstyle -s ':prompt:addon:openstack:token:none' color color || \
+        #                 color="blue"
+    #             zstyle -s ':prompt:addon:openstack:token:none' symbol symbol || \
+        #                 symbol="!"
+    #         else
+    #             zstyle -s ':prompt:addon:openstack:token:used' color color || \
+        #                 color="magonta"
+    #             zstyle -s ':prompt:addon:openstack:token:used' symbol symbol || \
+        #                 symbol="@"
+    #         fi
+    #         token="%B%F{${color}}${symbol}%b%f"
 
-        # Set Open Stack Username / Environment, if set
-        if [[ -z $OS_USERNAME ]]; then
-            tusername=""
-        else
-            zstyle -s ":prompt:addon:openstack:user:$OS_USERNAME" color color || \
-                zstyle -s ":prompt:addon:openstack:user:default" color color
-            tusername="%b%F{${color}}$OS_USERNAME%b%f"
-        fi
+    #         # Set Open Stack Username / Environment, if set
+    #         if [[ -z $OS_USERNAME ]]; then
+    #             tusername=""
+    #         else
+    #             zstyle -s ":prompt:addon:openstack:user:$OS_USERNAME" color color || \
+        #                 zstyle -s ":prompt:addon:openstack:user:default" color color
+    #             tusername="%b%F{${color}}$OS_USERNAME%b%f"
+    #         fi
 
-        if [[ -z $OS_REGION_NAME || -s $tusername ]]; then
-            os_prompt=""
-        else
-            os_prompt="$tusername$token%b%F{green}$OS_REGION_NAME%b%f$tenant_txt"
-        fi
+    #         if [[ -z $OS_REGION_NAME || -s $tusername ]]; then
+    #             os_prompt=""
+    #         else
+    #             os_prompt="$tusername$token%b%F{green}$OS_REGION_NAME%b%f$tenant_txt"
+    #         fi
 
-        if [[ -z $os_prompt ]]; then
-            RPROMPT=""
-        else
-            RPROMPT="[$os_prompt]"
-        fi
-    }
-    add-zsh-hook precmd set_rprompt
-fi # }}}
+    #         if [[ -z $os_prompt ]]; then
+    #             RPROMPT=""
+    #         else
+    #             RPROMPT="[$os_prompt]"
+    #         fi
+    #     }
+    #     add-zsh-hook precmd set_rprompt
+    # fi # }}}
+fi
 # }}}
 # Aliases {{{
 alias mmv='noglob zmv -W'

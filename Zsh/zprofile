@@ -21,6 +21,8 @@ cdpath=($^cdpath(N-/))
 path=(
   ${HOME}/.local/bin
   ${HOME}/bin
+  ${HOME}/.npm-global/bin
+  ${HOME}/.gem/ruby/2.2.0/bin
   /usr/local/{bin,sbin}
   /usr/{bin,sbin}
   /{bin,sbin}
@@ -34,15 +36,15 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 export WORKON_HOME=~/Projects/.python_virtual_environments
 # }}}
 # Editors {{{
-if (( $+commands[emacsclient] )); then
+if (( $+commands[nvim] )); then
+    export VISUAL=${commands[nvim]}
+elif (( $+commands[vim] )); then
+    export VISUAL=${commands[vim]}
+elif (( $+commands[emacsclient] )); then
     export VISUAL="${commands[emacsclient]} -c"
     export ALTERNATE_EDITOR=${commands[emacs]}
 elif (( $+commands[emacs] )); then
     export VISUAL="${commands[emacs]} -nw"
-elif (( $+commands[nvim] )); then
-    export VISUAL=${commands[nvim]}
-elif (( $+commands[vim] )); then
-    export VISUAL=${commands[vim]}
 fi
 # }}}
 # Make sure that SSH and GPG agents are accessible {{{
