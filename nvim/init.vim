@@ -22,6 +22,8 @@ else
 endif
 if dein#load_state(s:dein_path)
     call dein#begin(s:dein_path)
+    call dein#add('altercation/vim-colors-solarized')
+    call dein#add('bfredl/nvim-ipy')
     call dein#add('benekastah/neomake')
     call dein#add('chase/vim-ansible-yaml')
     call dein#add('cloudhead/neovim-ghcid', { 'on_ft': 'haskell' })
@@ -34,10 +36,9 @@ if dein#load_state(s:dein_path)
     call dein#add('garbas/vim-snipmate.git')
     call dein#add('godlygeek/tabular')
     call dein#add('honza/vim-snippets')
+    call dein#add('jceb/vim-orgmode')
     call dein#add('MarcWeber/vim-addon-mw-utils.git')
     call dein#add('majutsushi/tagbar')
-    call dein#add('python.vim', { 'on_ft': 'python' })
-    call dein#add('python_fold', { 'on_ft': 'python' })
     call dein#add('scrooloose/nerdtree')
     call dein#add('scrooloose/syntastic')
     call dein#add('Shougo/dein.vim')
@@ -56,6 +57,8 @@ if dein#load_state(s:dein_path)
     call dein#add('vim-utils/vim-man')
     call dein#add('vim-pandoc/vim-pandoc')
     call dein#add('vim-pandoc/vim-pandoc-syntax')
+    call dein#add('vim-scripts/python.vim', { 'on_ft': 'python' })
+    call dein#add('vim-scripts/python_fold', { 'on_ft': 'python' })
     call dein#end()
     call dein#save_state()
 endif
@@ -63,6 +66,9 @@ if dein#check_install()
     call dein#install()
 endif "
 " Plugin Configuration
+if dein#tap('vim-colors-solarized') "{{{
+    colorscheme solarized
+endif " }}}
 if dein#tap('neomake') " {{{
     " Try to run Neomake on file save
     " This should fail silently
