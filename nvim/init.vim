@@ -67,7 +67,7 @@ if dein#check_install()
 endif "
 " Plugin Configuration
 if dein#tap('vim-colors-solarized') "{{{
-    colorscheme solarized
+    " colorscheme solarized
 endif " }}}
 if dein#tap('neomake') " {{{
     " Try to run Neomake on file save
