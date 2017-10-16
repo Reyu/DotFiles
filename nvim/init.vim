@@ -169,8 +169,8 @@ syntax enable
 " Turn on Mode Lines
 set modeline modelines=3
 
-" Turn on (Relative)Line numbers
-set number relativenumber
+" Turn on Line numbers
+set number norelativenumber
 
 " Allow virtual edit in block mode
 set virtualedit=block
