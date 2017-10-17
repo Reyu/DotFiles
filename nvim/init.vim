@@ -23,11 +23,11 @@ endif
 if dein#load_state(s:dein_path)
     call dein#begin(s:dein_path)
     call dein#add('altercation/vim-colors-solarized')
-    call dein#add('bfredl/nvim-ipy')
+    " call dein#add('bfredl/nvim-ipy')
     call dein#add('benekastah/neomake')
-    call dein#add('chase/vim-ansible-yaml')
+    " call dein#add('chase/vim-ansible-yaml')
     call dein#add('cloudhead/neovim-ghcid', { 'on_ft': 'haskell' })
-    call dein#add('ctrlpvim/ctrlp.vim')
+    " call dein#add('ctrlpvim/ctrlp.vim')
     call dein#add('dag/vim2hs', { 'on_ft': 'haskell' })
     call dein#add('eagletmt/ghcmod-vim', { 'on_ft': 'haskell' })
     call dein#add('eagletmt/neco-ghc', { 'on_ft': 'haskell' })
@@ -44,7 +44,8 @@ if dein#load_state(s:dein_path)
     call dein#add('Shougo/dein.vim')
     call dein#add('Shougo/deoplete.nvim')
     call dein#add('Shougo/neosnippet-snippets')
-    call dein#add('Shougo/vimproc.vim', { 'build': 'make' })
+    call dein#add('Shougo/denite.nvim')
+    " call dein#add('Shougo/vimproc.vim', { 'build': 'make' })
     call dein#add('sirver/UltiSnips')
     call dein#add('tommcdo/vim-exchange')
     call dein#add('tpope/vim-capslock')
@@ -52,6 +53,7 @@ if dein#load_state(s:dein_path)
     call dein#add('tpope/vim-eunuch')
     call dein#add('tpope/vim-fugitive')
     call dein#add('tpope/vim-markdown', { 'on_ft': 'markdown' })
+    call dein#add('tpope/vim-projectionist')
     call dein#add('tpope/vim-repeat')
     call dein#add('tpope/vim-surround')
     call dein#add('vim-utils/vim-man')
@@ -59,20 +61,31 @@ if dein#load_state(s:dein_path)
     call dein#add('vim-pandoc/vim-pandoc-syntax')
     call dein#add('vim-scripts/python.vim', { 'on_ft': 'python' })
     call dein#add('vim-scripts/python_fold', { 'on_ft': 'python' })
+
     call dein#end()
     call dein#save_state()
 endif
 if dein#check_install()
     call dein#install()
-endif "
-" Plugin Configuration
-if dein#tap('vim-colors-solarized') "{{{
-    " colorscheme solarized
-endif " }}}
+endif
+" Plugin Configuration {{{
+if dein#tap('vim-colors-solarized')
+    colorscheme solarized
+endif
 if dein#tap('neomake') " {{{
     " Try to run Neomake on file save
     " This should fail silently
     autocmd init BufWritePost * Neomake
+endif " }}}
+if dein#tap('ctrlp.vim') " {{{
+    noremap <c-b> :CtrlPBuffer<cr>
+    let g:ctrlp_custom_ignore = '\v[\/]dist$'
+    let g:ctrlp_user_command = {
+                \ 'types': {
+                \ 1: ['.git', 'cd %s && git ls-files'],
+                \ 2: ['_darcs', 'cd %s && darcs show files'],
+                \ },
+                \ }
 endif " }}}
 if dein#tap('vim2hs') " {{{
     let g:haskell_conceal_wide = 0
@@ -90,6 +103,12 @@ if dein#tap('ghcmod-vim') " {{{
     map <silent> <Leader>tq :GhcModType<CR>
     map <silent> <Leader>te :GhcModTypeClear<CR>
 endif "}}}
+if dein#tap('neco-ghc') " {{{
+    " Disable haskell-vim omnifunc
+    let g:ycm_semantic_triggers = {'haskell' : ['.']}
+    let g:haskellmode_completion_ghc = 0
+    autocmd init FileType haskell setlocal omnifunc=necoghc#omnifunc
+endif " }}}
 if dein#tap('vim-easymotion') " {{{
     let g:EasyMotion_smartcase = 1
     map <Leader> <Plug>(easymotion-prefix)
@@ -104,29 +123,14 @@ if dein#tap('vim-easymotion') " {{{
     map <Leader>h <Plug>(easymotion-linebackward)
     let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
 endif "}}}
-if dein#tap('neco-ghc') " {{{
-    " Disable haskell-vim omnifunc
-    let g:ycm_semantic_triggers = {'haskell' : ['.']}
-    let g:haskellmode_completion_ghc = 0
-    autocmd init FileType haskell setlocal omnifunc=necoghc#omnifunc
-endif " }}}
-if dein#tap('syntastic') " {{{
-    let g:syntastic_always_populate_loc_list = 1
-    let g:syntastic_check_on_open = 1
-    let g:syntastic_check_on_wq = 0
-    let g:syntastic_auto_loc_list = 1
-endif " }}}
-if dein#tap('nerdtree') " {{{
-    map <Leader>n :NERDTreeToggle<CR>
-endif " }}}
 if dein#tap('supertab') " {{{
     let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
     if has("gui_running")
-      imap <c-space> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
+        imap <c-space> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
     else " no gui
-      if has("unix")
-        inoremap <Nul> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
-      endif
+        if has("unix")
+            inoremap <Nul> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
+        endif
     endif
     let g:haskellmode_completion_ghc = 1
     autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
@@ -137,23 +141,51 @@ if dein#tap('tabular') " {{{
     vmap <Leader>a; :Tabularize /::<CR>
     vmap <Leader>a- :Tabularize /-><CR>
 endif " }}}
-if dein#tap('ctrlp.vim') " {{{
-    noremap <c-b> :CtrlPBuffer<cr>
-    let g:ctrlp_custom_ignore = '\v[\/]dist$'
-    let g:ctrlp_user_command = {
-      \ 'types': {
-        \ 1: ['.git', 'cd %s && git ls-files'],
-        \ 2: ['_darcs', 'cd %s && darcs show files'],
-        \ },
-      \ }
+if dein#tap('nerdtree') " {{{
+    map <Leader>n :NERDTreeToggle<CR>
+endif " }}}
+if dein#tap('syntastic') " {{{
+    let g:syntastic_always_populate_loc_list = 1
+    let g:syntastic_check_on_open = 1
+    let g:syntastic_check_on_wq = 0
+    let g:syntastic_auto_loc_list = 1
 endif " }}}
 if dein#tap('deoplete.nvim') " {{{
     let g:deoplete#enable_at_startup = 1
+endif " }}}
+if dein#tap('denite.nvim') " {{{
+    let s:menus = {}
+    let s:menus.zsh = {
+                \ 'description': 'Edit ZSH files'
+                \ }
+    let s:menus.zsh.file_candidates = [
+                \ ['zlogin', '~/.config/Zsh/zlogin'],
+                \ ['zlogout', '~/.config/Zsh/zlogout'],
+                \ ['zprofile', '~/.config/Zsh/zprofile'],
+                \ ['zshenv', '~/.config/Zsh/zshenv'],
+                \ ['zshrc', '~/.config/Zsh/zshrc'],
+                \ ]
+    call denite#custom#var('menu', 'menus', s:menus)
+
+    " Define alias
+    call denite#custom#alias('source', 'file_rec/git', 'file_rec')
+    call denite#custom#var('file_rec/git', 'command',
+                \ ['git', 'ls-files', '-co', '--exclude-standard'])
+    nnoremap <C-p> :Denite file_rec/git<CR>
+
+    " call denite#custom#alias('source' 'file_rec/darcs', 'file_rec')
+    " call denite#custom#var('file_rec/darcs', 'command',
+    "             \ ['dars', 'show', 'files', '--no-directories', '--pending'])
+ 
+	" Change ignore_globs
+	call denite#custom#filter('matcher_ignore_globs', 'ignore_globs',
+	      \ [ '.git/', '*/__pycache__/*', 'venv/'])
 endif " }}}
 if dein#tap('UltiSnips') " {{{
     let g:UltiSnipsEditSplit="vertical"
     let g:ultisnips_python_style="sphinx"
 endif " }}}
+" }}}
 " Plugins }}}
 " {{{ General
 " Sets how many lines of history VIM has to remember
@@ -165,6 +197,9 @@ filetype indent on
 
 " Enable syntax highlighting
 syntax enable
+
+" Use dark background
+set background=dark
 
 " Turn on Mode Lines
 set modeline modelines=3
@@ -184,9 +219,6 @@ set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 " Don't use the mouse. Ever.
 set mouse=
 
-" Use dark background for colorscheme
-set background=dark
-
 " Configure statusline
 set statusline= "Clear statusline, when reloading
 set statusline+=%(\ %n\ %) "Show buffer number
@@ -201,7 +233,7 @@ if dein#tap('tagbar')
 endif
 set statusline+=%(\|\ %.60f%) "Show file name/relative path
 set statusline+=%(\ [%M%R%H%W]%) "Show Modified flag, Readonly flag, Preview flag, and Help buffer flag
-set statusline+=%= "Right ALIGN rest of line
+set statusline+=%= "Right align rest of line
 if dein#tap('neomake')
     set statusline+=%#warningmsg#
     set statusline+=%(%#ErrorMsg#%{neomake#statusline#QflistStatus('qf:\ ')}%*\|\ %) "Show clist counts
