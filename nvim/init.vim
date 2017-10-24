@@ -41,7 +41,7 @@ if dein#load_state(s:dein_path)
     call dein#add('majutsushi/tagbar')
     call dein#add('radenling/vim-dispatch-neovim')
     call dein#add('scrooloose/nerdtree')
-    call dein#add('scrooloose/syntastic')
+    " call dein#add('scrooloose/syntastic')
     call dein#add('Shougo/dein.vim')
     call dein#add('Shougo/deoplete.nvim')
     call dein#add('Shougo/neosnippet-snippets')
@@ -72,13 +72,13 @@ if dein#check_install()
     call dein#install()
 endif
 " Plugin Configuration {{{
-if dein#tap('vim-colors-solarized')
+if dein#tap('vim-colors-solarized') " {{{
+    let g:solarized_termtrans=1
     colorscheme solarized
-endif
+endif " }}}
 if dein#tap('neomake') " {{{
-    " Try to run Neomake on file save
-    " This should fail silently
-    autocmd init BufWritePost * Neomake
+    let g:neomake_open_list=2
+    call neomake#configure#automake('nw', 500)
 endif " }}}
 if dein#tap('ctrlp.vim') " {{{
     noremap <c-b> :CtrlPBuffer<cr>
@@ -145,7 +145,7 @@ if dein#tap('tabular') " {{{
     vmap <Leader>a- :Tabularize /-><CR>
 endif " }}}
 if dein#tap('nerdtree') " {{{
-    map <Leader>n :NERDTreeToggle<CR>
+    map <Leader>n :NERDTreeFocus<CR>
 endif " }}}
 if dein#tap('syntastic') " {{{
     let g:syntastic_always_populate_loc_list = 1
