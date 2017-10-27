@@ -233,9 +233,6 @@ if dein#tap('neomake')
     set statusline+=%(%#ErrorMsg#%{neomake#statusline#QflistStatus('qf:\ ')}%*\|\ %) "Show clist counts
     set statusline+=%*
 endif
-if dein#tap('syntastic')
-    set statusline+=%(%{SyntasticStatuslineFlag()}\ \|\ %)
-endif
 set statusline+=%{\"\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"\ \|\ \"} "Show encoding/bomb
 set statusline+=%(%{&ff}\ \|\ %) "Show fileformat (line ending)
 set statusline+=%(%Y\ \|\ %) "Show file type
