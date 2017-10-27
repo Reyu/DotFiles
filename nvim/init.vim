@@ -188,6 +188,8 @@ if dein#tap('denite.nvim') " {{{
 	" Change ignore_globs
 	call denite#custom#filter('matcher_ignore_globs', 'ignore_globs',
 	      \ [ '.git/', '*/__pycache__/*', 'venv/'])
+
+    nnoremap <C-b> :Denite buffer<CR>
 endif " }}}
 if dein#tap('UltiSnips') " {{{
     let g:UltiSnipsEditSplit="vertical"
