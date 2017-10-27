@@ -195,6 +195,11 @@ if dein#tap('UltiSnips') " {{{
     let g:UltiSnipsEditSplit="vertical"
     let g:ultisnips_python_style="sphinx"
 endif " }}}
+if dein#tap('vim-fugitive') " {{{
+    nnoremap <Leader>gs :Gstatus<CR>
+    autocmd init BufReadPost fugitive://*
+      \ set bufhidden=delete
+endif " }}}
 " }}}
 " Plugins }}}
 " {{{ General
