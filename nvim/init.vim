@@ -23,11 +23,8 @@ endif
 if dein#load_state(s:dein_path)
     call dein#begin(s:dein_path)
     call dein#add('altercation/vim-colors-solarized')
-    " call dein#add('bfredl/nvim-ipy')
     call dein#add('benekastah/neomake')
-    " call dein#add('chase/vim-ansible-yaml')
     call dein#add('cloudhead/neovim-ghcid', { 'on_ft': 'haskell' })
-    " call dein#add('ctrlpvim/ctrlp.vim')
     call dein#add('dag/vim2hs', { 'on_ft': 'haskell' })
     call dein#add('eagletmt/ghcmod-vim', { 'on_ft': 'haskell' })
     call dein#add('eagletmt/neco-ghc', { 'on_ft': 'haskell' })
@@ -42,12 +39,10 @@ if dein#load_state(s:dein_path)
     call dein#add('majutsushi/tagbar')
     call dein#add('radenling/vim-dispatch-neovim')
     call dein#add('scrooloose/nerdtree')
-    " call dein#add('scrooloose/syntastic')
     call dein#add('Shougo/dein.vim')
     call dein#add('Shougo/deoplete.nvim')
     call dein#add('Shougo/neosnippet-snippets')
     call dein#add('Shougo/denite.nvim')
-    " call dein#add('Shougo/vimproc.vim', { 'build': 'make' })
     call dein#add('sirver/UltiSnips')
     call dein#add('tommcdo/vim-exchange')
     call dein#add('tpope/vim-dispatch')
@@ -80,16 +75,6 @@ endif " }}}
 if dein#tap('neomake') " {{{
     let g:neomake_open_list=2
     call neomake#configure#automake('nw', 500)
-endif " }}}
-if dein#tap('ctrlp.vim') " {{{
-    noremap <c-b> :CtrlPBuffer<cr>
-    let g:ctrlp_custom_ignore = '\v[\/]dist$'
-    let g:ctrlp_user_command = {
-                \ 'types': {
-                \ 1: ['.git', 'cd %s && git ls-files'],
-                \ 2: ['_darcs', 'cd %s && darcs show files'],
-                \ },
-                \ }
 endif " }}}
 if dein#tap('vim2hs') " {{{
     let g:haskell_conceal_wide = 0
@@ -151,12 +136,6 @@ if dein#tap('tabular') " {{{
 endif " }}}
 if dein#tap('nerdtree') " {{{
     map <Leader>n :NERDTreeFocus<CR>
-endif " }}}
-if dein#tap('syntastic') " {{{
-    let g:syntastic_always_populate_loc_list = 1
-    let g:syntastic_check_on_open = 1
-    let g:syntastic_check_on_wq = 0
-    let g:syntastic_auto_loc_list = 1
 endif " }}}
 if dein#tap('deoplete.nvim') " {{{
     let g:deoplete#enable_at_startup = 1
