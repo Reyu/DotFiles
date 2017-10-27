@@ -32,6 +32,7 @@ if dein#load_state(s:dein_path)
     call dein#add('eagletmt/ghcmod-vim', { 'on_ft': 'haskell' })
     call dein#add('eagletmt/neco-ghc', { 'on_ft': 'haskell' })
     call dein#add('easymotion/vim-easymotion')
+    call dein#add('editorconfig/editorconfig-vim')
     call dein#add('ervandew/supertab.git')
     call dein#add('garbas/vim-snipmate.git')
     call dein#add('godlygeek/tabular')
@@ -126,6 +127,10 @@ if dein#tap('vim-easymotion') " {{{
     map <Leader>h <Plug>(easymotion-linebackward)
     let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
 endif "}}}
+if dein#tap('editorconfig-vim') " {{{
+    let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+endif
+" }}}
 if dein#tap('supertab') " {{{
     let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
     if has("gui_running")
