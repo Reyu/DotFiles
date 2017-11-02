@@ -1,12 +1,12 @@
 background no
-double_buffer yes 
-out_to_console yes 
-update_interval 1.0 
+double_buffer yes
+out_to_console yes
+update_interval 1.0
 extra_newline no
- 
+
 TEXT
 ${memperc}% : ${swapperc}% \
 | ${running_processes} : ${running_threads} \
 | ${entropy_perc}% (${entropy_avail}/${entropy_poolsize}) \
-| ${fs_free /} : ${fs_free /home} \
-| ${addrs em1} : ${curl pcaddr.com 10}
+| /:${fs_free /} : /home:${fs_free /home} \
+$if_mpd_playing| ${mpd_status} -- ${mpd_smart} [${mpd_elapsed}/${mpd_length}]$endif

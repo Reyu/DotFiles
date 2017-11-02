@@ -16,6 +16,7 @@ import qualified XMonad.Actions.DynamicWorkspaceOrder as DO
 import XMonad.Actions.CycleWS
 import XMonad.Actions.WithAll
 import XMonad.Actions.FloatKeys
+import XMonad.Config.Desktop
 import XMonad.Util.Run
 import XMonad.Util.NamedWindows (getName)
 import XMonad.Util.Loggers
@@ -41,7 +42,7 @@ import XMonad.Layout.TwoPane
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
 import qualified XMonad.Layout.Magnifier as Mag
-import Data.Ratio ((%))
+-- import Data.Ratio ((%))
 import System.Posix.Unistd
 import XMonad.Util.EZConfig
 import XMonad.Hooks.EwmhDesktops
@@ -53,8 +54,8 @@ type IsRetina = Bool
 type StatusBarDisplay = Int
 
 data AudioSystem
-  = Alsa 
-  | Pulse 
+  = Alsa
+  | Pulse
   deriving (Eq)
 
 data Host
@@ -70,7 +71,7 @@ getHost = do
   hostName <- nodeName `fmap` getSystemID
   return $
     case hostName of
-      "renard" -> Desktop 2 Pulse
+      "renard" -> Desktop 2 Alsa
       "vulpie" -> Desktop 3 Pulse
       "crevan" -> Laptop True True Pulse
       _ -> Desktop (-1) Pulse
@@ -92,23 +93,24 @@ main = do
     conkyCommand = "pkill conky;conky -c ~/.xmonad/conky_statusbar|"
 
 myConfig host logPipe =
-  defaultConfig
-  { terminal = myTerminal
-  , focusFollowsMouse = False
-  , modMask =
-    case host of
-      Laptop False _ _ -> modMask defaultConfig
-      _ -> mod4Mask
-  , workspaces = myTopicNames host
-  , normalBorderColor = solarized "secondary"
-  , focusedBorderColor = solarized "emphasis"
-  , borderWidth = 2
-  , layoutHook = myLayoutHook
-  , manageHook = myManageHook host <+> manageSpawn <+> manageHook defaultConfig
-  , logHook = myLoghook logPipe host <+> logHook defaultConfig
-  , startupHook = myStartupHook host logPipe <+> startupHook defaultConfig
-  } `additionalKeysP`
-  myKeys host logPipe
+        desktopConfig
+        { terminal = myTerminal
+        , focusFollowsMouse = False
+        , modMask =
+            case host of
+                Laptop False _ _ -> modMask desktopConfig
+                _ -> mod4Mask
+        , workspaces = myTopicNames host
+        , normalBorderColor = solarized "secondary"
+        , focusedBorderColor = solarized "emphasis"
+        , borderWidth = 2
+        , layoutHook = myLayoutHook
+        , manageHook = myManageHook host <+> manageSpawn <+> manageHook desktopConfig
+        , logHook = myLoghook logPipe host <+> logHook desktopConfig
+        , startupHook = myStartupHook host logPipe <+> startupHook desktopConfig
+        , handleEventHook = docksEventHook <+> handleEventHook desktopConfig
+        } `additionalKeysP`
+        myKeys host logPipe
 
 ------------------------------------------------------------------------
 -- Usefull common vars
@@ -170,21 +172,23 @@ data TopicItem = TI
   { topicName :: Topic   -- (22b)
   , topicDir :: Dir
   , topicAction :: X ()
-  } 
+  }
 
 -- define some custom topics for use with the TopicSpace module.
 myTopics
   :: Host -> [TopicItem]
 myTopics host =
-  [ TI "web" "." (spawn "firefox")
+  [ TI "web" "." (spawn "google-chrome-stable")
   , TI
       "chat"
       "."
-      (spawnShell host (Just "irc") >>
-       spawn "/home/reyu/.local/src/Telegram/Telegram")
+      -- (spawnShell host (Just "irc") >>
+      (spawn "telegram-desktop" >>
+       spawn "discord")
   , ti "work" "Projects"
-  , ti "xmonad" ".config/XMonad"
+  , TI "emacs" "." (spawn "emacs")
   , TI "games" "." (spawn "steam")
+  , TI "stream" "." (spawn "obs")
   , ti "kernel" "/usr/src/linux"
   , TI "virt" "." (spawn "virt-manager")]
   where
@@ -213,6 +217,9 @@ scratchpads host =
   [ ns "htop" "htop" mySPFloat
   , ns "ghci" "ghci" mySPFloat
   , ns "mail" "mutt" mySPLargeFloat
+  , ns "emacs" "emacs" mySPLargeFloat
+  , NS "brain" "emacs --eval '(org-brain-visualize \"Brain\")' --eval '(delete-other-windows)'"
+    (title =? "*org-brain*") mySPFloat
   , case getAudioSystem host of
       Alsa -> ns "volume" "alsamixer" mySPLargeFloat
       Pulse ->
@@ -231,12 +238,13 @@ scratchpads host =
 myKeys host logPipe = myKeymap host (myConfig host logPipe)
 
 myKeymap host conf =
-  [ 
+  [
+    ("M-C-S-q", spawn "sudo poweroff")
     -- Media Keys
-    ("<XF86AudioPlay>", spawn "mpc toggle")
+  , ("<XF86AudioPlay>", spawn "mpc toggle")
   , ("<XF86AudioNext>", spawn "mpc next")
   , ("<XF86AudioPrev>", spawn "mpc prev")
-  , 
+  ,
     -- General
     ("M-<Backspace>", focusUrgent)
   , ("M-S-<Backspace>", clearUrgents)
@@ -250,36 +258,36 @@ myKeymap host conf =
   , ("M-q", spawn "xmonad --recompile; xmonad --restart")
   , ("M-S-q", io exitSuccess)
   , ("M-t", withFocused $ windows . W.sink)
-  , ("M-u", spawnHere "firefox -P default -new-window")
+  , ("M-u", spawnHere "google-chrome")
   , ("<Print>", spawn "scrot")
   , ("C-<Print>", spawn "sleep 0.2; scrot -s")
   , ("M-b", sendMessage ToggleStruts)
   , ("M-f", newCodeWS)
   , ("M-S-t", spawn "stoken-type")
-  , 
+  ,
     -- Topic actions
     ("M-a", currentTopicAction (myTopicConfig host))
-  , 
+  ,
     -- Window Movement
     ("M-g", promptedGoto host)
   , ("M-S-g", promptedShift)
   , ("M-z", toggleWS)] ++ -- Volume
   case getAudioSystem host of
     Alsa ->
-      [ ("<XF86AudioLowerVolume>", spawn "amixer set Master 1%-")
-      , ("<XF86AudioMute>", spawn "amixer set Master toggle")
-      , ("<XF86AudioRaiseVolume>", spawn "amixer set Master 1%+")]
+      [ ("<XF86AudioLowerVolume>", spawn "amixer sset Master 1dB-")
+      , ("<XF86AudioMute>", spawn "amixer sset Master toggle")
+      , ("<XF86AudioRaiseVolume>", spawn "amixer sset Master 1dB+")]
     Pulse ->
       [ ( "<XF86AudioLowerVolume>"
-        , spawn "~/.xmonad/bin/pulse-volume.sh decrease")
-      , ("<XF86AudioMute>", spawn "~/.xmonad/bin/pulse-volume.sh toggle")
+        , spawn "~/bin/ponymix decrease 5")
+      , ("<XF86AudioMute>", spawn "~/bin/ponymix toggle")
       , ( "<XF86AudioRaiseVolume>"
-        , spawn "~/.xmonad/bin/pulse-volume.sh increase")] 
+        , spawn "~/bin/ponymix increase 5")]
   -- I have the rest in list-comprehension groups, because they make
   -- it easier, for me personally, to read.
   ++ -- Various Prompts
   [ ("M-p " ++ k, f)
-  | (k,f) <- 
+  | (k,f) <-
      [ ("p", spawn "~/.xmonad/bin/passmenu")
      , ("r", runOrRaisePrompt myXPConfig)
      , ("e", spawn "exe=`echo | yeganesh -x` && eval \"exec $exe\"")
@@ -291,25 +299,27 @@ myKeymap host conf =
            myXPConfig)
      , ("t", prompt (myTerminal ++ " -e tmux new -s ") myXPConfig)] ] ++ -- Workspace Groups
   [ ("M-y " ++ k, f)
-  | (k,f) <- 
+  | (k,f) <-
      [ ("n", promptWSGroupAdd myXPConfig "Name this group: ")
      , ("g", promptWSGroupView myXPConfig "Go to group: " >> viewScreen 1)
      , ("d", promptWSGroupForget myXPConfig "Forget group: ")] ] ++ -- Dynamic Workspaces
   [ ("M-w " ++ k, f)
-  | (k,f) <- 
+  | (k,f) <-
      [ ("n", addWorkspacePrompt myXPConfig)
      , ("S-n", renameWorkspace myXPConfig)
      , ("C-c", removeWorkspace)
      , ("C-k", killAll >> removeWorkspace)] ] ++ -- Scratchpads
   [ ("M-s " ++ k, namedScratchpadAction (scratchpads host) sp)
-  | (k,sp) <- 
+  | (k,sp) <-
      [ ("t", "htop")
      , ("g", "ghci")
      , ("m", "mail")
+     , ("e", "emacs")
      , ("v", "volume")
+     , ("b", "brain")
      , ("c", "calendar")] ] ++ -- toggles: fullscreen, flip x, flip y, mirror, no borders
   [ ("M-C-" ++ k, sendMessage f)
-  | (k,f) <- 
+  | (k,f) <-
      [ ("<Space>", Toggle NBFULL)
      , ("x", Toggle REFLECTX)
      , ("y", Toggle REFLECTY)
@@ -320,7 +330,7 @@ myKeymap host conf =
   [ ("M-C-" ++ dir, withFocused (keysResizeWindow (dx, dy) (1, 1)))
   | (dir,dx,dy) <- [("n", -20, 0), ("h", 20, 0), ("t", 0, -20), ("c", 0, 20)] ] ++ -- Move focus, or move windows, between screens
   [ (m ++ "M-" ++ k, f s)
-  | (k,s) <- zip [";", ",", "."] [0 ..] 
+  | (k,s) <- zip [";", ",", "."] [0 ..]
   , (f,m) <- [(viewScreen, ""), (sendToScreen, "S-")] ]
 
 ------------------------------------------------------------------------
@@ -334,7 +344,7 @@ myLayoutHook =
   mkToggle1 MIRROR $
   smartBorders $
   onWorkspace "web" (noBorders Full ||| tiled) $
-  onWorkspace "chat" (withIM (1 % 9) skypeRoster chatLayout) $
+  onWorkspace "chat" chatLayout $
   onWorkspace "games" (noBorders Full) $
   onWorkspaces
     [ "code" ++ show i
@@ -344,7 +354,7 @@ myLayoutHook =
   where
     tiled = ResizableTall 1 (2 / 100) (1 / 2) []
     chatLayout =
-      noBorders $ tabbed shrinkText tabConfig ||| Mag.magnifier Grid ||| tiled
+      noBorders $ Mag.magnifier tiled ||| tabbed shrinkText tabConfig ||| Mag.magnifier Grid
     skypeRoster = Title "reyuzenfold - Skype™"
 
 -- The title is the ONLY property that changes between windows... WTF
@@ -419,7 +429,7 @@ myLoghook logPipe host =
     , dzenColorL (solarized "red") "" $
       wrapL "CNOC: " "" $ maildirUnread ".maildir/CNOC"] ++
     (case host of
-       Laptop _ _ _ -> [battery]
+       Laptop{} -> [battery]
        Desktop _ _ -> [])
   , ppOrder = \(ws:l:t:exs) -> [t, l, ws] ++ exs
   , ppOutput = hPutStrLn logPipe
@@ -453,7 +463,7 @@ myXPConfig =
 ------------------------------------------------------------------------
 -- Urgency Hook
 data LibNotifyUrgencyHook =
-  LibNotifyUrgencyHook 
+  LibNotifyUrgencyHook
   deriving (Read,Show)
 
 instance UrgencyHook LibNotifyUrgencyHook where

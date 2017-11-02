@@ -24,7 +24,7 @@ if [[ $ACTION == "decrease" ]]; then
   CURVOL=$(($CURVOL - 3000))
 fi
 
-if [[ $CURVOL -le 90000 && $CURVOL -ge 0 ]]; then 
+if [[ $CURVOL -le 9000 && $CURVOL -ge 0 ]]; then
   for i in $SINKS; do
   pactl set-sink-volume $i $CURVOL
   done
