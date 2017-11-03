@@ -92,7 +92,7 @@
   :diminish (impatient-mode . " i")
   :commands (impatient-mode))
 
-(require 'jquery-doc)
-(add-hook 'js2-mode-hook 'jquery-doc-setup)
+;; (require 'jquery-doc)
+;; (add-hook 'js2-mode-hook 'jquery-doc-setup)
 
 (provide 'lang-web)

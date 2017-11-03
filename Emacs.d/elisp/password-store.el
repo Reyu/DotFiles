@@ -31,8 +31,8 @@
 
 ;;; Code:
 
-(require 'f)
-(require 's)
+;; (require 'f)
+;; (require 's)
 
 (defgroup password-store '()
   "Emacs mode for password-store."
