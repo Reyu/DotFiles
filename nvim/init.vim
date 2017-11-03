@@ -254,7 +254,6 @@ if dein#tap('UltiSnips') " {{{
     let g:ultisnips_python_style="sphinx"
 endif " }}}
 if dein#tap('vim-airline') " {{{
-    let g:airline_section_z = airline#section#create(['%{ObsessionStatus(''$'', '''')}', 'windowswap', '%3p%% ', 'linenr', ':%3v '])
     let g:airline#extensions#tabline#enabled = 1
     let g:airline_powerline_fonts = 1
 endif " }}}
