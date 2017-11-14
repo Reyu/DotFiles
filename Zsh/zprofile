@@ -48,7 +48,7 @@ elif (( $+commands[emacs] )); then
 fi
 # }}}
 # Make sure that SSH and GPG agents are accessible {{{
-local SSH_KEYS=$(print ${HOME}/.ssh/*(*:t))
+local SSH_KEYS=$(print ${HOME}/.ssh/*(*:tN))
 # local GPG_KEYS=$(gpg -k --with-colons|awk -F':' '$1 == "fpr" {fpr = $10}; $1 == "uid" {printf "%s ", substr(fpr,33)}')
 eval `keychain -q --agents gpg,ssh --eval ${=GPG_KEYS} ${=SSH_KEYS}`
 # }}}
