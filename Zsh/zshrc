@@ -603,12 +603,9 @@ alias -s sh=$commands[sh]
 if (( $+commands[nvim] ))       ; then alias ni='nvim'; alias nis='nvim -S Session.vim'             ; fi
 if (( $+commands[emacs] ))      ; then alias emacs='emacs -nw'; alias emacsc='emacsclient -c'       ; fi
 if (( $+commands[hub] ))        ; then eval $(hub alias -s)                                         ; fi
-if (( $+commands[cowsay] ))     ; then alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow' ; fi
+if (( $+commands[cowsay] ))     ; then alias foxsay='cowsay -nf ${HOME}/.config/Zsh/lib/Fox.cow'    ; fi
 if (( $+commands[xclip] ))      ; then alias -g CLIP='$(xclip -o -sel clip)'                        ; fi
 if (( $+commands[runhaskell] )) ; then alias -s hs=runhaskell                                       ; fi
-if [[ -f ~/.local/share/cowsay/cows/fox.cow ]]; then
-    alias foxsay='cowsay -nf ~/.local/share/cowsay/cows/fox.cow'
-fi
 if [[ -f ${HOME}/.local/todo.txt/todo.sh ]]; then
     alias todo="~/.local/todo.txt/todo.sh -d ~/.config/todo.cfg"
     alias t=todo
@@ -653,7 +650,10 @@ compinit -i
 
 # Give a Fortune!
 if [[ -z $SSH_CONNECTION && $USER != 'root' && $SHLVL -le 2 && -z $NO_FORTUNE ]]; then
-    fortune
+    if (( $+commands[cowsay] ))
+    then fortune | foxsay
+    else fortune
+    fi
 fi
 
 # vim: fdm=marker syntax=zsh
