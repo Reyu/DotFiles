@@ -84,6 +84,15 @@ endif
 if dein#tap('vim-colors-solarized') " {{{
     let g:solarized_termtrans=1
     colorscheme solarized
+    function! ToggleBackground()
+        if ( g:solarized_termtrans == 1 )
+            let g:solarized_termtrans = 0
+        else
+            let g:solarized_termtrans = 1
+        endif
+        colorscheme solarized
+    endfunction
+    nnoremap <Leader>tb :call ToggleBackground()<CR>
 else
     colorscheme slate
 endif " }}}
