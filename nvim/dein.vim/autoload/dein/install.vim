@@ -37,12 +37,6 @@ function! dein#install#_update(plugins, update_type, async) abort
     let plugins = filter(plugins, 'isdirectory(v:val.path)')
   endif
 
-  if empty(plugins)
-    call s:error('Target plugins are not found.')
-    call s:error('You may have used the wrong plugin name,'.
-          \ ' or all of the plugins are already installed.')
-    return
-  endif
   if a:async && !empty(s:global_context) &&
         \ confirm('The installation has not finished. Cancel now?',
         \         "yes\nNo", 2) != 1
@@ -53,6 +47,14 @@ function! dein#install#_update(plugins, update_type, async) abort
   let context = s:init_context(plugins, a:update_type, a:async)
 
   call s:init_variables(context)
+
+  if empty(plugins)
+    call s:notify('Target plugins are not found.')
+    call s:notify('You may have used the wrong plugin name,'.
+          \ ' or all of the plugins are already installed.')
+    return
+  endif
+
   call s:start()
 
   if !a:async || has('vim_starting')
@@ -81,6 +83,7 @@ function! s:update_loop(context) abort
       while !empty(s:global_context)
         let errored = s:install_async(s:global_context)
         sleep 50ms
+        redraw
       endwhile
     else
       let errored = s:install_blocking(a:context)
@@ -102,7 +105,7 @@ function! dein#install#_reinstall(plugins) abort
     if plugin.type ==# 'none'
           \ || get(plugin, 'local', 0)
           \ || (plugin.sourced &&
-          \     index(['dein', 'vimproc'], plugin.normalized_name) >= 0)
+          \     index(['dein'], plugin.normalized_name) >= 0)
       call dein#util#_error(
             \ printf('|%s| Cannot reinstall the plugin!', plugin.name))
       continue
@@ -412,13 +415,13 @@ function! dein#install#_each(cmd, plugins) abort
   call s:init_variables(context)
 
   let cwd = getcwd()
+  let error = 0
   try
     for plugin in plugins
       call dein#install#_cd(plugin.path)
 
-      execute '!' . s:args2string(a:cmd)
-      if !v:shell_error
-        redraw
+      if dein#install#_execute(a:cmd)
+        let error = 1
       endif
     endfor
   catch
@@ -428,14 +431,19 @@ function! dein#install#_each(cmd, plugins) abort
     let s:global_context = global_context_save
     call dein#install#_cd(cwd)
   endtry
+
+  return error
 endfunction
 function! dein#install#_build(plugins) abort
+  let error = 0
   for plugin in filter(dein#util#_get_plugins(a:plugins),
         \ "isdirectory(v:val.path) && has_key(v:val, 'build')")
     call s:print_progress_message('Building: ' . plugin.name)
-    call dein#install#_each(plugin.build, plugin)
+    if dein#install#_each(plugin.build, plugin)
+      let error = 1
+    endif
   endfor
-  return v:shell_error
+  return error
 endfunction
 
 function! dein#install#_get_log() abort
@@ -614,7 +622,7 @@ function! dein#install#_cd(path) abort
   endif
 
   try
-    execute (haslocaldir() ? 'lcd' : 'cd') fnameescape(a:path)
+    noautocmd execute (haslocaldir() ? 'lcd' : 'cd') fnameescape(a:path)
   catch
     call s:error('Error cd to: ' . a:path)
     call s:error('Current directory: ' . getcwd())
@@ -675,31 +683,71 @@ function! s:job_system.system(command) abort
   return join(self.candidates, "\n")
 endfunction
 
+function! dein#install#_execute(command) abort
+  let error = 0
+  if dein#install#_has_job()
+    let error = s:job_execute.execute(a:command)
+  else
+    execute '!' . s:args2string(a:command)
+    if !v:shell_error
+      redraw
+    endif
+    let error = v:shell_error
+  endif
+
+  return error
+endfunction
+let s:job_execute = {}
+function! s:job_execute.on_out(id, msg, event) abort
+  let lines = a:msg
+  if !empty(lines) && lines[0] !=# "\n" && !empty(s:job_execute.candidates)
+    " Join to the previous line
+    echon lines[0]
+    call remove(lines, 0)
+  endif
+
+  for line in lines
+    echo line
+  endfor
+  let s:job_execute.candidates += lines
+endfunction
+function! s:job_execute.execute(command) abort
+  let self.candidates = []
+
+  let job = dein#job#start(s:iconv(a:command, &encoding, 'char'),
+        \ {'on_stdout': self.on_out})
+
+  call job.wait()
+  return job.exitval()
+endfunction
+
 function! dein#install#_rm(path) abort
   if !isdirectory(a:path) && !filereadable(a:path)
     return
   endif
 
-  if has('patch-7.4.1120')
-    try
-      call delete(a:path, 'rf')
-    catch
-      call s:error('Error deleting directory: ' . a:path)
-      call s:error(v:exception)
-      call s:error(v:throwpoint)
-    endtry
-  else
-    let cmdline = ' "' . a:path . '"'
-    if dein#util#_is_windows()
-      " Note: In rm command, must use "\" instead of "/".
-      let cmdline = substitute(cmdline, '/', '\\\\', 'g')
-    endif
+  " Note: delete rf is broken
+  " if has('patch-7.4.1120')
+  "   try
+  "     call delete(a:path, 'rf')
+  "   catch
+  "     call s:error('Error deleting directory: ' . a:path)
+  "     call s:error(v:exception)
+  "     call s:error(v:throwpoint)
+  "   endtry
+  "   return
+  " endif
 
-    let rm_command = dein#util#_is_windows() ? 'rmdir /S /Q' : 'rm -rf'
-    let result = dein#install#_system(rm_command . cmdline)
-    if dein#install#_status()
-      call dein#util#_error(result)
-    endif
+  let cmdline = ' "' . a:path . '"'
+  if dein#util#_is_windows()
+    " Note: In rm command, must use "\" instead of "/".
+    let cmdline = substitute(cmdline, '/', '\\\\', 'g')
+  endif
+
+  let rm_command = dein#util#_is_windows() ? 'rmdir /S /Q' : 'rm -rf'
+  let result = dein#install#_system(rm_command . cmdline)
+  if dein#install#_status()
+    call dein#util#_error(result)
   endif
 endfunction
 function! dein#install#_copy_directories(srcs, dest) abort
@@ -846,12 +894,14 @@ function! s:init_context(plugins, update_type, async) abort
   let context.prev_number = -1
   let context.plugins = a:plugins
   let context.max_plugins = len(context.plugins)
-  let context.progress_type = has('vim_starting') ?
+  let context.progress_type = (has('vim_starting')
+        \ && g:dein#install_progress_type !=# 'none') ?
         \ 'echo' : g:dein#install_progress_type
   if !has('nvim') && context.progress_type ==# 'title'
     let context.progress_type = 'echo'
   endif
-  let context.message_type = has('vim_starting') ?
+  let context.message_type = (has('vim_starting')
+        \ && g:dein#install_message_type !=# 'none') ?
         \ 'echo' : g:dein#install_message_type
   let context.laststatus = &g:laststatus
   let context.showtabline = &g:showtabline
@@ -1247,7 +1297,7 @@ function! s:log(msg) abort
   call s:append_log_file(msg)
 endfunction
 function! s:append_log_file(msg) abort
-  let logfile = g:dein#install_log_filename
+  let logfile = dein#util#_expand(g:dein#install_log_filename)
   if logfile ==# ''
     return
   endif
@@ -1273,12 +1323,6 @@ function! s:echo(expr, mode) abort
     return
   endif
 
-  if has('vim_starting')
-    let m = join(msg, "\n")
-    call s:echo_mode(m, a:mode)
-    return
-  endif
-
   let more_save = &more
   let showcmd_save = &showcmd
   let ruler_save = &ruler
@@ -1294,6 +1338,9 @@ function! s:echo(expr, mode) abort
 
       let m = join(msg[i : i+height-1], "\n")
       call s:echo_mode(m, a:mode)
+      if has('vim_starting')
+        echo ''
+      endif
     endfor
   finally
     let &more = more_save

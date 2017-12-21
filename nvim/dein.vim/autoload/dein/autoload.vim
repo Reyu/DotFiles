@@ -25,9 +25,7 @@ function! dein#autoload#_source(...) abort
   let sourced = []
   for plugin in filter(plugins,
         \ "!empty(v:val) && !v:val.sourced && v:val.rtp !=# ''")
-    if s:source_plugin(rtps, index, plugin, sourced)
-      return 1
-    endif
+    call s:source_plugin(rtps, index, plugin, sourced)
   endfor
 
   let filetype_before = dein#util#_redir('autocmd FileType')
@@ -40,9 +38,7 @@ function! dein#autoload#_source(...) abort
     for directory in filter(['plugin', 'after/plugin'],
           \ "isdirectory(plugin.rtp.'/'.v:val)")
       for file in dein#util#_globlist(plugin.rtp.'/'.directory.'/**/*.vim')
-        " Note: "silent!" is required to ignore E122, E174 and E227.
-        "       "unsilent" then displays any messages while sourcing.
-        execute 'silent! unsilent source' fnameescape(file)
+        execute 'source' fnameescape(file)
       endfor
     endfor
 
@@ -243,28 +239,24 @@ function! s:source_plugin(rtps, index, plugin, sourced) abort
     if !has_key(g:dein#_plugins, name)
       call dein#util#_error(printf(
             \ 'Plugin name "%s" is not found.', name))
-      return 1
+      continue
     endif
 
     if !a:plugin.lazy && g:dein#_plugins[name].lazy
       call dein#util#_error(printf(
             \ 'Not lazy plugin "%s" depends lazy "%s" plugin.',
             \ a:plugin.name, name))
-      return 1
+      continue
     endif
 
-    if s:source_plugin(a:rtps, a:index, g:dein#_plugins[name], a:sourced)
-      return 1
-    endif
+    call s:source_plugin(a:rtps, a:index, g:dein#_plugins[name], a:sourced)
   endfor
 
   let a:plugin.sourced = 1
 
   for on_source in filter(dein#util#_get_lazy_plugins(),
         \ "index(get(v:val, 'on_source', []), a:plugin.name) >= 0")
-    if s:source_plugin(a:rtps, a:index, on_source, a:sourced)
-      return 1
-    endif
+    call s:source_plugin(a:rtps, a:index, on_source, a:sourced)
   endfor
 
   if has_key(a:plugin, 'dummy_commands')
@@ -284,16 +276,16 @@ function! s:source_plugin(rtps, index, plugin, sourced) abort
   if !a:plugin.merged || get(a:plugin, 'local', 0)
     call insert(a:rtps, a:plugin.rtp, a:index)
     if isdirectory(a:plugin.rtp.'/after')
-      call add(a:rtps, a:plugin.rtp.'/after')
+      call dein#util#_add_after(a:rtps, a:plugin.rtp.'/after')
     endif
   endif
 endfunction
 function! s:reset_ftplugin() abort
+  let filetype_state = dein#util#_redir('filetype')
+
   if exists('b:did_indent') || exists('b:did_ftplugin')
     filetype plugin indent off
   endif
-
-  let filetype_state = dein#util#_redir('filetype')
 
   if filetype_state =~# 'plugin:ON'
     silent! filetype plugin on

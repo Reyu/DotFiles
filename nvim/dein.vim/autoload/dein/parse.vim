@@ -38,11 +38,12 @@ function! dein#parse#_init(repo, options) abort
   if empty(plugin)
     let plugin = s:check_type(repo, a:options)
   endif
+  call extend(plugin, a:options)
   let plugin.repo = repo
   if !empty(a:options)
     let plugin.orig_opts = deepcopy(a:options)
   endif
-  return extend(plugin, a:options, 'keep')
+  return plugin
 endfunction
 function! dein#parse#_dict(plugin) abort
   let plugin = {
@@ -114,6 +115,7 @@ function! dein#parse#_dict(plugin) abort
 
   if !has_key(a:plugin, 'merged')
     let plugin.merged = !plugin.lazy
+          \ && plugin.normalized_name !=# 'dein'
           \ && !has_key(plugin, 'local')
           \ && !has_key(plugin, 'build')
           \ && !has_key(a:plugin, 'if')

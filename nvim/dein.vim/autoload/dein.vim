@@ -26,6 +26,8 @@ function! dein#_init() abort
     autocmd BufNewFile *? call dein#autoload#_on_default_event('BufNewFile')
     autocmd VimEnter *? call dein#autoload#_on_default_event('VimEnter')
     autocmd FileType *? call dein#autoload#_on_default_event('FileType')
+    autocmd BufWritePost *.vim,*.toml,vimrc,.vimrc
+          \ call dein#util#_check_vimrcs()
   augroup END
   augroup dein-events | augroup END
 
@@ -49,12 +51,12 @@ function! dein#load_cache_raw(vimrcs) abort
   return [dein#_json2vim(list[1]), dein#_json2vim(list[2])]
 endfunction
 function! dein#_vim2json(expr) abort
-  return   has('nvim') ? json_encode(a:expr)
-        \ : has('patch-7.4.1498') ? js_encode(a:expr) : string(a:expr)
+  return  (has('nvim') || has('patch-7.4.1498')) ?
+        \ json_encode(a:expr) : string(a:expr)
 endfunction
 function! dein#_json2vim(expr) abort
-  sandbox return (has('nvim') ? json_decode(a:expr)
-        \ : has('patch-7.4.1498') ? js_decode(a:expr) : eval(a:expr))
+  sandbox return (has('nvim') || has('patch-7.4.1498')) ?
+        \ json_decode(a:expr) : eval(a:expr)
 endfunction
 function! dein#load_state(path, ...) abort
   if !(a:0 > 0 ? a:1 : has('vim_starting')) | return 1 | endif
@@ -107,13 +109,7 @@ function! dein#source(...) abort
   return call('dein#autoload#_source', a:000)
 endfunction
 function! dein#check_install(...) abort
-  let plugins = filter(empty(a:000) ? values(dein#get()) :
-        \ filter(map(copy(a:1), 'dein#get(v:val)'), '!empty(v:val)'),
-        \     '!isdirectory(v:val.path)')
-  if empty(plugins) | return 0 | endif
-  call dein#util#_notify('Not installed plugins: ' .
-        \ string(map(plugins, 'v:val.name')))
-  return 1
+  return dein#util#_check_install(get(a:000, 0, []))
 endfunction
 function! dein#check_clean() abort
   return dein#util#_check_clean()
