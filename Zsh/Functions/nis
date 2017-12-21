@@ -1,0 +1,8 @@
+#!/bin/zsh
+if [[ -f "Session.vim" ]]
+then
+    nvim -S Session.vim
+else
+    print "No session found! Starting a new one."
+    nvim +Obsession
+fi
