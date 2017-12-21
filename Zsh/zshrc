@@ -603,6 +603,7 @@ if (( $+commands[cowsay] ))     ; then alias foxsay='cowsay -nf ${HOME}/.config/
 if (( $+commands[xclip] ))      ; then alias -g CLIP='$(xclip -o -sel clip)'                        ; fi
 if (( $+commands[runhaskell] )) ; then alias -s hs=runhaskell                                       ; fi
 if (( $+commands[salt-call] ))  ; then alias salt-call='sudo salt-call'                             ; fi
+if (( $+commands[yokadi] ))     ; then alias y=yokadi                                               ; fi
 if [[ -f ${HOME}/.local/todo.txt/todo.sh ]]; then
     alias todo="~/.local/todo.txt/todo.sh -d ~/.config/todo.cfg"
     alias t=todo
