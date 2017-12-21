@@ -24,9 +24,9 @@ if dein#load_state(s:dein_path)
     call dein#begin(s:dein_path)
     call dein#add('altercation/vim-colors-solarized')
     call dein#add('benekastah/neomake')
-    call dein#add('cloudhead/neovim-ghcid', { 'on_ft': 'haskell' })
+    " call dein#add('cloudhead/neovim-ghcid', { 'on_ft': 'haskell' })
     call dein#add('dag/vim2hs', { 'on_ft': 'haskell' })
-    call dein#add('eagletmt/ghcmod-vim', { 'on_ft': 'haskell' })
+    " call dein#add('eagletmt/ghcmod-vim', { 'on_ft': 'haskell' })
     call dein#add('eagletmt/neco-ghc', { 'on_ft': 'haskell' })
     call dein#add('easymotion/vim-easymotion')
     call dein#add('editorconfig/editorconfig-vim')
@@ -38,13 +38,15 @@ if dein#load_state(s:dein_path)
     call dein#add('jmcantrell/vim-virtualenv')
     call dein#add('MarcWeber/vim-addon-mw-utils.git')
     call dein#add('majutsushi/tagbar')
+    call dein#add('parsonsmatt/intero-neovim')
     call dein#add('radenling/vim-dispatch-neovim')
+    call dein#add('saltstack/salt-vim')
     call dein#add('scrooloose/nerdtree')
     call dein#add('Shougo/dein.vim')
     call dein#add('Shougo/deoplete.nvim')
     call dein#add('Shougo/neosnippet-snippets')
     call dein#add('Shougo/denite.nvim')
-    call dein#add('Shougo/vimproc', { 'build': 'make'})
+    " call dein#add('Shougo/vimproc', { 'build': 'make'})
     call dein#add('sirver/UltiSnips')
     call dein#add('tommcdo/vim-exchange')
     call dein#add('tpope/vim-dispatch')
@@ -56,6 +58,7 @@ if dein#load_state(s:dein_path)
     call dein#add('tpope/vim-obsession')
     call dein#add('tpope/vim-projectionist')
     call dein#add('tpope/vim-repeat')
+    call dein#add('tpope/vim-rhubarb')
     call dein#add('tpope/vim-surround')
     call dein#add('vim-airline/vim-airline')
     call dein#add('vim-airline/vim-airline-themes')
@@ -65,6 +68,10 @@ if dein#load_state(s:dein_path)
     call dein#add('vim-scripts/abnf')
     call dein#add('vim-scripts/python.vim', { 'on_ft': 'python' })
     call dein#add('vim-scripts/python_fold', { 'on_ft': 'python' })
+    call dein#add('5long/pytest-vim-compiler')
+    call dein#add('tpope/vim-unimpaired')
+    call dein#add('mhinz/vim-startify')
+    call dein#add('pearofducks/ansible-vim')
 
     " Latex
     call dein#add('xuhdev/vim-latex-live-preview')
@@ -99,6 +106,12 @@ endif " }}}
 if dein#tap('neomake') " {{{
     let g:neomake_open_list=2
     call neomake#configure#automake('nw', 500)
+
+    let g:neomake_python_maker = {
+                \ 'exe': 'pipenv',
+                \ 'args': 'run py.test --color=no -p no:sugar --tb=short -q'
+                \ }
+
 endif " }}}
 if dein#tap('vim2hs') " {{{
     let g:haskell_conceal_wide = 0
@@ -133,7 +146,7 @@ if dein#tap('ghcmod-vim') " {{{
     nmap <silent> <leader>hT :GhcModTypeInsert<CR>
 
     " Use hindent instead of par for haskell buffers
-    autocmd FileType haskell let &formatprg="hindent --tab-size 2 -XQuasiQuotes"
+    " autocmd FileType haskell let &formatprg="hindent --tab-size 2 -XQuasiQuotes"
 
     " Point Conversion {{{
     function! Pointfree()
@@ -221,6 +234,42 @@ if dein#tap('tagbar') " {{{
         \ 'type'   : 't'
     \ }
     \ }
+endif " }}}
+if dein#tap('intero-neovim') " {{{
+    augroup interoMaps
+        au!
+        " Maps for intero. Restrict to Haskell buffers so the bindings don't collide.
+
+        " Background process and window management
+        au FileType haskell nnoremap <silent> <leader>is :InteroStart<CR>
+        au FileType haskell nnoremap <silent> <leader>ik :InteroKill<CR>
+
+        " Open intero/GHCi split horizontally
+        au FileType haskell nnoremap <silent> <leader>io :InteroOpen<CR>
+        " Open intero/GHCi split vertically
+        au FileType haskell nnoremap <silent> <leader>iov :InteroOpen<CR><C-W>H
+        au FileType haskell nnoremap <silent> <leader>ih :InteroHide<CR>
+
+        " Automatically reload on save
+        au BufWritePost *.hs InteroReload
+
+        " Load individual modules
+        au FileType haskell nnoremap <silent> <leader>il :InteroLoadCurrentModule<CR>
+        au FileType haskell nnoremap <silent> <leader>if :InteroLoadCurrentFile<CR>
+
+        " Type-related information
+        " Heads up! These next two differ from the rest.
+        au FileType haskell map <silent> <leader>t <Plug>InteroGenericType
+        au FileType haskell map <silent> <leader>T <Plug>InteroType
+        au FileType haskell nnoremap <silent> <leader>it :InteroTypeInsert<CR>
+
+        " Navigation
+        au FileType haskell nnoremap <silent> <leader>jd :InteroGoToDef<CR>
+
+        " Managing targets
+        " Prompts you to enter targets (no silent):
+        au FileType haskell nnoremap <leader>ist :InteroSetTargets<SPACE>
+    augroup END
 endif " }}}
 if dein#tap('nerdtree') " {{{
     map <Leader>n :NERDTreeFocus<CR>
