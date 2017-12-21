@@ -462,38 +462,34 @@ function prepend-sudo {
 zle -N prepend-sudo # }}}
 # }}}
 # External Modules {{{
+source ${zdir}/antigen.zsh
+# antigen use oh-my-zsh
+# antigen bundle git
+# antigen bundle pip
+antigen bundle Tarrasch/zsh-command-not-found
+antigen bundle Tarrasch/zsh-autoenv
+antigen bundle Tarrasch/zsh-functional
+antigen bundle zsh-users/zsh-syntax-highlighting
+antigen bundle zsh-users/zsh-history-substring-search
+antigen bundle zsh-users/zsh-completions
+antigen bundle greymd/tmux-xpanes
+antigen apply
+
 # zsh-completions
-if [[ -d ${zdir}/zsh-completions ]]; then
-    fpath=(${zdir}/zsh-completions $fpath)
-fi
-
-# zsh-syntax-highlighting
-if [[ -d ${zdir}/zsh-syntax-highlighting ]]; then
-    source ${zdir}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-fi
-
-# zsh-history-substring-search
-if [[ -d ${zdir}/zsh-history-substring-search ]]; then
-    source ${zdir}/zsh-history-substring-search/zsh-history-substring-search.zsh
-fi
-
 # git-flow-completion
-if [[ -d ${zdir}/git-flow-completion && $+commands[git-flow] == 1 ]]; then
-    source ${zdir}/git-flow-completion/git-flow-completion.zsh
-fi
 
 # python virtualenv wrapper
-if [[ $+commands[virtualenvwrapper.sh] == 1 ]]; then
-    source $commands[virtualenvwrapper.sh]
-fi
-# Make sure we are still in the virtual env if, for example, we open a subshell
-if [[ -n $VIRTUAL_ENV ]]; then
-    if (( $+commands[virtualenvwrapper.sh] )); then
-        workon $VIRTUAL_ENV(:t)
-    else
-        source $VIRTUAL_ENV/bin/activate
-    fi
-fi
+# if [[ $+commands[virtualenvwrapper.sh] == 1 ]]; then
+#     source $commands[virtualenvwrapper.sh]
+# fi
+# # Make sure we are still in the virtual env if, for example, we open a subshell
+# if [[ -n $VIRTUAL_ENV ]]; then
+#     if (( $+commands[virtualenvwrapper.sh] )); then
+#         workon $VIRTUAL_ENV(:t)
+#     else
+#         source $VIRTUAL_ENV/bin/activate
+#     fi
+# fi
 # }}}
 # Key Bindings {{{
 source ${HOME}/.config/MyConfig
@@ -602,10 +598,11 @@ alias -s sh=$commands[sh]
 
 if (( $+commands[nvim] ))       ; then alias ni='nvim'                                              ; fi
 if (( $+commands[emacs] ))      ; then alias emacs='emacs -nw'; alias emacsc='emacsclient -c'       ; fi
-if (( $+commands[hub] ))        ; then eval $(hub alias -s)                                         ; fi
+# if (( $+commands[hub] ))        ; then eval $(hub alias -s)                                         ; fi
 if (( $+commands[cowsay] ))     ; then alias foxsay='cowsay -nf ${HOME}/.config/Zsh/lib/Fox.cow'    ; fi
 if (( $+commands[xclip] ))      ; then alias -g CLIP='$(xclip -o -sel clip)'                        ; fi
 if (( $+commands[runhaskell] )) ; then alias -s hs=runhaskell                                       ; fi
+if (( $+commands[salt-call] ))  ; then alias salt-call='sudo salt-call'                             ; fi
 if [[ -f ${HOME}/.local/todo.txt/todo.sh ]]; then
     alias todo="~/.local/todo.txt/todo.sh -d ~/.config/todo.cfg"
     alias t=todo
@@ -622,22 +619,22 @@ if (( $+commands[emerge] )); then
     fi
 fi
 # }}}
-# }}}
-# SSH Keys {{{
-# The shell globbing pattern below should only return private keys in the
-# configuration directory that are marked executable. It should not return any
-# other standard ssh files, even if the are set +x
-add_keys=()
-for key in $(print ${HOME}/.ssh/*~config~authorized_keys~known_hosts~*.pub(*N)); do
-    if ! $(ssh-add -l | grep -q "$(ssh-keygen -l -f $key|cut -d' ' -f2)"); then
-        add_keys+=$key
-    fi
-done
-if [[ $add_keys ]]
-then
-    ssh-add $add_keys
-fi
-# }}}
+# # }}}
+# # SSH Keys {{{
+# # The shell globbing pattern below should only return private keys in the
+# # configuration directory that are marked executable. It should not return any
+# # other standard ssh files, even if the are set +x
+# add_keys=()
+# for key in $(print ${HOME}/.ssh/*~config~authorized_keys~known_hosts~*.pub(*N)); do
+#     if ! $(ssh-add -l | grep -q "$(ssh-keygen -l -f $key|cut -d' ' -f2)"); then
+#         add_keys+=$key
+#     fi
+# done
+# if [[ $add_keys ]]
+# then
+#     ssh-add $add_keys
+# fi
+# # }}}
 # Read local configuration {{{
 if [[ -f ${ZDOTDIR:-$HOME}/.zshrc.local ]]; then
     source ${ZDOTDIR:-$HOME}/.zshrc.local
@@ -646,7 +643,7 @@ fi
 
 # Everything else is loaded, so it should be safe to initialize the
 # completion system. This makes sure any additions where not missed.
-compinit -i
+# compinit -i
 
 # Give a Fortune!
 if [[ -z $SSH_CONNECTION && $USER != 'root' && $SHLVL -le 2 && -z $NO_FORTUNE ]]; then
