@@ -24,9 +24,7 @@ if dein#load_state(s:dein_path)
     call dein#begin(s:dein_path)
     call dein#add('altercation/vim-colors-solarized')
     call dein#add('benekastah/neomake')
-    " call dein#add('cloudhead/neovim-ghcid', { 'on_ft': 'haskell' })
     call dein#add('dag/vim2hs', { 'on_ft': 'haskell' })
-    " call dein#add('eagletmt/ghcmod-vim', { 'on_ft': 'haskell' })
     call dein#add('eagletmt/neco-ghc', { 'on_ft': 'haskell' })
     call dein#add('easymotion/vim-easymotion')
     call dein#add('editorconfig/editorconfig-vim')
@@ -46,7 +44,6 @@ if dein#load_state(s:dein_path)
     call dein#add('Shougo/deoplete.nvim')
     call dein#add('Shougo/neosnippet-snippets')
     call dein#add('Shougo/denite.nvim')
-    " call dein#add('Shougo/vimproc', { 'build': 'make'})
     call dein#add('sirver/UltiSnips')
     call dein#add('tommcdo/vim-exchange')
     call dein#add('tpope/vim-dispatch')
@@ -72,6 +69,9 @@ if dein#load_state(s:dein_path)
     call dein#add('tpope/vim-unimpaired')
     call dein#add('mhinz/vim-startify')
     call dein#add('pearofducks/ansible-vim')
+    call dein#add('tmux-plugins/vim-tmux-focus-events')
+    call dein#add('tmux-plugins/vim-tmux')
+    call dein#add('tmhedberg/SimpylFold')
 
     " Latex
     call dein#add('xuhdev/vim-latex-live-preview')
@@ -335,7 +335,7 @@ if dein#tap('tmuxline.sh') " {{{
     " let g:tmuxline_preset = {
     "     \'a' : '#{?client_readonly,[RO]}',
     "     \'c' : '#{?session_many_attached,+,}',
-    "     \'x' : '#(uptime|egrep -o "(\d+\.\d\d ?){3}")',
+    "     \'x' : '#(uptime|egrep -o "([0-9]+\.[0-9]{2}(, )?){3}")',
     "     \'y' : [ '%R', '%a', '%Y'],
     "     \'z' : '#H'}
 endif " }}}
