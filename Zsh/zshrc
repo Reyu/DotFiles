@@ -528,6 +528,9 @@ else
     bindkey -M vicmd "/" history-incremental-search-forward
 fi
 
+bindkey -M viins "$key_info[Control]p" history-search-backward
+bindkey -M viins "$key_info[Control]n" history-search-forward
+
 bindkey -M viins "$key_info[Home]" beginning-of-line
 bindkey -M viins "$key_info[End]" end-of-line
 
@@ -646,8 +649,12 @@ fi
 # completion system. This makes sure any additions where not missed.
 # compinit -i
 
-# Give a Fortune!
-if [[ -z $SSH_CONNECTION && $USER != 'root' && $SHLVL -le 2 && -z $NO_FORTUNE ]]; then
+# If yokadi is installed, get our ToDo list
+if (( $+commands[yokadi] ))
+then
+    yokadi t_list Personal
+elif [[ -z $SSH_CONNECTION && $USER != 'root' && $SHLVL -le 2 && -z $NO_FORTUNE ]]; then
+    # Give a Fortune!
     if (( $+commands[cowsay] ))
     then fortune | foxsay
     else fortune
