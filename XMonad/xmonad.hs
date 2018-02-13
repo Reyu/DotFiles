@@ -42,7 +42,7 @@ import XMonad.Layout.TwoPane
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
 import qualified XMonad.Layout.Magnifier as Mag
--- import Data.Ratio ((%))
+import Data.Ratio ((%))
 import System.Posix.Unistd
 import XMonad.Util.EZConfig
 import XMonad.Hooks.EwmhDesktops
@@ -186,10 +186,8 @@ myTopics host =
       (spawn "telegram-desktop" >>
        spawn "discord")
   , ti "work" "Projects"
-  , TI "emacs" "." (spawn "emacs")
   , TI "games" "." (spawn "steam")
   , TI "stream" "." (spawn "obs")
-  , ti "kernel" "/usr/src/linux"
   , TI "virt" "." (spawn "virt-manager")]
   where
     ti t d = TI t d (spawnShell host (Just t))
@@ -244,6 +242,8 @@ myKeymap host conf =
   , ("<XF86AudioPlay>", spawn "mpc toggle")
   , ("<XF86AudioNext>", spawn "mpc next")
   , ("<XF86AudioPrev>", spawn "mpc prev")
+  , ("<XF86Sleep>", spawn "xset dpms force off")
+  , ("M-S-s", spawn "sleep 1;xset dpms force off")
   ,
     -- General
     ("M-<Backspace>", focusUrgent)
@@ -258,12 +258,11 @@ myKeymap host conf =
   , ("M-q", spawn "xmonad --recompile; xmonad --restart")
   , ("M-S-q", io exitSuccess)
   , ("M-t", withFocused $ windows . W.sink)
-  , ("M-u", spawnHere "google-chrome")
+  , ("M-u", spawnHere "firefox -new-window")
   , ("<Print>", spawn "scrot")
   , ("C-<Print>", spawn "sleep 0.2; scrot -s")
   , ("M-b", sendMessage ToggleStruts)
   , ("M-f", newCodeWS)
-  , ("M-S-t", spawn "stoken-type")
   ,
     -- Topic actions
     ("M-a", currentTopicAction (myTopicConfig host))
@@ -307,8 +306,10 @@ myKeymap host conf =
   | (k,f) <-
      [ ("n", addWorkspacePrompt myXPConfig)
      , ("S-n", renameWorkspace myXPConfig)
+     , ("r", renameWorkspace myXPConfig)
      , ("C-c", removeWorkspace)
-     , ("C-k", killAll >> removeWorkspace)] ] ++ -- Scratchpads
+     , ("C-k", killAll >> removeWorkspace)] ]
+  ++ -- Scratchpads
   [ ("M-s " ++ k, namedScratchpadAction (scratchpads host) sp)
   | (k,sp) <-
      [ ("t", "htop")
@@ -317,14 +318,16 @@ myKeymap host conf =
      , ("e", "emacs")
      , ("v", "volume")
      , ("b", "brain")
-     , ("c", "calendar")] ] ++ -- toggles: fullscreen, flip x, flip y, mirror, no borders
+     , ("c", "calendar")] ]
+  ++ -- toggles: fullscreen, flip x, flip y, mirror, no borders
   [ ("M-C-" ++ k, sendMessage f)
   | (k,f) <-
      [ ("<Space>", Toggle NBFULL)
      , ("x", Toggle REFLECTX)
      , ("y", Toggle REFLECTY)
      , ("m", Toggle MIRROR)
-     , ("b", Toggle NOBORDERS)] ] ++ -- Float Window Movement
+     , ("b", Toggle NOBORDERS)] ]
+  ++ -- Float Window Movement
   [ ("M-M1-" ++ dir, withFocused (keysMoveWindow (dx, dy)))
   | (dir,dx,dy) <- [("h", -20, 0), ("n", 20, 0), ("c", 0, -20), ("t", 0, 20)] ] ++ -- Float Window Resize
   [ ("M-C-" ++ dir, withFocused (keysResizeWindow (dx, dy) (1, 1)))
@@ -354,10 +357,9 @@ myLayoutHook =
   where
     tiled = ResizableTall 1 (2 / 100) (1 / 2) []
     chatLayout =
-      noBorders $ Mag.magnifier tiled ||| tabbed shrinkText tabConfig ||| Mag.magnifier Grid
-    skypeRoster = Title "reyuzenfold - Skype™"
+      reflectHoriz . noBorders $ magnify Grid ||| tabbed shrinkText tabConfig
+    magnify = Mag.magnifiercz (20%10)
 
--- The title is the ONLY property that changes between windows... WTF
 ------------------------------------------------------------------------
 -- Window rules:
 myManageHook
@@ -401,10 +403,10 @@ myBar host isSecondary =
                    else ""
                _ -> ""
         else "-xs 1"
-    , case host    -- Change font size on Retina display
+    , case host    -- Change font size on Large Resolution/Retina display
             of
         Laptop _ True _ ->
-          "-fn '-*-Source Code Pro-medium-r-*-*-20-*-*-*-*-*-*-*'"
+             "-fn '-*-Source Code Pro-medium-r-*-*-20-*-*-*-*-*-*-*'"
         _ -> "-fn '-*-Source Code Pro-medium-r-*-*-10-*-*-*-*-*-*-*'"
     , "-bg '" ++ solarized "background" ++ "'"
     , "-fg '" ++ solarized "text" ++ "'"
@@ -425,9 +427,7 @@ myLoghook logPipe host =
     [ date "%a %b %d  %I:%M %p"
     , loadAvg
     , dzenColorL (solarized "green") "" $
-      wrapL "Inbox: " "" $ maildirUnread ".maildir/Inbox"
-    , dzenColorL (solarized "red") "" $
-      wrapL "CNOC: " "" $ maildirUnread ".maildir/CNOC"] ++
+      wrapL "Inbox: " "" $ maildirUnread ".maildir/Inbox"] ++
     (case host of
        Laptop{} -> [battery]
        Desktop _ _ -> [])
