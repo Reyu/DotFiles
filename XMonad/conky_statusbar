@@ -1,12 +1,14 @@
-background no
-double_buffer yes
-out_to_console yes
-update_interval 1.0
-extra_newline no
+conky.config = {
+	background = false,
+	no_buffers = true,
+	out_to_console = true,
+	update_interval = 1,
+	extra_newline = false
+}
 
-TEXT
+conky.text = [[
 ${memperc}% : ${swapperc}% \
 | ${running_processes} : ${running_threads} \
 | ${entropy_perc}% (${entropy_avail}/${entropy_poolsize}) \
 | /:${fs_free /} : /home:${fs_free /home} \
-$if_mpd_playing| ${mpd_status} -- ${mpd_smart} [${mpd_elapsed}/${mpd_length}]$endif
+]]
