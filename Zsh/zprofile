@@ -27,6 +27,7 @@ path=(
   /usr/{bin,sbin}
   /{bin,sbin}
   $path
+  /usr/share/surfraw
 )
 # Remove non-existent directories
 path=($^path(N-/))
