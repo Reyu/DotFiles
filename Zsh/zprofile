@@ -78,6 +78,17 @@ if [[ -x ${PWD}/.new-shell ]]
 then
     # If file exists, and is marked executable
     ${PWD}/.new-shell
+elif (( $+commands[todoist] ))
+then
+    if todoist projects | cut -d' ' -f 2 | grep -q ${TMUX_SESSION}
+    then
+        todoist --color --indent list | grep "#${TMUX_SESSION}"
+    elif [[ -n ${TODO_DEFAULT_PROJECT} ]]
+    then
+        todoist --color --indent list | grep "#${TODO_DEFAULT_PROJECT}"
+    else
+        todoist --color --indent list --filter 'today|overdue'
+    fi
 elif (( $+commands[yokadi] ))
 then
     # If yokadi is installed, get our ToDo list
