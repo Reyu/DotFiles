@@ -21,6 +21,7 @@ cdpath=($^cdpath(N-/))
 path=(
   ${HOME}/.local/bin
   ${HOME}/bin
+  ${HOME}/.go/bin
   ${HOME}/.npm-global/bin
   ${HOME}/.gem/ruby/2.2.0/bin
   /usr/local/{bin,sbin}
@@ -51,8 +52,8 @@ export EDITOR=$VISUAL
 # }}}
 # Make sure that SSH and GPG agents are accessible {{{
 local SSH_KEYS=$(print ${HOME}/.ssh/*(*:tN))
-# local GPG_KEYS=$(gpg -k --with-colons|awk -F':' '$1 == "fpr" {fpr = $10}; $1 == "uid" {printf "%s ", substr(fpr,33)}')
-eval `keychain -q --agents gpg,ssh --eval ${=GPG_KEYS} ${=SSH_KEYS}`
+# local GPG_KEYS=$(gpg -K --with-colons|awk -F':' '$1 == "fpr" {fpr = $10}; $1 == "uid" {printf "%s ", substr(fpr,33)}')
+eval `keychain -q --agents gpg,ssh --eval ${=SSH_KEYS}`
 # }}}
 # EC2 Tools {{{
 if [[ -f $HOME/.aws_keys ]]; then
@@ -66,6 +67,7 @@ if [[ -d $HOME/.local/ec2-tools ]];then
 fi
 # }}}
 # Extra {{{
+export GOPATH="${HOME}/.go"
 export NNTPSERVER="news.giganews.commands"
 
 # Attempt to `cd` to project dir, if possible, based on name of current session
@@ -93,7 +95,6 @@ elif [[ -z $SSH_CONNECTION && $USER != 'root' && $SHLVL -le 2 && -z $NO_FORTUNE 
     fi
 fi
 # }}}
-
 # Read local configuration {{{
 if [[ -f ${ZDOTDIR:-$HOME}/.zprofile.local ]]; then
     source ${ZDOTDIR:-$HOME}/.zprofile.local

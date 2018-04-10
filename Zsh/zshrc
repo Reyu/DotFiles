@@ -59,66 +59,6 @@ for key in "${(k)key_info[@]}"; do
   fi
 done
 # }}}
-# ZSH Options & Modules {{{
-setopt ALWAYS_TO_END          # Move cursor to the end of a completed word.
-setopt AUTO_CD                # Auto changes to a directory without typing cd.
-setopt AUTO_LIST              # Automatically list choices on ambiguous completion.
-setopt AUTO_MENU              # Show completion menu on a successive tab press.
-setopt AUTO_NAME_DIRS         # Auto add variable-stored paths to ~ list.
-setopt AUTO_PARAM_SLASH       # If completed parameter is a directory, add a trailing slash.
-setopt AUTO_PUSHD             # Push the old directory onto the stack on cd.
-setopt AUTO_RESUME            # Attempt to resume existing job before creating a new process.
-setopt BANG_HIST              # Treat the '!' character specially during expansion.
-setopt CDABLE_VARS            # Change directory to a path stored in a variable.
-setopt COMPLETE_IN_WORD       # Complete from both ends of a word.
-setopt CORRECT                # Turn on spell correcting
-setopt CORRECT_ALL            # Spelling correction for arguments
-setopt DVORAK                 # Use Dvorak keyboard for correcting mistakes
-setopt EXTENDED_GLOB          # Use extended globbing syntax.
-setopt EXTENDED_HISTORY       # Write the history file in the ':start:elapsed;command' format.
-setopt HIST_BEEP              # Beep when accessing non-existent history.
-setopt HIST_EXPIRE_DUPS_FIRST # Expire a duplicate event first when trimming history.
-setopt HIST_FIND_NO_DUPS      # Do not display a previously found event.
-setopt HIST_IGNORE_ALL_DUPS   # Delete an old recorded event if a new event is a duplicate.
-setopt HIST_IGNORE_DUPS       # Do not record an event that was just recorded again.
-setopt HIST_IGNORE_SPACE      # Do not record an event starting with a space.
-setopt HIST_SAVE_NO_DUPS      # Do not write a duplicate event to the history file.
-setopt HIST_VERIFY            # Do not execute immediately upon history expansion.
-setopt INC_APPEND_HISTORY     # Write to the history file immediately, not when the shell exits.
-setopt INTERACTIVE_COMMENTS   # Allow comments even in interactive shells
-setopt LONG_LIST_JOBS         # List jobs in the long format by default.
-setopt MULTIOS                # Write to multiple descriptors.
-setopt NOTIFY                 # Report status of background jobs immediately.
-setopt PATH_DIRS              # Perform path search even on command names with slashes.
-setopt PROMPTSUBST            # Perform prompt substitutions
-setopt PUSHD_IGNORE_DUPS      # Do not store duplicates in the stack.
-setopt PUSHD_SILENT           # Do not print the directory stack after pushd or popd.
-setopt PUSHD_TO_HOME          # Push to home directory when no argument is given.
-setopt RC_QUOTES              # Allow 'Henry''s Garage' instead of 'Henry'\''s Garage'.
-setopt SHARE_HISTORY          # Share history between all sessions.
-unsetopt BEEP                 # Turn off all beeping
-unsetopt BG_NICE              # Don't run all background jobs at a lower priority.
-unsetopt CHECK_JOBS           # Don't report on jobs when shell exit.
-unsetopt CLOBBER              # Do not overwrite existing files with > and >>.
-unsetopt FLOW_CONTROL         # Disable start/stop characters in shell editor.
-unsetopt HUP                  # Don't kill jobs on shell exit.
-unsetopt MAIL_WARNING         # Don't print a warning message if a mail file has been accessed.
-unsetopt MENU_COMPLETE        # Do not auto select the first completion entry.
-unsetopt TRANSIENT_RPROMPT    # only show the rprompt on the current prompt
-
-zmodload zsh/terminfo
-
-# Load the completion system ignoring insecure directories.
-autoload -Uz compinit
-
-# Load the prompt system
-autoload -U promptinit
-
-# Allow command line editing in an external editor.
-autoload -Uz edit-command-line
-zle -N edit-command-line
-
-# }}}
 # Styles {{{
 if (( $+commands[dircolors] )); then
     # GNU Core Utilities
@@ -280,6 +220,66 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' l
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 # }}}
+# }}}
+# ZSH Options & Modules {{{
+setopt ALWAYS_TO_END          # Move cursor to the end of a completed word.
+setopt AUTO_CD                # Auto changes to a directory without typing cd.
+setopt AUTO_LIST              # Automatically list choices on ambiguous completion.
+setopt AUTO_MENU              # Show completion menu on a successive tab press.
+setopt AUTO_NAME_DIRS         # Auto add variable-stored paths to ~ list.
+setopt AUTO_PARAM_SLASH       # If completed parameter is a directory, add a trailing slash.
+setopt AUTO_PUSHD             # Push the old directory onto the stack on cd.
+setopt AUTO_RESUME            # Attempt to resume existing job before creating a new process.
+setopt BANG_HIST              # Treat the '!' character specially during expansion.
+setopt CDABLE_VARS            # Change directory to a path stored in a variable.
+setopt COMPLETE_IN_WORD       # Complete from both ends of a word.
+setopt CORRECT                # Turn on spell correcting
+setopt CORRECT_ALL            # Spelling correction for arguments
+setopt DVORAK                 # Use Dvorak keyboard for correcting mistakes
+setopt EXTENDED_GLOB          # Use extended globbing syntax.
+setopt EXTENDED_HISTORY       # Write the history file in the ':start:elapsed;command' format.
+setopt HIST_BEEP              # Beep when accessing non-existent history.
+setopt HIST_EXPIRE_DUPS_FIRST # Expire a duplicate event first when trimming history.
+setopt HIST_FIND_NO_DUPS      # Do not display a previously found event.
+setopt HIST_IGNORE_ALL_DUPS   # Delete an old recorded event if a new event is a duplicate.
+setopt HIST_IGNORE_DUPS       # Do not record an event that was just recorded again.
+setopt HIST_IGNORE_SPACE      # Do not record an event starting with a space.
+setopt HIST_SAVE_NO_DUPS      # Do not write a duplicate event to the history file.
+setopt HIST_VERIFY            # Do not execute immediately upon history expansion.
+setopt INC_APPEND_HISTORY     # Write to the history file immediately, not when the shell exits.
+setopt INTERACTIVE_COMMENTS   # Allow comments even in interactive shells
+setopt LONG_LIST_JOBS         # List jobs in the long format by default.
+setopt MULTIOS                # Write to multiple descriptors.
+setopt NOTIFY                 # Report status of background jobs immediately.
+setopt PATH_DIRS              # Perform path search even on command names with slashes.
+setopt PROMPTSUBST            # Perform prompt substitutions
+setopt PUSHD_IGNORE_DUPS      # Do not store duplicates in the stack.
+setopt PUSHD_SILENT           # Do not print the directory stack after pushd or popd.
+setopt PUSHD_TO_HOME          # Push to home directory when no argument is given.
+setopt RC_QUOTES              # Allow 'Henry''s Garage' instead of 'Henry'\''s Garage'.
+setopt SHARE_HISTORY          # Share history between all sessions.
+unsetopt BEEP                 # Turn off all beeping
+unsetopt BG_NICE              # Don't run all background jobs at a lower priority.
+unsetopt CHECK_JOBS           # Don't report on jobs when shell exit.
+unsetopt CLOBBER              # Do not overwrite existing files with > and >>.
+unsetopt FLOW_CONTROL         # Disable start/stop characters in shell editor.
+unsetopt HUP                  # Don't kill jobs on shell exit.
+unsetopt MAIL_WARNING         # Don't print a warning message if a mail file has been accessed.
+unsetopt MENU_COMPLETE        # Do not auto select the first completion entry.
+unsetopt TRANSIENT_RPROMPT    # only show the rprompt on the current prompt
+
+zmodload zsh/terminfo
+
+# Load the completion system ignoring insecure directories.
+autoload -Uz compinit
+
+# Load the prompt system
+autoload -U promptinit
+
+# Allow command line editing in an external editor.
+autoload -Uz edit-command-line
+zle -N edit-command-line
+
 # }}}
 # Functions {{{
 typeset -U myfpath
@@ -623,21 +623,6 @@ if (( $+commands[emerge] )); then
     fi
 fi
 # }}}
-# # }}}
-# # SSH Keys {{{
-# # The shell globbing pattern below should only return private keys in the
-# # configuration directory that are marked executable. It should not return any
-# # other standard ssh files, even if the are set +x
-# add_keys=()
-# for key in $(print ${HOME}/.ssh/*~config~authorized_keys~known_hosts~*.pub(*N)); do
-#     if ! $(ssh-add -l | grep -q "$(ssh-keygen -l -f $key|cut -d' ' -f2)"); then
-#         add_keys+=$key
-#     fi
-# done
-# if [[ $add_keys ]]
-# then
-#     ssh-add $add_keys
-# fi
 # # }}}
 # Read local configuration {{{
 if [[ -f ${ZDOTDIR:-$HOME}/.zshrc.local ]]; then
