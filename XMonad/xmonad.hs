@@ -42,6 +42,7 @@ import XMonad.Layout.TwoPane
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
 import qualified XMonad.Layout.Magnifier as Mag
+import qualified XMonad.Layout.GridVariants as G
 import Data.Ratio ((%))
 import System.Posix.Unistd
 import XMonad.Util.EZConfig
@@ -327,6 +328,13 @@ myKeymap host conf =
      , ("y", Toggle REFLECTY)
      , ("m", Toggle MIRROR)
      , ("b", Toggle NOBORDERS)] ]
+  ++ -- GridVariants keys
+  [ ("M-C-g " ++ k, sendMessage f)
+  | (k,f) <-
+     [ ("i", G.IncMasterRows 1)
+     , ("d", G.IncMasterRows (-1))
+     , ("M-i", G.IncMasterCols 1)
+     , ("M-d", G.IncMasterCols (-1))] ]
   ++ -- Float Window Movement
   [ ("M-M1-" ++ dir, withFocused (keysMoveWindow (dx, dy)))
   | (dir,dx,dy) <- [("h", -20, 0), ("n", 20, 0), ("c", 0, -20), ("t", 0, 20)] ] ++ -- Float Window Resize
@@ -357,8 +365,10 @@ myLayoutHook =
   where
     tiled = ResizableTall 1 (2 / 100) (1 / 2) []
     chatLayout =
-      reflectHoriz . noBorders $ magnify Grid ||| tabbed shrinkText tabConfig
-    magnify = Mag.magnifiercz (20%10)
+      noBorders $ magnify splitGrid ||| tallGrid ||| tabbed shrinkText tabConfig
+    tallGrid = G.TallGrid 2 1 (1 / 2) (16 / 10) 1
+    splitGrid = G.SplitGrid G.R 1 1 (1 / 2) (16 / 10) 1
+    magnify = Mag.magnifiercz (20 % 10)
 
 ------------------------------------------------------------------------
 -- Window rules:
