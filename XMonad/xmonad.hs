@@ -271,7 +271,8 @@ myKeymap host conf =
     -- Window Movement
     ("M-g", promptedGoto host)
   , ("M-S-g", promptedShift)
-  , ("M-z", toggleWS)] ++ -- Volume
+  , ("M-z", toggleWS)]
+  ++ -- Volume
   case getAudioSystem host of
     Alsa ->
       [ ("<XF86AudioLowerVolume>", spawn "amixer sset Master 1dB-")
@@ -293,16 +294,17 @@ myKeymap host conf =
      , ("e", spawn "exe=`echo | yeganesh -x` && eval \"exec $exe\"")
      , ("s", sshPrompt myXPConfig)
      , ("m", manPrompt myXPConfig)
-     , ( "n"
-       , prompt
+     , ("n", prompt
            ("~/.local/todo.txt/todo.sh" ++ " -d ~/.config/todo.cfg" ++ " add")
            myXPConfig)
-     , ("t", prompt (myTerminal ++ " -e tmux new -s ") myXPConfig)] ] ++ -- Workspace Groups
+     , ("t", prompt (myTerminal ++ " -e tmux new -s ") myXPConfig)] ]
+  ++ -- Workspace Groups
   [ ("M-y " ++ k, f)
   | (k,f) <-
      [ ("n", promptWSGroupAdd myXPConfig "Name this group: ")
      , ("g", promptWSGroupView myXPConfig "Go to group: " >> viewScreen 1)
-     , ("d", promptWSGroupForget myXPConfig "Forget group: ")] ] ++ -- Dynamic Workspaces
+     , ("d", promptWSGroupForget myXPConfig "Forget group: ")] ]
+  ++ -- Dynamic Workspaces
   [ ("M-w " ++ k, f)
   | (k,f) <-
      [ ("n", addWorkspacePrompt myXPConfig)
@@ -337,9 +339,11 @@ myKeymap host conf =
      , ("M-d", G.IncMasterCols (-1))] ]
   ++ -- Float Window Movement
   [ ("M-M1-" ++ dir, withFocused (keysMoveWindow (dx, dy)))
-  | (dir,dx,dy) <- [("h", -20, 0), ("n", 20, 0), ("c", 0, -20), ("t", 0, 20)] ] ++ -- Float Window Resize
+  | (dir,dx,dy) <- [("h", -20, 0), ("n", 20, 0), ("c", 0, -20), ("t", 0, 20)] ]
+  ++ -- Float Window Resize
   [ ("M-C-" ++ dir, withFocused (keysResizeWindow (dx, dy) (1, 1)))
-  | (dir,dx,dy) <- [("n", -20, 0), ("h", 20, 0), ("t", 0, -20), ("c", 0, 20)] ] ++ -- Move focus, or move windows, between screens
+  | (dir,dx,dy) <- [("n", -20, 0), ("h", 20, 0), ("t", 0, -20), ("c", 0, 20)] ]
+  ++ -- Move focus, or move windows, between screens
   [ (m ++ "M-" ++ k, f s)
   | (k,s) <- zip [";", ",", "."] [0 ..]
   , (f,m) <- [(viewScreen, ""), (sendToScreen, "S-")] ]
