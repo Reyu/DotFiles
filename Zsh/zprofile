@@ -51,9 +51,11 @@ fi
 export EDITOR=$VISUAL
 # }}}
 # Make sure that SSH and GPG agents are accessible {{{
-local SSH_KEYS=$(print ${HOME}/.ssh/*(*:tN))
-# local GPG_KEYS=$(gpg -K --with-colons|awk -F':' '$1 == "fpr" {fpr = $10}; $1 == "uid" {printf "%s ", substr(fpr,33)}')
-eval `keychain -q --agents gpg,ssh --eval ${=SSH_KEYS}`
+if (( $+commands[keychain] )); then
+    local SSH_KEYS=$(print ${HOME}/.ssh/*(*:tN))
+    # local GPG_KEYS=$(gpg -K --with-colons|awk -F':' '$1 == "fpr" {fpr = $10}; $1 == "uid" {printf "%s ", substr(fpr,33)}')
+    eval `keychain -q --agents gpg,ssh --eval ${=SSH_KEYS}`
+fi
 # }}}
 # EC2 Tools {{{
 if [[ -f $HOME/.aws_keys ]]; then
