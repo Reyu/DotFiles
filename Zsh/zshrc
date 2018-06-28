@@ -602,6 +602,7 @@ alias -s sh=$commands[sh]
 if (( $+commands[nvim] ))       ; then alias ni='nvim'                                              ; fi
 if (( $+commands[emacs] ))      ; then alias emacs='emacs -nw'; alias emacsc='emacsclient -c'       ; fi
 if (( $+commands[hub] ))        ; then eval $(hub alias -s)                                         ; fi
+if (( $+commands[lab] ))        ; then alias git='lab'                                              ; fi
 if (( $+commands[cowsay] ))     ; then alias foxsay='cowsay -nf ${HOME}/.config/Zsh/lib/Fox.cow'    ; fi
 if (( $+commands[xclip] ))      ; then alias -g CLIP='$(xclip -o -sel clip)'                        ; fi
 if (( $+commands[runhaskell] )) ; then alias -s hs=runhaskell                                       ; fi
