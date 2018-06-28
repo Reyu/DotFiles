@@ -8,6 +8,11 @@ augroup init
     " Clear the group
     autocmd!
 augroup end
+
+" Set Python Host programs
+let g:python_host_prog=expand("~/Projects/.python_virtual_environments/neovim2/bin/python")
+let g:python3_host_prog=expand("~/Projects/.python_virtual_environments/neovim/bin/python")
+
 " Pre-setup }}}
 " {{{ Plugins
 " Load plugins first, so they are availible to later code
@@ -75,6 +80,11 @@ if dein#load_state(s:dein_path)
     call dein#add('tmux-plugins/vim-tmux-focus-events')
     call dein#add('tmux-plugins/vim-tmux')
     call dein#add('tmhedberg/SimpylFold')
+    call dein#add('davidhalter/jedi')
+    call dein#add('zchee/deoplete-jedi')
+
+    " React
+    call dein#add('mxw/vim-jsx')
 
     " Latex
     call dein#add('xuhdev/vim-latex-live-preview')
@@ -345,6 +355,7 @@ endif " }}}
 " }}}
 " Plugins }}}
 " {{{ General
+
 " Sets how many lines of history VIM has to remember
 set history=700
 
