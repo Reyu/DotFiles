@@ -16,7 +16,11 @@ let g:python3_host_prog=expand("~/Projects/.python_virtual_environments/neovim/b
 " Pre-setup }}}
 " {{{ Plugins
 " Load plugins first, so they are availible to later code
-let s:dein_path = expand('~/.cache/nvim')
+if exists('g:gui_oni')
+    let s:dein_path = expand('~/.cache/oni')
+else
+    let s:dein_path = expand('~/.cache/nvim')
+endif
 let s:dein_repo = s:dein_path.'/repos/github.com/Shougo/dein.vim'
 if isdirectory(s:dein_repo)
     " Dein-managed Dein (prefered)
@@ -26,17 +30,15 @@ else
     set rtp+=~/.config/nvim/dein.vim
 endif
 if dein#load_state(s:dein_path)
+    " Global Plugins
     call dein#begin(s:dein_path)
-    call dein#add('altercation/vim-colors-solarized')
     call dein#add('benekastah/neomake')
     call dein#add('dag/vim2hs', { 'on_ft': 'haskell' })
     call dein#add('eagletmt/neco-ghc', { 'on_ft': 'haskell' })
     call dein#add('easymotion/vim-easymotion')
     call dein#add('editorconfig/editorconfig-vim')
     call dein#add('ervandew/supertab.git')
-    call dein#add('garbas/vim-snipmate.git')
     call dein#add('godlygeek/tabular')
-    call dein#add('honza/vim-snippets')
     call dein#add('jceb/vim-orgmode')
     " call dein#add('jmcantrell/vim-virtualenv')
     call dein#add('Reyu/vim-virtualenv')
@@ -45,10 +47,8 @@ if dein#load_state(s:dein_path)
     call dein#add('parsonsmatt/intero-neovim')
     call dein#add('radenling/vim-dispatch-neovim')
     call dein#add('saltstack/salt-vim')
-    call dein#add('scrooloose/nerdtree')
     call dein#add('Shougo/dein.vim')
     call dein#add('Shougo/deoplete.nvim')
-    call dein#add('Shougo/neosnippet-snippets')
     call dein#add('Shougo/denite.nvim')
     call dein#add('sirver/UltiSnips')
     call dein#add('tommcdo/vim-exchange')
@@ -64,8 +64,6 @@ if dein#load_state(s:dein_path)
     call dein#add('tpope/vim-rhubarb')
     call dein#add('tpope/vim-speeddating')
     call dein#add('tpope/vim-surround')
-    call dein#add('vim-airline/vim-airline')
-    call dein#add('vim-airline/vim-airline-themes')
     call dein#add('vim-utils/vim-man')
     call dein#add('vim-pandoc/vim-pandoc')
     call dein#add('vim-pandoc/vim-pandoc-syntax')
@@ -73,8 +71,6 @@ if dein#load_state(s:dein_path)
     call dein#add('vim-scripts/python.vim', { 'on_ft': 'python' })
     call dein#add('vim-scripts/python_fold', { 'on_ft': 'python' })
     call dein#add('5long/pytest-vim-compiler')
-    call dein#add('tpope/vim-unimpaired')
-    call dein#add('mhinz/vim-startify')
     call dein#add('pearofducks/ansible-vim')
     call dein#add('chrisbra/NrrwRgn')
     call dein#add('tmux-plugins/vim-tmux-focus-events')
@@ -93,6 +89,19 @@ if dein#load_state(s:dein_path)
     " External
     call dein#add('edkolev/promptline.vim')
     call dein#add('edkolev/tmuxline.vim')
+
+    if !exists('g:gui_oni')
+        " Non-Oni/Gui Plugins
+        call dein#add('altercation/vim-colors-solarized')
+        call dein#add('mhinz/vim-startify')
+        call dein#add('garbas/vim-snipmate.git')
+        call dein#add('honza/vim-snippets')
+        call dein#add('Shougo/neosnippet-snippets')
+        call dein#add('scrooloose/nerdtree')
+        call dein#add('tpope/vim-unimpaired')
+        call dein#add('vim-airline/vim-airline')
+        call dein#add('vim-airline/vim-airline-themes')
+    endif
 
     call dein#end()
     call dein#save_state()
@@ -216,6 +225,8 @@ if dein#tap('tabular') " {{{
     vmap <Leader>a- :Tabularize /-><CR>
 endif " }}}
 if dein#tap('tagbar') " {{{
+    nnoremap <silent> <F8> :TagbarToggle<CR>
+    nnoremap <silent> <F9> :TagbarOpen fjc<CR>
     let g:tagbar_type_haskell = {
     \ 'ctagsbin'  : 'hasktags',
     \ 'ctagsargs' : '-x -c -o-',
@@ -378,42 +389,53 @@ set number norelativenumber
 " Allow virtual edit in block mode
 set virtualedit=block
 
-" Set terminal title
-set title titlestring=NeoVim\ (%F)
-
 " My tab preferences
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 
-" Don't use the mouse. Ever.
-set mouse=
+if exists('g:gui_oni')
+    " Enable GUI mouse
+    set mouse=a
 
-" Configure statusline
-if dein#tap('vim-airline') == 0 " {{{
-    set statusline= "Clear statusline, when reloading
-    set statusline+=%(\ %n\ %) "Show buffer number
-    if dein#tap('vim-capslock')
-        set statusline+=%(\|\ %{exists('*CapsLockStatusline')?CapsLockStatusline('Caps'):''}\ %) "Show virtual Capslock status (vim-capslock)
-    endif
-    if dein#tap('vim-fugitive')
-        set statusline+=%(\|\ %{fugitive#statusline()}\ %) "Show Git branch
-    endif
-    if dein#tap('tagbar')
-        set statusline+=%(\|\ %{tagbar#currenttag('%s','')}\ %) "Show current ctag
-    endif
-    set statusline+=%(\|\ %.60f%) "Show file name/relative path
-    set statusline+=%(\ [%M%R%H%W]%) "Show Modified flag, Readonly flag, Preview flag, and Help buffer flag
-    set statusline+=%= "Right align rest of line
-    if dein#tap('neomake')
-        set statusline+=%#warningmsg#
-        set statusline+=%(%#ErrorMsg#%{neomake#statusline#QflistStatus('qf:\ ')}%*\|\ %) "Show clist counts
-        set statusline+=%*
-    endif
-    set statusline+=%{\"\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"\ \|\ \"} "Show encoding/bomb
-    set statusline+=%(%{&ff}\ \|\ %) "Show fileformat (line ending)
-    set statusline+=%(%Y\ \|\ %) "Show file type
-    set statusline+=%(%02B/%03b\ \|\ %) "Show hex byte of char under cursor
-    set statusline+=%(%-14(%l,%c%V%)\ %P%) "Show position/ruler data
-endif " }}}
+    " If using Oni's externalized statusline, hide vim's native statusline, 
+    set noshowmode
+    set noruler
+    set laststatus=0
+    set noshowcmd
+else
+    " Set terminal title
+    set title titlestring=NeoVim\ (%F)
+
+    " Don't use the mouse. Ever.
+    set mouse=
+
+    " Configure statusline
+    if dein#tap('vim-airline') == 0 " {{{
+        set statusline= "Clear statusline, when reloading
+        set statusline+=%(\ %n\ %) "Show buffer number
+        if dein#tap('vim-capslock')
+            set statusline+=%(\|\ %{exists('*CapsLockStatusline')?CapsLockStatusline('Caps'):''}\ %) "Show virtual Capslock status (vim-capslock)
+        endif
+        if dein#tap('vim-fugitive')
+            set statusline+=%(\|\ %{fugitive#statusline()}\ %) "Show Git branch
+        endif
+        if dein#tap('tagbar')
+            set statusline+=%(\|\ %{tagbar#currenttag('%s','')}\ %) "Show current ctag
+        endif
+        set statusline+=%(\|\ %.60f%) "Show file name/relative path
+        set statusline+=%(\ [%M%R%H%W]%) "Show Modified flag, Readonly flag, Preview flag, and Help buffer flag
+        set statusline+=%= "Right align rest of line
+        if dein#tap('neomake')
+            set statusline+=%#warningmsg#
+            set statusline+=%(%#ErrorMsg#%{neomake#statusline#QflistStatus('qf:\ ')}%*\|\ %) "Show clist counts
+            set statusline+=%*
+        endif
+        set statusline+=%{\"\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"\ \|\ \"} "Show encoding/bomb
+        set statusline+=%(%{&ff}\ \|\ %) "Show fileformat (line ending)
+        set statusline+=%(%Y\ \|\ %) "Show file type
+        set statusline+=%(%02B/%03b\ \|\ %) "Show hex byte of char under cursor
+        set statusline+=%(%-14(%l,%c%V%)\ %P%) "Show position/ruler data
+    endif " }}}
+endif
 
 " Reload init when it is modified
 autocmd init BufWritePost ~/.config/nvim/init.vim source <afile>
@@ -429,11 +451,15 @@ autocmd init InsertLeave * set nopaste
 set splitbelow splitright
 " General }}}
 " {{{ Files, backups and undo
-" Keep backups in cache folder, so as not to clutter filesystem.
-set backup backupdir=~/.cache/vim/backup,~/tmp,.,~/
-set undofile undodir=~/.cache/vim/undo
-set directory=~/.cache/vim/other,~/tmp,.,/var/tmp,/tmp
-" Don't need backups for tmp files (usually sudo -e)
-autocmd init BufRead,BufEnter /var/tmp/* set nobackup noundofile nowritebackup
+if exists('g:gui_oni')
+    set noswapfile
+else
+    " Keep backups in cache folder, so as not to clutter filesystem.
+    set backup backupdir=~/.cache/vim/backup,~/tmp,.,~/
+    set undofile undodir=~/.cache/vim/undo
+    set directory=~/.cache/vim/other,~/tmp,.,/var/tmp,/tmp
+    " Don't need backups for tmp files (usually sudo -e)
+    autocmd init BufRead,BufEnter /var/tmp/* set nobackup noundofile nowritebackup
+endif
 " Files, backups and undo }}}
 " vim: fdm=marker
