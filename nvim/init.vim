@@ -41,14 +41,12 @@ if dein#load_state(s:dein_path)
     call dein#add('godlygeek/tabular')
     call dein#add('jceb/vim-orgmode')
     " call dein#add('jmcantrell/vim-virtualenv')
-    call dein#add('Reyu/vim-virtualenv')
+    " call dein#add('Reyu/vim-virtualenv')
     call dein#add('MarcWeber/vim-addon-mw-utils.git')
     call dein#add('majutsushi/tagbar')
-    call dein#add('parsonsmatt/intero-neovim')
     call dein#add('radenling/vim-dispatch-neovim')
     call dein#add('saltstack/salt-vim')
     call dein#add('Shougo/dein.vim')
-    call dein#add('Shougo/deoplete.nvim')
     call dein#add('Shougo/denite.nvim')
     call dein#add('sirver/UltiSnips')
     call dein#add('tommcdo/vim-exchange')
@@ -71,13 +69,11 @@ if dein#load_state(s:dein_path)
     call dein#add('vim-scripts/python.vim', { 'on_ft': 'python' })
     call dein#add('vim-scripts/python_fold', { 'on_ft': 'python' })
     call dein#add('5long/pytest-vim-compiler')
+    call dein#add('tpope/vim-unimpaired')
+    " call dein#add('mhinz/vim-startify')
     call dein#add('pearofducks/ansible-vim')
     call dein#add('chrisbra/NrrwRgn')
-    call dein#add('tmux-plugins/vim-tmux-focus-events')
-    call dein#add('tmux-plugins/vim-tmux')
     call dein#add('tmhedberg/SimpylFold')
-    call dein#add('davidhalter/jedi')
-    call dein#add('zchee/deoplete-jedi')
 
     " React
     call dein#add('mxw/vim-jsx')
@@ -86,25 +82,19 @@ if dein#load_state(s:dein_path)
     call dein#add('xuhdev/vim-latex-live-preview')
     call dein#add('lervag/vimtex')
 
-    " External
-    call dein#add('edkolev/promptline.vim')
-    call dein#add('edkolev/tmuxline.vim')
-
     if !exists('g:gui_oni')
         " Non-Oni/Gui Plugins
         call dein#add('altercation/vim-colors-solarized')
         call dein#add('mhinz/vim-startify')
+        call dein#add('parsonsmatt/intero-neovim', { 'on_ft': 'haskell' })
         call dein#add('garbas/vim-snipmate.git')
         call dein#add('honza/vim-snippets')
+        call dein#add('Shougo/deoplete.nvim')
         call dein#add('Shougo/neosnippet-snippets')
         call dein#add('scrooloose/nerdtree')
         call dein#add('tpope/vim-unimpaired')
         call dein#add('vim-airline/vim-airline')
         call dein#add('vim-airline/vim-airline-themes')
-        call dein#add('autozimu/LanguageClient-neovim', {
-                    \ 'rev': 'next',
-                    \ 'build': 'bash install.sh',
-                    \ })
     endif
 
     call dein#end()
@@ -366,17 +356,6 @@ if dein#tap('tmuxline.sh') " {{{
     "     \'x' : '#(uptime|egrep -o "([0-9]+\.[0-9]{2}(, )?){3}")',
     "     \'y' : [ '%R', '%a', '%Y'],
     "     \'z' : '#H'}
-endif " }}}
-if dein#tap('LanguageClient-neovim') " {{{
-    let g:LanguageClient_serverCommands = {
-    \ 'python': ['/Users/t0m00fc/Library/Python/3.7/bin/pyls'],
-    \ }
-
-    nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-    " Or map each action separately
-    nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
-    nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-    nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 endif " }}}
 " }}}
 " Plugins }}}
