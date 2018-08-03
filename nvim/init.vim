@@ -101,6 +101,10 @@ if dein#load_state(s:dein_path)
         call dein#add('tpope/vim-unimpaired')
         call dein#add('vim-airline/vim-airline')
         call dein#add('vim-airline/vim-airline-themes')
+        call dein#add('autozimu/LanguageClient-neovim', {
+                    \ 'rev': 'next',
+                    \ 'build': 'bash install.sh',
+                    \ })
     endif
 
     call dein#end()
@@ -127,7 +131,7 @@ else
 endif " }}}
 if dein#tap('neomake') " {{{
     let g:neomake_open_list=2
-    call neomake#configure#automake('nw', 500)
+    " call neomake#configure#automake('nw', 500)
 
     let g:neomake_python_maker = {
                 \ 'exe': 'pipenv',
@@ -362,6 +366,17 @@ if dein#tap('tmuxline.sh') " {{{
     "     \'x' : '#(uptime|egrep -o "([0-9]+\.[0-9]{2}(, )?){3}")',
     "     \'y' : [ '%R', '%a', '%Y'],
     "     \'z' : '#H'}
+endif " }}}
+if dein#tap('LanguageClient-neovim') " {{{
+    let g:LanguageClient_serverCommands = {
+    \ 'python': ['/Users/t0m00fc/Library/Python/3.7/bin/pyls'],
+    \ }
+
+    nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+    " Or map each action separately
+    nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+    nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+    nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 endif " }}}
 " }}}
 " Plugins }}}
