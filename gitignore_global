@@ -57,3 +57,8 @@ local.properties
 # Stack #
 #########
 .stack-work
+
+# Other #
+#########
+.env
+.env.local
