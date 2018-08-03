@@ -95,6 +95,16 @@ if dein#load_state(s:dein_path)
         call dein#add('tpope/vim-unimpaired')
         call dein#add('vim-airline/vim-airline')
         call dein#add('vim-airline/vim-airline-themes')
+        call dein#add('edkolev/promptline.vim')
+        call dein#add('edkolev/tmuxline.vim')
+        " call dein#add('davidhalter/jedi')
+        " call dein#add('zchee/deoplete-jedi')
+        call dein#add('tmux-plugins/vim-tmux-focus-events')
+        call dein#add('tmux-plugins/vim-tmux')
+        call dein#add('autozimu/LanguageClient-neovim', {
+                    \ 'rev': 'next',
+                    \ 'build': 'bash install.sh',
+                    \ })
     endif
 
     call dein#end()
@@ -356,6 +366,20 @@ if dein#tap('tmuxline.sh') " {{{
     "     \'x' : '#(uptime|egrep -o "([0-9]+\.[0-9]{2}(, )?){3}")',
     "     \'y' : [ '%R', '%a', '%Y'],
     "     \'z' : '#H'}
+endif " }}}
+if dein#tap('tmhedberg/SimpylFold') " {{{
+    let g:SimpylFold_fold_import = 0
+endif " }}}
+if dein#tap('LanguageClient-neovim') " {{{
+    let g:LanguageClient_serverCommands = {
+    \ 'python': ['/Users/t0m00fc/Library/Python/3.7/bin/pyls'],
+    \ }
+
+    nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+    " Or map each action separately
+    nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+    nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+    nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 endif " }}}
 " }}}
 " Plugins }}}
