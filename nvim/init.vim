@@ -74,6 +74,7 @@ if dein#load_state(s:dein_path)
     call dein#add('pearofducks/ansible-vim')
     call dein#add('chrisbra/NrrwRgn')
     call dein#add('tmhedberg/SimpylFold')
+    call dein#add('BurningEther/iron.nvim')
 
     " React
     call dein#add('mxw/vim-jsx')
@@ -91,20 +92,29 @@ if dein#load_state(s:dein_path)
         call dein#add('honza/vim-snippets')
         call dein#add('Shougo/deoplete.nvim')
         call dein#add('Shougo/neosnippet-snippets')
+        call dein#add('Shougo/neco-syntax')
+        call dein#add('zchee/deoplete-zsh')
         call dein#add('scrooloose/nerdtree')
         call dein#add('tpope/vim-unimpaired')
         call dein#add('vim-airline/vim-airline')
         call dein#add('vim-airline/vim-airline-themes')
         call dein#add('edkolev/promptline.vim')
         call dein#add('edkolev/tmuxline.vim')
-        " call dein#add('davidhalter/jedi')
-        " call dein#add('zchee/deoplete-jedi')
+        call dein#add('davidhalter/jedi')
+        call dein#add('zchee/deoplete-jedi')
         call dein#add('tmux-plugins/vim-tmux-focus-events')
         call dein#add('tmux-plugins/vim-tmux')
-        call dein#add('autozimu/LanguageClient-neovim', {
-                    \ 'rev': 'next',
-                    \ 'build': 'bash install.sh',
-                    \ })
+        call dein#add('wellle/tmux-complete.vim')
+        " call dein#add('autozimu/LanguageClient-neovim', {
+        "             \ 'rev': 'next',
+        "             \ 'build': 'bash install.sh',
+        "             \ })
+        call dein#add('sakhnik/nvim-gdb')
+    endif
+
+    if !has('nvim')
+        call dein#add('roxma/nvim-yarp')
+        call dein#add('roxma/vim-hug-neovim-rpc')
     endif
 
     call dein#end()
@@ -380,6 +390,9 @@ if dein#tap('LanguageClient-neovim') " {{{
     nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
     nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
     nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+endif " }}}
+if dein#tap('tmux-complete.vim') " {{{
+    let g:tmuxcomplete#trigger = ''
 endif " }}}
 " }}}
 " Plugins }}}
