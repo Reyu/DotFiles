@@ -426,11 +426,14 @@ set virtualedit=block
 " My tab preferences
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 
+" Keep some context at screen edges
+set scrolloff=5 sidescrolloff=5
+
 if exists('g:gui_oni')
     " Enable GUI mouse
     set mouse=a
 
-    " If using Oni's externalized statusline, hide vim's native statusline, 
+    " If using Oni's externalized statusline, hide vim's native statusline,
     set noshowmode
     set noruler
     set laststatus=0
@@ -483,6 +486,29 @@ autocmd init InsertLeave * set nopaste
 
 " Split windows below, or to the right of, the current window
 set splitbelow splitright
+
+" Tell Vim which characters to show for expanded TABs,
+" trailing whitespace, and end-of-lines. VERY useful!
+if &listchars ==# 'eol:$'
+  set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
+endif
+set list                " Show problematic characters.
+
+" Also highlight all tabs and trailing whitespace characters.
+highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
+match ExtraWhitespace /\s\+$\|\t/
+
+" Toggle Relative Numbering
+function! RelativeToggle()
+    if(&relativenumber == 1)
+        set nornu
+        set number
+    else
+        set rnu
+    endif
+endfunc
+nnoremap <leader>r :call RelativeToggle()<cr>
+
 " General }}}
 " {{{ Files, backups and undo
 if exists('g:gui_oni')
