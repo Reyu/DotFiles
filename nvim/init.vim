@@ -13,6 +13,9 @@ augroup end
 let g:python_host_prog=expand("~/Projects/.python_virtual_environments/neovim2/bin/python")
 let g:python3_host_prog=expand("~/Projects/.python_virtual_environments/neovim/bin/python")
 
+" Set <leader> to comma (,)
+let mapleader=","
+
 " Pre-setup }}}
 " {{{ Plugins
 " Load plugins first, so they are availible to later code
@@ -208,8 +211,8 @@ if dein#tap('vim-easymotion') " {{{
     nmap s <Plug>(easymotion-overwin-f)
     map  <Leader>/ <Plug>(easymotion-sn)
     omap <Leader>/ <Plug>(easymotion-tn)
-    " map  <Leader>n <Plug>(easymotion-next)
-    " map  <Leader>N <Plug>(easymotion-prev)
+    map  <Leader>n <Plug>(easymotion-next)
+    map  <Leader>N <Plug>(easymotion-prev)
     map <Leader>l <Plug>(easymotion-lineforward)
     map <Leader>j <Plug>(easymotion-j)
     map <Leader>k <Plug>(easymotion-k)
@@ -310,7 +313,7 @@ if dein#tap('intero-neovim') " {{{
     augroup END
 endif " }}}
 if dein#tap('nerdtree') " {{{
-    map <Leader>n :NERDTreeFocus<CR>
+    map <Leader>nt :NERDTreeFocus<CR>
 endif " }}}
 if dein#tap('deoplete.nvim') " {{{
     let g:deoplete#enable_at_startup = 1
