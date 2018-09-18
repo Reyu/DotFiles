@@ -493,7 +493,7 @@ set list                " Show problematic characters.
 
 " Also highlight all tabs and trailing whitespace characters.
 highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
-match ExtraWhitespace /\s\+$\|\t/
+" match ExtraWhitespace /\s\+$\|\t/
 
 " Toggle Relative Numbering
 function! RelativeToggle()
