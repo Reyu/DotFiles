@@ -75,6 +75,7 @@ if dein#load_state(s:dein_path)
     call dein#add('chrisbra/NrrwRgn')
     " call dein#add('tmhedberg/SimpylFold')
     " call dein#add('BurningEther/iron.nvim')
+    call dein#add('w0rp/ale')
 
     " React
     " call dein#add('mxw/vim-jsx')
@@ -82,6 +83,9 @@ if dein#load_state(s:dein_path)
     " Latex
     " call dein#add('xuhdev/vim-latex-live-preview')
     " call dein#add('lervag/vimtex')
+    
+    " Mono/C#
+    call dein#add('OmniSharp/omnisharp-vim')
 
     if !exists('g:gui_oni')
         " Non-Oni/Gui Plugins
@@ -314,6 +318,11 @@ if dein#tap('nerdtree') " {{{
 endif " }}}
 if dein#tap('deoplete.nvim') " {{{
     let g:deoplete#enable_at_startup = 1
+    if dein#tap('omnisharp-vim')
+        call deoplete#custom#option('sources', {
+                    \ 'cs': ['omnisharp'],
+                    \ })
+    endif
 endif " }}}
 if dein#tap('denite.nvim') " {{{
     let s:menus = {}
@@ -393,6 +402,23 @@ if dein#tap('LanguageClient-neovim') " {{{
 endif " }}}
 if dein#tap('tmux-complete.vim') " {{{
     let g:tmuxcomplete#trigger = ''
+endif " }}}
+if dein#tap('ale') " {{{
+    if dein#tap('vim-airline')
+        let g:airline#extensions#ale#enabled = 1
+    endif
+    nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+    nmap <silent> <C-j> <Plug>(ale_next_wrap)
+    let g:ale_completion_enabled = 1
+    let g:ale_completion_experimental_lsp_support = 1
+    let g:ale_linters = { 'python': ['pyls'] }
+    let g:ale_fixers = {'python': [
+    \   'add_blank_lines_for_python_control_statements',
+    \   'isort',
+    \   'remove_trailing_lines',
+    \   'trim_whitespace',
+    \   'yapf']
+    \}
 endif " }}}
 " }}}
 " Plugins }}}
