@@ -33,73 +33,52 @@ else
     set rtp+=~/.config/nvim/dein.vim
 endif
 if dein#load_state(s:dein_path)
-    " Global Plugins
     call dein#begin(s:dein_path)
+    " Global Plugins
     call dein#add('benekastah/neomake')
-    " call dein#add('dag/vim2hs', { 'on_ft': 'haskell' })
-    " call dein#add('eagletmt/neco-ghc', { 'on_ft': 'haskell' })
-    call dein#add('easymotion/vim-easymotion')
-    call dein#add('editorconfig/editorconfig-vim')
-    " call dein#add('ervandew/supertab.git')
-    call dein#add('godlygeek/tabular')
-    " call dein#add('jceb/vim-orgmode')
-    call dein#add('MarcWeber/vim-addon-mw-utils.git')
-    call dein#add('majutsushi/tagbar')
-    call dein#add('radenling/vim-dispatch-neovim')
-    " call dein#add('saltstack/salt-vim')
     call dein#add('Shougo/dein.vim')
     call dein#add('Shougo/denite.nvim')
-    " call dein#add('sirver/UltiSnips')
     call dein#add('tommcdo/vim-exchange')
-    call dein#add('tpope/vim-dispatch')
-    " call dein#add('tpope/vim-capslock')
     call dein#add('tpope/vim-commentary')
     call dein#add('tpope/vim-eunuch')
     call dein#add('tpope/vim-fugitive')
-    " call dein#add('tpope/vim-markdown', { 'on_ft': 'markdown' })
     call dein#add('tpope/vim-obsession')
     call dein#add('tpope/vim-projectionist')
     call dein#add('tpope/vim-repeat')
-    " call dein#add('tpope/vim-rhubarb')
-    " call dein#add('tpope/vim-speeddating')
     call dein#add('tpope/vim-surround')
-    " call dein#add('vim-utils/vim-man')
-    " call dein#add('vim-pandoc/vim-pandoc')
-    " call dein#add('vim-pandoc/vim-pandoc-syntax')
-    " call dein#add('vim-scripts/abnf')
+    call dein#add('tpope/vim-unimpaired')
+    call dein#add('w0rp/ale')
+    call dein#add('easymotion/vim-easymotion')
+    call dein#add('editorconfig/editorconfig-vim')
+    call dein#add('godlygeek/tabular')
+    call dein#add('saltstack/salt-vim')
     call dein#add('vim-scripts/python.vim', { 'on_ft': 'python' })
     call dein#add('vim-scripts/python_fold', { 'on_ft': 'python' })
-    " call dein#add('5long/pytest-vim-compiler')
-    call dein#add('tpope/vim-unimpaired')
-    " call dein#add('pearofducks/ansible-vim')
     call dein#add('chrisbra/NrrwRgn')
-    " call dein#add('tmhedberg/SimpylFold')
-    " call dein#add('BurningEther/iron.nvim')
-    call dein#add('w0rp/ale')
+    call dein#add('Shougo/neosnippet')
+    call dein#add('Shougo/neosnippet-snippets')
 
-    " React
-    " call dein#add('mxw/vim-jsx')
+    " JS/Web
+    call dein#add('mxw/vim-jsx')
+    call dein#add('leafgarland/typescript-vim')
 
-    " Latex
-    " call dein#add('xuhdev/vim-latex-live-preview')
-    " call dein#add('lervag/vimtex')
-    
     " Mono/C#
     call dein#add('OmniSharp/omnisharp-vim')
 
     if !exists('g:gui_oni')
         " Non-Oni/Gui Plugins
         call dein#add('altercation/vim-colors-solarized')
-        " call dein#add('mhinz/vim-startify')
-        call dein#add('parsonsmatt/intero-neovim', { 'on_ft': 'haskell' })
-        " call dein#add('garbas/vim-snipmate.git')
-        " call dein#add('honza/vim-snippets')
+        call dein#add('tpope/vim-dispatch')
         call dein#add('Shougo/deoplete.nvim')
-        " call dein#add('Shougo/neosnippet-snippets')
+        call dein#add('majutsushi/tagbar')
+        call dein#add('radenling/vim-dispatch-neovim')
+    "     call dein#add('parsonsmatt/intero-neovim', { 'on_ft': 'haskell' })
+        call dein#add('garbas/vim-snipmate.git')
+        call dein#add('honza/vim-snippets')
         call dein#add('Shougo/neco-syntax')
         call dein#add('zchee/deoplete-zsh')
         call dein#add('scrooloose/nerdtree')
-        " call dein#add('tpope/vim-unimpaired')
+        call dein#add('tpope/vim-unimpaired')
         call dein#add('vim-airline/vim-airline')
         call dein#add('vim-airline/vim-airline-themes')
         call dein#add('edkolev/promptline.vim')
@@ -108,14 +87,12 @@ if dein#load_state(s:dein_path)
         call dein#add('zchee/deoplete-jedi')
         call dein#add('tmux-plugins/vim-tmux-focus-events')
         call dein#add('tmux-plugins/vim-tmux')
-        call dein#add('wellle/tmux-complete.vim')
-        " call dein#add('autozimu/LanguageClient-neovim', {
-        "             \ 'rev': 'next',
-        "             \ 'build': 'bash install.sh',
-        "             \ })
         call dein#add('sakhnik/nvim-gdb')
     endif
 
+    " Dependencies
+    call dein#add('MarcWeber/vim-addon-mw-utils.git')
+    call dein#add('tomtom/tlib_vim')
     if !has('nvim')
         call dein#add('roxma/nvim-yarp')
         call dein#add('roxma/vim-hug-neovim-rpc')
@@ -412,14 +389,28 @@ if dein#tap('ale') " {{{
     let g:ale_completion_enabled = 1
     let g:ale_completion_experimental_lsp_support = 1
     let g:ale_linters = { 'python': ['pyls'] }
-    let g:ale_fixers = {'python': [
+    let g:ale_fixers = {
+    \'python': [
     \   'add_blank_lines_for_python_control_statements',
     \   'isort',
     \   'remove_trailing_lines',
     \   'trim_whitespace',
-    \   'yapf']
+    \   'yapf'],
+    \'javascript': [
+    \   'eslint',
+    \   'importjs',
+    \   'trim_whitespace']
     \}
 endif " }}}
+if dein#tap('neosnippet') " {{{
+    let g:neosnippet#enable_snipmate_compatibility = 1
+    let g:neosnippet#snippets_directory = s:dein_path.'/repos/github.com/honza/vim-snippets/snippets'
+    " Plugin key-mappings.
+    " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+    imap <C-k> <Plug>(neosnippet_expand_or_jump)
+    smap <C-k> <Plug>(neosnippet_expand_or_jump)
+    xmap <C-k> <Plug>(neosnippet_expand_target)
+endif "}}}
 " }}}
 " Plugins }}}
 " {{{ General
