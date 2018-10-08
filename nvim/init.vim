@@ -36,8 +36,14 @@ if dein#load_state(s:dein_path)
     call dein#begin(s:dein_path)
     " Global Plugins
     call dein#add('benekastah/neomake')
+    call dein#add('chrisbra/NrrwRgn')
+    call dein#add('easymotion/vim-easymotion')
+    call dein#add('editorconfig/editorconfig-vim')
+    call dein#add('godlygeek/tabular')
     call dein#add('Shougo/dein.vim')
     call dein#add('Shougo/denite.nvim')
+    call dein#add('Shougo/neosnippet')
+    call dein#add('Shougo/neosnippet-snippets')
     call dein#add('tommcdo/vim-exchange')
     call dein#add('tpope/vim-commentary')
     call dein#add('tpope/vim-eunuch')
@@ -48,15 +54,16 @@ if dein#load_state(s:dein_path)
     call dein#add('tpope/vim-surround')
     call dein#add('tpope/vim-unimpaired')
     call dein#add('w0rp/ale')
-    call dein#add('easymotion/vim-easymotion')
-    call dein#add('editorconfig/editorconfig-vim')
-    call dein#add('godlygeek/tabular')
-    call dein#add('saltstack/salt-vim')
-    call dein#add('vim-scripts/python.vim', { 'on_ft': 'python' })
-    call dein#add('vim-scripts/python_fold', { 'on_ft': 'python' })
-    call dein#add('chrisbra/NrrwRgn')
-    call dein#add('Shougo/neosnippet')
-    call dein#add('Shougo/neosnippet-snippets')
+
+    " Haskell
+    call dein#add('alx741/vim-stylishask')
+    call dein#add('alx741/hindent')
+    call dein#add('DanielG/ghc-mod')
+    call dein#add('parsonsmatt/intero-neovim')
+
+    " Python
+    call dein#add('vim-scripts/python_fold')
+    call dein#add('vim-scripts/python.vim')
 
     " JS/Web
     call dein#add('mxw/vim-jsx')
@@ -65,29 +72,33 @@ if dein#load_state(s:dein_path)
     " Mono/C#
     call dein#add('OmniSharp/omnisharp-vim')
 
+    " Other Language
+    call dein#add('saltstack/salt-vim')
+
     if !exists('g:gui_oni')
         " Non-Oni/Gui Plugins
+        call dein#add('airblade/vim-gitgutter')
         call dein#add('altercation/vim-colors-solarized')
-        call dein#add('tpope/vim-dispatch')
-        call dein#add('Shougo/deoplete.nvim')
-        call dein#add('majutsushi/tagbar')
-        call dein#add('radenling/vim-dispatch-neovim')
-    "     call dein#add('parsonsmatt/intero-neovim', { 'on_ft': 'haskell' })
+        call dein#add('christoomey/vim-tmux-navigator')
+        call dein#add('davidhalter/jedi')
+        call dein#add('edkolev/promptline.vim')
+        call dein#add('edkolev/tmuxline.vim')
         call dein#add('garbas/vim-snipmate.git')
         call dein#add('honza/vim-snippets')
-        call dein#add('Shougo/neco-syntax')
-        call dein#add('zchee/deoplete-zsh')
+        call dein#add('majutsushi/tagbar')
+        call dein#add('radenling/vim-dispatch-neovim')
+        call dein#add('sakhnik/nvim-gdb')
         call dein#add('scrooloose/nerdtree')
+        call dein#add('Shougo/deoplete.nvim')
+        call dein#add('Shougo/neco-syntax')
+        call dein#add('tmux-plugins/vim-tmux')
+        call dein#add('tmux-plugins/vim-tmux-focus-events')
+        call dein#add('tpope/vim-dispatch')
         call dein#add('tpope/vim-unimpaired')
         call dein#add('vim-airline/vim-airline')
         call dein#add('vim-airline/vim-airline-themes')
-        call dein#add('edkolev/promptline.vim')
-        call dein#add('edkolev/tmuxline.vim')
-        call dein#add('davidhalter/jedi')
         call dein#add('zchee/deoplete-jedi')
-        call dein#add('tmux-plugins/vim-tmux-focus-events')
-        call dein#add('tmux-plugins/vim-tmux')
-        call dein#add('sakhnik/nvim-gdb')
+        call dein#add('zchee/deoplete-zsh')
     endif
 
     " Dependencies
@@ -128,6 +139,9 @@ if dein#tap('neomake') " {{{
                 \ 'exe': 'pipenv',
                 \ 'args': 'run py.test --color=no -p no:sugar --tb=short -q'
                 \ }
+
+    " Disable Haskell makers, we have a few other tools for this one
+    let g:neomake_haskell_enabled_makers = []
 
 endif " }}}
 if dein#tap('vim2hs') " {{{
@@ -215,9 +229,11 @@ if dein#tap('supertab') " {{{
 endif " }}}
 if dein#tap('tabular') " {{{
     let g:haskell_tabular = 1
-    vmap <Leader>a= :Tabularize /=<CR>
-    vmap <Leader>a; :Tabularize /::<CR>
-    vmap <Leader>a- :Tabularize /-><CR>
+    nnoremap <Leader>a= :Tabularize /=<CR>
+    nnoremap <Leader>a; :Tabularize /::<CR>
+    nnoremap <Leader>a- :Tabularize /-><CR>
+    nnoremap <leader>a, :Tabularize /,<CR>
+    nnoremap <leader>a# :Tabularize /#-}<CR>
 endif " }}}
 if dein#tap('tagbar') " {{{
     nnoremap <silent> <F8> :TagbarToggle<CR>
@@ -281,9 +297,13 @@ if dein#tap('intero-neovim') " {{{
         au FileType haskell map <silent> <leader>t <Plug>InteroGenericType
         au FileType haskell map <silent> <leader>T <Plug>InteroType
         au FileType haskell nnoremap <silent> <leader>it :InteroTypeInsert<CR>
+        au FileType haskell nnoremap <silent> <leader>i :InteroInfo<CR>
 
         " Navigation
         au FileType haskell nnoremap <silent> <leader>jd :InteroGoToDef<CR>
+
+        " Evaluate an expression in REPL
+        au FileType haskell nnoremap <silent> <leader>ie :InteroEval<CR>
 
         " Managing targets
         " Prompts you to enter targets (no silent):
@@ -388,7 +408,10 @@ if dein#tap('ale') " {{{
     nmap <silent> <C-j> <Plug>(ale_next_wrap)
     let g:ale_completion_enabled = 1
     let g:ale_completion_experimental_lsp_support = 1
-    let g:ale_linters = { 'python': ['pyls'] }
+    let g:ale_linters = {
+    \'python': ['pyls'],
+    \'haskell': ['ghc_mod', 'stack_ghc_mod', 'hdevtools', 'hie', 'hlint', 'stack_build', 'stack_ghc']
+    \}
     let g:ale_fixers = {
     \'python': [
     \   'add_blank_lines_for_python_control_statements',
@@ -399,6 +422,11 @@ if dein#tap('ale') " {{{
     \'javascript': [
     \   'eslint',
     \   'importjs',
+    \   'trim_whitespace'],
+    \'haskell': [
+    \   'hlint',
+    \   'remove_trailing_lines',
+    \   'stylish-haskell',
     \   'trim_whitespace']
     \}
 endif " }}}
@@ -411,6 +439,24 @@ if dein#tap('neosnippet') " {{{
     smap <C-k> <Plug>(neosnippet_expand_or_jump)
     xmap <C-k> <Plug>(neosnippet_expand_target)
 endif "}}}
+if dein#tap('vim-tmux-navigator') " {{{
+    " Disable tmux navigator when zooming the Vim pane
+    let g:tmux_navigator_disable_when_zoomed = 1
+    let g:tmux_navigator_no_mappings = 1
+    nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
+    nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
+    nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
+    nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
+    nnoremap <silent> <A-p> :TmuxNavigatePrevious<cr>
+endif " }}}
+if dein#tap('vim-hindent') " {{{
+    let g:hindent_on_save = 0
+    au FileType haskell nnoremap <silent> <leader>ph :Hindent<CR>
+endif " }}}
+if dein#tap('vim-stylishask') " {{{
+    let g:stylishask_on_save = 0
+    au FileType haskell nnoremap <silent> <leader>ps :Stylishask<CR>
+endif " }}}
 " }}}
 " Plugins }}}
 " {{{ General
@@ -495,6 +541,19 @@ autocmd init BufWritePost ~/.config/nvim/init.vim source <afile>
 nnoremap yo :set paste<CR>o
 nnoremap yO :set paste<CR>O
 
+" Get out of terminal panes more easily
+if dein#tap('vim-tmux-navigator')
+    tnoremap <A-h> <C-\><C-n>:TmuxNavigateLeft<CR>
+    tnoremap <A-j> <C-\><C-n>:TmuxNavigateDown<CR>
+    tnoremap <A-k> <C-\><C-n>:TmuxNavigateUp<CR>
+    tnoremap <A-l> <C-\><C-n>:TmuxNavigateRight<CR>
+else
+    tnoremap <A-h> <C-\><C-n><C-w>h
+    tnoremap <A-j> <C-\><C-n><C-w>j
+    tnoremap <A-k> <C-\><C-n><C-w>k
+    tnoremap <A-l> <C-\><C-n><C-w>l
+endif
+
 " Exit paste mode when leaving insert
 autocmd init InsertLeave * set nopaste
 
@@ -537,3 +596,5 @@ else
 endif
 " Files, backups and undo }}}
 " vim: fdm=marker
+
+
