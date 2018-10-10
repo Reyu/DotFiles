@@ -1,8 +1,9 @@
 #!/bin/zsh
-if [[ -f "Session.vim" ]]
+session=${1:="Session"}.vim
+if [[ -f $session ]]
 then
-    nvim -S Session.vim
+    nvim -S $session
 else
     print "No session found! Starting a new one."
-    nvim +Obsession
+    nvim "+Obsession $session"
 fi
