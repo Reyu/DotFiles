@@ -37,6 +37,7 @@ import XMonad.Layout.Reflect
 import XMonad.Layout.IM
 import XMonad.Layout.Tabbed
 import XMonad.Layout.PerWorkspace
+import XMonad.Layout.Gaps
 import XMonad.Layout.Grid
 import XMonad.Layout.TwoPane
 import XMonad.Layout.MultiToggle
@@ -406,7 +407,8 @@ myBar host isSecondary =
   "dzen2" ++
   concatMap
     (" " ++)
-    [ "-x '0'"
+    [ "-dock"
+    , "-x '0'"
     , "-y '0'"
     , "-h '16'"
     , if isSecondary
