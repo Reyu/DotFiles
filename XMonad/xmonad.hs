@@ -190,7 +190,9 @@ myTopics host =
   , ti "work" "Projects"
   , TI "games" "." (spawn "steam")
   , TI "stream" "." (spawn "obs")
-  , TI "virt" "." (spawn "virt-manager")]
+  , TI "virt" "." (spawn "virt-manager")
+  , TI "video" "." (spawn "firefox")
+  ]
   where
     ti t d = TI t d (spawnShell host (Just t))
 
