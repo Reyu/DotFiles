@@ -73,7 +73,7 @@ getHost = do
   hostName <- nodeName `fmap` getSystemID
   return $
     case hostName of
-      "renard" -> Desktop 2 Pulse
+      "renard" -> Desktop 3 Pulse
       "vulpie" -> Desktop 3 Pulse
       "crevan" -> Laptop True True Pulse
       _ -> Desktop (-1) Pulse
