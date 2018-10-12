@@ -296,10 +296,8 @@ myKeymap host conf =
      , ("r", runOrRaisePrompt myXPConfig)
      , ("e", spawn "exe=`echo | yeganesh -x` && eval \"exec $exe\"")
      , ("s", sshPrompt myXPConfig)
-     , ("m", manPrompt myXPConfig)
-     , ("n", prompt
-           ("~/.local/todo.txt/todo.sh" ++ " -d ~/.config/todo.cfg" ++ " add")
-           myXPConfig)
+     , ("m", prompt "mpc " myXPConfig)
+     , ("S-m", manPrompt myXPConfig)
      , ("t", prompt (myTerminal ++ " -e tmux new -s ") myXPConfig)] ]
   ++ -- Workspace Groups
   [ ("M-y " ++ k, f)
