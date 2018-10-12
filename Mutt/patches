@@ -42,7 +42,7 @@ set nntp_group_index_format = "%4C %M%N %5s  %-45.45f %d"
 # username and an alternative port for each newsserver, ie:
 #  | [nntp[s]://][username[:password]@]newsserver[:port]
 #  | set news_server =news.foo.bar.tdl
- set nntp_host = news.t-online.com
+set nntp_host = news.giganews.com
 # set news_server = freenews.netfront.net
 
 # my newsrc
@@ -51,7 +51,7 @@ set nntp_newsrc = "~/.mutt/nntp.d/.newsrc-%s"
 # This variable pointing to directory where Mutt will save cached news
 # articles headers in. If unset, headers will not be saved at all and will be
 # reloaded each time when you enter to newsgroup.
-set nntp_cache_dir = ~/.mutt/nntp.d
+set nntp_cache_dir = ~/.cache/nntp.d
 
 # This variable defines number of articles which will be in index when
 # newsgroup entered. If active newsgroup have more articles than this number,

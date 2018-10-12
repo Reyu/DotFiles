@@ -533,8 +533,8 @@ set wrapmargin=10
 set write_inc=10
 
 # Enable the sidebar
-set sidebar_visible=no
-set sidebar_width=30
+#set sidebar_visible=no
+#set sidebar_width=30
 
 # This specifies the delimiter between the sidebar (if visible) and other
 # screens. Defaults is ``|''

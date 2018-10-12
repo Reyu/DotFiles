@@ -1,3 +1,4 @@
+#  -*- mode: muttrc; -*-
 #  This file usually is named "$HOME/.muttrc" or "$HOME/.mutt/muttrc"
 #  Purpose: setup file for 'mutt'.
 #  Author: Christian Schneider <strcat@gmx.net>
@@ -24,7 +25,8 @@ source ~/.mutt/unignore            # visible headers
 source ~/.mutt/various             # some baubles
 source ~/.mutt/misc-hooks          # Change settings based upon message recipients
 source ~/.mutt/mlists              # Mailinglists
-source `if [ -f ~/.mutt/smtp ];then echo ~/.mutt/smtp;else echo /dev/null;fi` # SMTP Settings (not in repo, has passwords)
+source `if [ -f ~/.mutt/smtp ];then echo ~/.mutt/smtp;else echo /dev/null;fi` # Optional SMTP settings
+source `if [ -f ~/.mutt/imap ];then echo ~/.mutt/imap;else echo /dev/null;fi` # Optional IMAP settings
 source `if [ -f ~/.mutt/host ];then echo ~/.mutt/host;else echo /dev/null;fi` # Any host specific settings
 
 # vim: ft=muttrc
