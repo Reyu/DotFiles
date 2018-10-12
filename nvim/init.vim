@@ -16,6 +16,9 @@ let g:python3_host_prog=expand("~/Projects/.python_virtual_environments/neovim/b
 " Set <leader> to comma (,)
 let mapleader=","
 
+" Get MyConfig
+let s:myconfig_prompt = system("cat ${HOME}/.config/MyConfig | grep USE_PROMPT | cut -d'=' -f2 | tr -d '\n'")
+
 " Pre-setup }}}
 " {{{ Plugins
 " Load plugins first, so they are availible to later code
@@ -83,8 +86,6 @@ if dein#load_state(s:dein_path)
         call dein#add('altercation/vim-colors-solarized')
         call dein#add('christoomey/vim-tmux-navigator')
         call dein#add('davidhalter/jedi')
-        call dein#add('edkolev/promptline.vim')
-        call dein#add('edkolev/tmuxline.vim')
         call dein#add('garbas/vim-snipmate.git')
         call dein#add('honza/vim-snippets')
         call dein#add('majutsushi/tagbar')
@@ -97,10 +98,14 @@ if dein#load_state(s:dein_path)
         call dein#add('tmux-plugins/vim-tmux-focus-events')
         call dein#add('tpope/vim-dispatch')
         call dein#add('tpope/vim-unimpaired')
-        call dein#add('vim-airline/vim-airline')
-        call dein#add('vim-airline/vim-airline-themes')
         call dein#add('zchee/deoplete-jedi')
         call dein#add('zchee/deoplete-zsh')
+        if s:myconfig_prompt == "powerline"
+            call dein#add('edkolev/promptline.vim')
+            call dein#add('edkolev/tmuxline.vim')
+            call dein#add('vim-airline/vim-airline')
+            call dein#add('vim-airline/vim-airline-themes')
+        endif
     endif
 
     " Dependencies
@@ -599,5 +604,3 @@ else
 endif
 " Files, backups and undo }}}
 " vim: fdm=marker
-
-
