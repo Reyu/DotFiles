@@ -31,5 +31,11 @@
 (use-package python-docstring
   :ensure t)
 
+(use-package jedi
+  :ensure t
+  :init
+  (add-hook 'python-mode-hook 'jedi:setup)
+  (setq jedi:setup-keys t))
+
 (provide 'lang-python)
 ;;; base-python.el ends here
