@@ -40,6 +40,7 @@ if dein#load_state(s:dein_path)
     call dein#add('easymotion/vim-easymotion')
     call dein#add('editorconfig/editorconfig-vim')
     call dein#add('godlygeek/tabular')
+    call dein#add('Konfekt/FastFold')
     call dein#add('Shougo/dein.vim')
     call dein#add('Shougo/denite.nvim')
     call dein#add('Shougo/neosnippet')
@@ -62,8 +63,9 @@ if dein#load_state(s:dein_path)
     call dein#add('parsonsmatt/intero-neovim')
 
     " Python
-    call dein#add('vim-scripts/python_fold')
     call dein#add('vim-scripts/python.vim')
+    call dein#add('tmhedberg/SimpylFold')
+    " call dein#add('vim-scripts/python_fold')
 
     " JS/Web
     call dein#add('mxw/vim-jsx')
@@ -385,6 +387,7 @@ if dein#tap('tmuxline.sh') " {{{
 endif " }}}
 if dein#tap('tmhedberg/SimpylFold') " {{{
     let g:SimpylFold_fold_import = 0
+    leh g:SimpylFold_docstring_preview = 1
 endif " }}}
 if dein#tap('LanguageClient-neovim') " {{{
     let g:LanguageClient_serverCommands = {
