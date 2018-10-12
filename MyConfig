@@ -1,2 +1,2 @@
-KEY_MODE="vim"
-USE_PROMPT="powerline"
+KEY_MODE=vim
+USE_PROMPT=text
