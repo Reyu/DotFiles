@@ -62,3 +62,7 @@ local.properties
 #########
 .env
 .env.local
+
+# My Stuff #
+############
+.new-shell
