@@ -276,14 +276,18 @@ myKeymap host conf =
   case getAudioSystem host of
     Alsa ->
       [ ("<XF86AudioLowerVolume>", spawn "amixer sset Master 1dB-")
+      , ("M-v-j", spawn "amixer sset Master 1dB-")
       , ("<XF86AudioMute>", spawn "amixer sset Master toggle")
-      , ("<XF86AudioRaiseVolume>", spawn "amixer sset Master 1dB+")]
+      , ("M-v-m", spawn "amixer sset Master toggle")
+      , ("<XF86AudioRaiseVolume>", spawn "amixer sset Master 1dB+")
+      , ("M-v-k", spawn "amixer sset Master 1dB+")]
     Pulse ->
-      [ ( "<XF86AudioLowerVolume>"
-        , spawn "~/bin/ponymix decrease 5")
+      [ ("<XF86AudioLowerVolume>" , spawn "~/bin/ponymix decrease 5")
+      , ("M-v j" , spawn "~/bin/ponymix decrease 5")
       , ("<XF86AudioMute>", spawn "~/bin/ponymix toggle")
-      , ( "<XF86AudioRaiseVolume>"
-        , spawn "~/bin/ponymix increase 5")]
+      , ("M-v m", spawn "~/bin/ponymix toggle")
+      , ("<XF86AudioRaiseVolume>" , spawn "~/bin/ponymix increase 5")
+      , ("M-v k" , spawn "~/bin/ponymix increase 5")]
   -- I have the rest in list-comprehension groups, because they make
   -- it easier, for me personally, to read.
   ++ -- Various Prompts
