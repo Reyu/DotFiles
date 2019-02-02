@@ -122,16 +122,16 @@ myTerminal = "st"
 
 ------------------------------------------------------------------------
 -- Helper functions
-spawnShell
-  :: Host -> Maybe String -> X ()
+spawnShell :: Host -> Maybe String -> X ()
 spawnShell host name' =
-  currentTopicDir (myTopicConfig host) >>= spawnShellIn name'
+    currentTopicDir (myTopicConfig host) >>= spawnShellIn name'
 
 spawnShellIn :: Maybe String -> Dir -> X ()
-spawnShellIn Nothing dir =
-  spawn $ myTerminal ++ " -e tmux new -Ac '" ++ dir ++ "'"
+spawnShellIn Nothing dir = do
+    tag <- gets (W.currentTag . windowset)
+    spawn $ myTerminal ++ " -e tmux new -As '" ++ tag ++ "' -c '" ++ dir ++ "'"
 spawnShellIn (Just name') dir =
-  spawn $ myTerminal ++ " -e tmux new -As '" ++ name' ++ "' -c '" ++ dir ++ "'"
+    spawn $ myTerminal ++ " -e tmux new -As '" ++ name' ++ "' -c '" ++ dir ++ "'"
 
 goto :: Host -> Topic -> X ()
 goto host = switchTopic (myTopicConfig host)
@@ -181,20 +181,16 @@ myTopics
   :: Host -> [TopicItem]
 myTopics host =
   [ TI "web" "." (spawn "firefox")
-  , TI
-      "chat"
-      "."
-      -- (spawnShell host (Just "irc") >>
-      (spawn "telegram-desktop" >>
-       spawn "discord")
-  , ti "work" "Projects"
+  , TI "chat" "."
+       (spawn "telegram-desktop" >>
+        spawnShell host Nothing >>
+        spawn "discord")
+  , TI "work" "Projects" (spawnShell host Nothing)
   , TI "games" "." (spawn "steam")
   , TI "stream" "." (spawn "obs")
   , TI "virt" "." (spawn "virt-manager")
   , TI "video" "." (spawn "firefox")
   ]
-  where
-    ti t d = TI t d (spawnShell host (Just t))
 
 myTopicNames :: Host -> [Topic]
 myTopicNames = map topicName . myTopics
@@ -253,9 +249,7 @@ myKeymap host conf =
     ("M-<Backspace>", focusUrgent)
   , ("M-S-<Backspace>", clearUrgents)
   , ("M-<Return>", windows W.swapMaster)
-  , ("M-S-<Return>", do
-        workspace <- gets (W.currentTag . windowset)
-        spawnHere (myTerminal ++ " -e ${HOME}/.xmonad/bin/tmux-attach-new.zsh " ++ workspace))
+  , ("M-S-<Return>", spawnShell host Nothing)
   , ("M-<Space>", sendMessage NextLayout)
   , ("M-h", sendMessage Shrink)
   , ("M-l", sendMessage Expand)
