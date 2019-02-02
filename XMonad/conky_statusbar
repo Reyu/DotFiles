@@ -10,5 +10,5 @@ conky.text = [[
 ${memperc}% : ${swapperc}% \
 | ${running_processes} : ${running_threads} \
 | ${entropy_perc}% (${entropy_avail}/${entropy_poolsize}) \
-| /:${fs_free /} : /home:${fs_free /home} \
+${exec zpool list -Ho name,allocated,size,capacity | awk '{ printf "| " $1 " " $2 "/" $3 " " $4 " " }'}
 ]]
