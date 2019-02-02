@@ -132,14 +132,23 @@ spawnShellIn Nothing dir = do
 spawnShellIn (Just name') dir =
     spawn $ myTerminal ++ " -e tmux new -As '" ++ name' ++ "' -c '" ++ dir ++ "'"
 
+removeEmptyNonTopicWorkspaceAfter :: Host -> X () -> X ()
+removeEmptyNonTopicWorkspaceAfter host =
+    removeEmptyWorkspaceAfterExcept (myTopicNames host)
+
 goto :: Host -> Topic -> X ()
-goto host = switchTopic (myTopicConfig host)
+goto host topic =
+    removeEmptyNonTopicWorkspaceAfter host $
+    switchTopic (myTopicConfig host) topic
 
 promptedGoto :: Host -> X ()
 promptedGoto = workspacePrompt myXPConfig . goto
 
-promptedShift :: X ()
-promptedShift = workspacePrompt myXPConfig $ windows . W.shift
+promptedShift :: Host -> X ()
+promptedShift host = do
+    workspacePrompt myXPConfig $ windows . W.shift
+    curTag <- gets (W.currentTag . windowset)
+    when (curTag `notElem` myTopicNames host) removeEmptyWorkspace
 
 -- Solarized colors
 solarized
@@ -198,7 +207,9 @@ myTopicConfig :: Host -> TopicConfig
 myTopicConfig host =
   def
   { topicDirs = M.fromList $ map (\(TI n d _) -> (n, d)) myTopics'
-  , defaultTopicAction = const (return ())
+  , defaultTopicAction = \x ->
+      spawnShell host (Just x) >>
+      spawn ("qutebrowser --restore '" ++ x ++ "'")
   , defaultTopic = "web"
   , maxTopicHistory = 10
   , topicActions = M.fromList $ map (\(TI n _ a) -> (n, a)) myTopics'
@@ -225,7 +236,7 @@ scratchpads host =
   where
     ns n p = NS n (termTmuxStart p) (className =? p)
     termTmuxStart n =
-      myTerminal ++ " -c " ++ n ++ " -e tmux new -s " ++ n ++ " " ++ n
+      myTerminal ++ " -c " ++ n ++ " -e tmux new -As " ++ n ++ " " ++ n
     mySPFloat = customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2)
     mySPLargeFloat =
       customFloating $ W.RationalRect (1 / 8) (1 / 8) (3 / 4) (3 / 4)
@@ -270,8 +281,8 @@ myKeymap host conf =
   ,
     -- Window Movement
     ("M-g", promptedGoto host)
-  , ("M-S-g", promptedShift)
-  , ("M-z", toggleWS)]
+  , ("M-S-g", promptedShift host)
+  , ("M-z", removeEmptyNonTopicWorkspaceAfter host toggleWS)]
   ++ -- Volume
   case getAudioSystem host of
     Alsa ->
