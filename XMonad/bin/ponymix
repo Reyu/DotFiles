@@ -1,0 +1,2 @@
+#!/bin/bash
+${HOME}/.local/bin/ponymix -t sink -c 'Oxygen HD Audio' $@

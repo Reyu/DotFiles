@@ -272,24 +272,23 @@ myKeymap host conf =
     ("M-g", promptedGoto)
   , ("M-S-g", promptedShift)
   , ("M-z", removeEmptyNonTopicWorkspaceAfter toggleWS)]
-  ++ -- Volume
-  case getAudioSystem host of
-    Alsa ->
-      [ ("<XF86AudioLowerVolume>", spawn "amixer sset Master 1dB-")
-      , ("M-v-j", spawn "amixer sset Master 1dB-")
-      , ("<XF86AudioMute>", spawn "amixer sset Master toggle")
-      , ("M-v-m", spawn "amixer sset Master toggle")
-      , ("<XF86AudioRaiseVolume>", spawn "amixer sset Master 1dB+")
-      , ("M-v-k", spawn "amixer sset Master 1dB+")]
-    Pulse ->
-      [ ("<XF86AudioLowerVolume>" , spawn "~/bin/ponymix decrease 5")
-      , ("M-v j" , spawn "~/bin/ponymix decrease 5")
-      , ("<XF86AudioMute>", spawn "~/bin/ponymix toggle")
-      , ("M-v m", spawn "~/bin/ponymix toggle")
-      , ("<XF86AudioRaiseVolume>" , spawn "~/bin/ponymix increase 5")
-      , ("M-v k" , spawn "~/bin/ponymix increase 5")]
   -- I have the rest in list-comprehension groups, because they make
   -- it easier, for me personally, to read.
+  ++ -- Volume
+  let keys = ["M-v k", "M-v j", "M-v m"
+             , "<XF86AudioRaiseVolume>", "<XF86AudioLowerVolume>", "<XF86AudioMute>"]
+      actions = concat . repeat $ case getAudioSystem host of
+        Alsa ->
+          [ spawn "amixer sset Master 1dB+"
+          , spawn "amixer sset Master 1dB-"
+          , spawn "amixer sset Master toggle"
+          ]
+        Pulse ->
+          [ spawn "~/.xmonad/bin/ponymix increase 5"
+          , spawn "~/.xmonad/bin/ponymix decrease 5"
+          , spawn "~/.xmonad/bin/ponymix toggle"
+          ]
+  in zip keys actions
   ++ -- Various Prompts
   [ ("M-p " ++ k, f)
   | (k,f) <-
