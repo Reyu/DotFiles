@@ -1,6 +1,6 @@
 conky.config = {
 	background = false,
-	no_buffers = true,
+    out_to_x = false,
 	out_to_console = true,
 	update_interval = 1,
 	extra_newline = false
