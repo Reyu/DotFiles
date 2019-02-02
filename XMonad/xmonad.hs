@@ -186,14 +186,16 @@ myTopics =
   [ TI "web" "." (spawn "firefox")
   , TI "chat" "."
        (spawn "telegram-desktop" >>
-        spawnShell Nothing >>
-        spawn "discord")
-  , TI "work" "Projects" (spawnShell Nothing)
+        spawn "discord" >>
+        spawnTopicShell)
+  , TI "work" "Projects" spawnTopicShell
   , TI "games" "." (spawn "steam")
   , TI "stream" "." (spawn "obs")
   , TI "virt" "." (spawn "virt-manager")
-  , TI "video" "." (spawn "firefox")
+  , TI "video" "." (spawn "qutebrowser --restore video")
   ]
+  where
+    spawnTopicShell = spawnShell Nothing
 
 myTopicNames :: [Topic]
 myTopicNames = map topicName myTopics
