@@ -117,8 +117,7 @@ myConfig host logPipe =
 
 ------------------------------------------------------------------------
 -- Usefull common vars
-myTerminal
-  :: String
+myTerminal :: String
 myTerminal = "st"
 
 ------------------------------------------------------------------------
@@ -149,8 +148,7 @@ promptedShift = do
     when (curTag `notElem` myTopicNames) removeEmptyWorkspace
 
 -- Solarized colors
-solarized
-  :: String -> String
+solarized :: String -> String
 solarized "base03" = "#002b36"
 solarized "base02" = "#073642"
 solarized "base01" = "#586e75"
@@ -177,7 +175,7 @@ solarized _ = solarized "text" --Use foreground color as default
 ------------------------------------------------------------------------
 -- Topic Spaces
 data TopicItem = TI
-  { topicName :: Topic   -- (22b)
+  { topicName :: Topic
   , topicDir :: Dir
   , topicAction :: X ()
   }
@@ -214,15 +212,11 @@ myTopicConfig =
 
 ------------------------------------------------------------------------
 -- Scratchpads
-scratchpads
-  :: Host -> [NamedScratchpad]
+scratchpads :: Host -> [NamedScratchpad]
 scratchpads host =
   [ ns "htop" "htop" mySPFloat
   , ns "ghci" "ghci" mySPFloat
   , ns "mail" "mutt" mySPLargeFloat
-  , ns "emacs" "emacs" mySPLargeFloat
-  , NS "brain" "emacs --eval '(org-brain-visualize \"Brain\")' --eval '(delete-other-windows)'"
-    (title =? "*org-brain*") mySPFloat
   , case getAudioSystem host of
       Alsa -> ns "volume" "alsamixer" mySPLargeFloat
       Pulse ->
@@ -365,11 +359,12 @@ myLayoutHook =
   onWorkspace "web" (noBorders Full ||| tiled) $
   onWorkspace "chat" chatLayout $
   onWorkspace "games" (noBorders Full) $
+  onWorkspace "video" (noBorders Full) $
   onWorkspaces
     [ "code" ++ show i
     | i <- [0 .. 10] ]
     (noBorders Full ||| TwoPane (2 / 100) (1 / 2)) $
-  noBorders Full ||| tiled ||| Mag.magnifier Grid ||| TwoPane (2 / 100) (1 / 2)
+    TwoPane (2 / 100) (1 / 2) ||| tiled ||| Mag.magnifier Grid ||| noBorders Full
   where
     tiled = ResizableTall 1 (2 / 100) (1 / 2) []
     chatLayout =
@@ -380,8 +375,7 @@ myLayoutHook =
 
 ------------------------------------------------------------------------
 -- Window rules:
-myManageHook
-  :: Host -> Query (Endo WindowSet)
+myManageHook :: Host -> Query (Endo WindowSet)
 myManageHook host =
   composeAll $
   [ resource =? r --> doIgnore
@@ -404,8 +398,7 @@ myStartupHook host logPipe = do
 
 ------------------------------------------------------------------------
 -- Set up status bar
-myBar
-  :: Host -> Bool -> String
+myBar :: Host -> Bool -> String
 myBar host isSecondary =
   "dzen2" ++
   concatMap
@@ -468,8 +461,7 @@ tabConfig =
 
 -----------------------------------------------------------------------
 -- Prompt Config
-myXPConfig
-  :: XPConfig
+myXPConfig :: XPConfig
 myXPConfig =
   defaultXPConfig
   { font = "xft:Source Code Pro:pixelsize=16:autohint=true"
@@ -493,8 +485,7 @@ instance UrgencyHook LibNotifyUrgencyHook where
 
 ------------------------------------------------------------------------
 -- Code Workspaces
-newCodeWS
-  :: X ()
+newCodeWS :: X ()
 newCodeWS =
   withWindowSet $
   \w -> do
