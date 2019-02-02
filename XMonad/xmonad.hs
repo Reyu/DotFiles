@@ -241,13 +241,13 @@ myKeys host logPipe = myKeymap host (myConfig host logPipe)
 
 myKeymap host conf =
   [
-    ("M-C-S-q", spawn "sudo poweroff")
     -- Media Keys
-  , ("<XF86AudioPlay>", spawn "mpc toggle")
+    ("<XF86AudioPlay>", spawn "mpc toggle")
   , ("<XF86AudioNext>", spawn "mpc next")
   , ("<XF86AudioPrev>", spawn "mpc prev")
   , ("<XF86Sleep>", spawn "xset dpms force off")
   , ("M-S-s", spawn "sleep 1;xset dpms force off")
+  , ("M-S-<XF86Sleep>", spawn "sudo poweroff")
   ,
     -- General
     ("M-<Backspace>", focusUrgent)
@@ -259,10 +259,10 @@ myKeymap host conf =
   , ("M-<Space>", sendMessage NextLayout)
   , ("M-h", sendMessage Shrink)
   , ("M-l", sendMessage Expand)
-  , ("M-M1-l", spawn "i3lock -d -i ~/Pictures/LockScreen.png")
+  , ("M-M1-l", spawn "i3lock -d -c FFFFFF -t -i ~/Pictures/LockScreen.png")
   , ("M-m", windows W.focusMaster)
   , ("M-q", spawn "xmonad --recompile; xmonad --restart")
-  , ("M-S-q", io exitSuccess)
+  , ("M-C-S-q", io exitSuccess)
   , ("M-t", withFocused $ windows . W.sink)
   , ("M-u", do
         workspace <- gets (W.currentTag . windowset)
