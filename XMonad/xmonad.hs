@@ -374,7 +374,7 @@ myLayoutHook =
   where
     tiled = ResizableTall 1 (2 / 100) (1 / 2) []
     chatLayout =
-      noBorders $ magnify splitGrid ||| tallGrid ||| tabbed shrinkText tabConfig
+       magnify splitGrid ||| tallGrid ||| tabbed shrinkText tabConfig
     tallGrid = G.TallGrid 2 1 (1 / 2) (16 / 10) 1
     splitGrid = G.SplitGrid G.R 1 1 (1 / 2) (16 / 10) 1
     magnify = Mag.magnifiercz (20 % 10)
@@ -388,7 +388,6 @@ myManageHook host =
   [ resource =? r --> doIgnore
   | r <- myIgnores ] ++
   [ className =? "Xmessage" --> doCenterFloat
-  , className =? "Skype" --> doShift "skype"
   , className =? "Steam" --> doShift "games"
   , isFullscreen --> myDoFullFloat
   , manageDocks
@@ -427,7 +426,7 @@ myBar host isSecondary =
             of
         Laptop _ True _ ->
              "-fn '-*-Source Code Pro-medium-r-*-*-20-*-*-*-*-*-*-*'"
-        _ -> "-fn '-*-Source Code Pro-medium-r-*-*-10-*-*-*-*-*-*-*'"
+        _ -> "-fn '-*-Source Code Pro-medium-r-*-*-12-*-*-*-*-*-*-*'"
     , "-bg '" ++ solarized "background" ++ "'"
     , "-fg '" ++ solarized "text" ++ "'"
     , "-ta 'center'"
