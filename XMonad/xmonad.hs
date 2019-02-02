@@ -253,7 +253,9 @@ myKeymap host conf =
     ("M-<Backspace>", focusUrgent)
   , ("M-S-<Backspace>", clearUrgents)
   , ("M-<Return>", windows W.swapMaster)
-  , ("M-S-<Return>", spawnHere (myTerminal ++ " -e tmux"))
+  , ("M-S-<Return>", do
+        workspace <- gets (W.currentTag . windowset)
+        spawnHere (myTerminal ++ " -e ${HOME}/.xmonad/bin/tmux-attach-new.zsh " ++ workspace))
   , ("M-<Space>", sendMessage NextLayout)
   , ("M-h", sendMessage Shrink)
   , ("M-l", sendMessage Expand)
@@ -262,7 +264,9 @@ myKeymap host conf =
   , ("M-q", spawn "xmonad --recompile; xmonad --restart")
   , ("M-S-q", io exitSuccess)
   , ("M-t", withFocused $ windows . W.sink)
-  , ("M-u", spawnHere "firefox -new-window")
+  , ("M-u", do
+        workspace <- gets (W.currentTag . windowset)
+        spawn ("qutebrowser --restore " ++ workspace))
   , ("<Print>", spawn "scrot")
   , ("C-<Print>", spawn "sleep 0.2; scrot -s")
   , ("M-b", sendMessage ToggleStruts)
