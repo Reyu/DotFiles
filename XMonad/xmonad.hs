@@ -34,7 +34,6 @@ import XMonad.Hooks.ManageHelpers
 import XMonad.Layout.NoBorders
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.Reflect
-import XMonad.Layout.IM
 import XMonad.Layout.Tabbed
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Gaps
@@ -351,12 +350,12 @@ myKeymap host conf =
 -- Layouts:
 myLayoutHook =
   avoidStrutsOn [U] $
+  smartBorders $
   mkToggle1 NBFULL $
   mkToggle1 REFLECTX $
   mkToggle1 REFLECTY $
   mkToggle1 NOBORDERS $
   mkToggle1 MIRROR $
-  smartBorders $
   onWorkspace "web" (noBorders Full ||| tiled) $
   onWorkspace "chat" chatLayout $
   onWorkspace "games" (noBorders Full) $
