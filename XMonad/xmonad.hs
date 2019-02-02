@@ -46,6 +46,7 @@ import qualified XMonad.Layout.GridVariants as G
 import Data.Ratio ((%))
 import System.Posix.Unistd
 import XMonad.Util.EZConfig
+import qualified XMonad.Util.ExtensibleState as XS
 import XMonad.Hooks.EwmhDesktops
 
 type HasWinKey = Bool
@@ -57,7 +58,7 @@ type StatusBarDisplay = Int
 data AudioSystem
   = Alsa
   | Pulse
-  deriving (Eq)
+  deriving (Eq, Typeable, Read, Show)
 
 data Host
   = Desktop StatusBarDisplay
@@ -65,7 +66,9 @@ data Host
   | Laptop HasWinKey
            IsRetina
            AudioSystem
-  deriving (Eq)
+  deriving (Eq, Typeable, Read, Show)
+instance ExtensionClass Host where
+    initialValue = Desktop (-1) Pulse
 
 getHost :: IO Host
 getHost = do
@@ -88,7 +91,7 @@ main = do
   host <- getHost
   logPipe <- spawnPipe (myBar host False)
   _ <- spawnPipe (conkyCommand ++ myBar host True)
-  checkTopicConfig (myTopicNames host) (myTopicConfig host)
+  checkTopicConfig myTopicNames myTopicConfig
   xmonad $ ewmh $ myConfig host logPipe
   where
     conkyCommand = "pkill conky;conky -c ~/.xmonad/conky_statusbar|"
@@ -101,17 +104,16 @@ myConfig host logPipe =
             case host of
                 Laptop False _ _ -> modMask desktopConfig
                 _ -> mod4Mask
-        , workspaces = myTopicNames host
+        , workspaces = myTopicNames
         , normalBorderColor = solarized "secondary"
         , focusedBorderColor = solarized "emphasis"
         , borderWidth = 2
         , layoutHook = myLayoutHook
         , manageHook = myManageHook host <+> manageSpawn <+> manageHook desktopConfig
-        , logHook = myLoghook logPipe host <+> logHook desktopConfig
+        , logHook = myLoghook logPipe <+> logHook desktopConfig
         , startupHook = myStartupHook host logPipe <+> startupHook desktopConfig
         , handleEventHook = docksEventHook <+> handleEventHook desktopConfig
-        } `additionalKeysP`
-        myKeys host logPipe
+        } `additionalKeysP` myKeys host logPipe
 
 ------------------------------------------------------------------------
 -- Usefull common vars
@@ -121,9 +123,8 @@ myTerminal = "st"
 
 ------------------------------------------------------------------------
 -- Helper functions
-spawnShell :: Host -> Maybe String -> X ()
-spawnShell host name' =
-    currentTopicDir (myTopicConfig host) >>= spawnShellIn name'
+spawnShell :: Maybe String -> X ()
+spawnShell name' = currentTopicDir myTopicConfig >>= spawnShellIn name'
 
 spawnShellIn :: Maybe String -> Dir -> X ()
 spawnShellIn Nothing dir = do
@@ -132,23 +133,20 @@ spawnShellIn Nothing dir = do
 spawnShellIn (Just name') dir =
     spawn $ myTerminal ++ " -e tmux new -As '" ++ name' ++ "' -c '" ++ dir ++ "'"
 
-removeEmptyNonTopicWorkspaceAfter :: Host -> X () -> X ()
-removeEmptyNonTopicWorkspaceAfter host =
-    removeEmptyWorkspaceAfterExcept (myTopicNames host)
+removeEmptyNonTopicWorkspaceAfter :: X () -> X ()
+removeEmptyNonTopicWorkspaceAfter = removeEmptyWorkspaceAfterExcept myTopicNames
 
-goto :: Host -> Topic -> X ()
-goto host topic =
-    removeEmptyNonTopicWorkspaceAfter host $
-    switchTopic (myTopicConfig host) topic
+goto :: String -> X ()
+goto topic = removeEmptyNonTopicWorkspaceAfter $ switchTopic myTopicConfig topic
 
-promptedGoto :: Host -> X ()
-promptedGoto = workspacePrompt myXPConfig . goto
+promptedGoto :: X ()
+promptedGoto = workspacePrompt myXPConfig goto
 
-promptedShift :: Host -> X ()
-promptedShift host = do
+promptedShift :: X ()
+promptedShift = do
     workspacePrompt myXPConfig $ windows . W.shift
     curTag <- gets (W.currentTag . windowset)
-    when (curTag `notElem` myTopicNames host) removeEmptyWorkspace
+    when (curTag `notElem` myTopicNames) removeEmptyWorkspace
 
 -- Solarized colors
 solarized
@@ -185,37 +183,34 @@ data TopicItem = TI
   }
 
 -- define some custom topics for use with the TopicSpace module.
-myTopics
-  :: Host -> [TopicItem]
-myTopics host =
+myTopics :: [TopicItem]
+myTopics =
   [ TI "web" "." (spawn "firefox")
   , TI "chat" "."
        (spawn "telegram-desktop" >>
-        spawnShell host Nothing >>
+        spawnShell Nothing >>
         spawn "discord")
-  , TI "work" "Projects" (spawnShell host Nothing)
+  , TI "work" "Projects" (spawnShell Nothing)
   , TI "games" "." (spawn "steam")
   , TI "stream" "." (spawn "obs")
   , TI "virt" "." (spawn "virt-manager")
   , TI "video" "." (spawn "firefox")
   ]
 
-myTopicNames :: Host -> [Topic]
-myTopicNames = map topicName . myTopics
+myTopicNames :: [Topic]
+myTopicNames = map topicName myTopics
 
-myTopicConfig :: Host -> TopicConfig
-myTopicConfig host =
+myTopicConfig :: TopicConfig
+myTopicConfig =
   def
-  { topicDirs = M.fromList $ map (\(TI n d _) -> (n, d)) myTopics'
+  { topicDirs = M.fromList $ map (\(TI n d _) -> (n, d)) myTopics
   , defaultTopicAction = \x ->
-      spawnShell host (Just x) >>
+      spawnShell (Just x) >>
       spawn ("qutebrowser --restore '" ++ x ++ "'")
   , defaultTopic = "web"
   , maxTopicHistory = 10
-  , topicActions = M.fromList $ map (\(TI n _ a) -> (n, a)) myTopics'
+  , topicActions = M.fromList $ map (\(TI n _ a) -> (n, a)) myTopics
   }
-  where
-    myTopics' = myTopics host
 
 ------------------------------------------------------------------------
 -- Scratchpads
@@ -259,7 +254,7 @@ myKeymap host conf =
     ("M-<Backspace>", focusUrgent)
   , ("M-S-<Backspace>", clearUrgents)
   , ("M-<Return>", windows W.swapMaster)
-  , ("M-S-<Return>", spawnShell host Nothing)
+  , ("M-S-<Return>", spawnShell Nothing)
   , ("M-<Space>", sendMessage NextLayout)
   , ("M-h", sendMessage Shrink)
   , ("M-l", sendMessage Expand)
@@ -277,12 +272,12 @@ myKeymap host conf =
   , ("M-f", newCodeWS)
   ,
     -- Topic actions
-    ("M-a", currentTopicAction (myTopicConfig host))
+    ("M-a", currentTopicAction myTopicConfig)
   ,
     -- Window Movement
-    ("M-g", promptedGoto host)
-  , ("M-S-g", promptedShift host)
-  , ("M-z", removeEmptyNonTopicWorkspaceAfter host toggleWS)]
+    ("M-g", promptedGoto)
+  , ("M-S-g", promptedShift)
+  , ("M-z", removeEmptyNonTopicWorkspaceAfter toggleWS)]
   ++ -- Volume
   case getAudioSystem host of
     Alsa ->
@@ -403,7 +398,8 @@ myManageHook host =
 
 ------------------------------------------------------------------------
 -- Startup hook
-myStartupHook host logPipe =
+myStartupHook host logPipe = do
+  XS.put host
   checkKeymap (myConfig host logPipe) (myKeys host logPipe)
 
 ------------------------------------------------------------------------
@@ -436,27 +432,27 @@ myBar host isSecondary =
     , "-ta 'center'"
     , "-e 'onstart=lower'"]
 
-myLoghook logPipe host =
-  dynamicLogWithPP $
-  defaultPP
-  { ppCurrent = dzenColor (solarized "green") ""
-  , ppVisible = dzenColor (solarized "cyan") ""
-  , ppHidden = dzenColor (solarized "text") ""
-  , ppUrgent = dzenColor (solarized "yellow") (solarized "red")
-  , ppLayout = dzenColor (solarized "text") ""
-  , ppTitle = shorten 100
-  , ppSort = fmap (namedScratchpadFilterOutWorkspace .) DO.getSortByOrder
-  , ppExtras =
-    [ date "%a %b %d  %I:%M %p"
-    , loadAvg
-    , dzenColorL (solarized "green") "" $
-      wrapL "Inbox: " "" $ maildirUnread ".maildir/Inbox"] ++
-    (case host of
-       Laptop{} -> [battery]
-       Desktop _ _ -> [])
-  , ppOrder = \(ws:l:t:exs) -> [t, l, ws] ++ exs
-  , ppOutput = hPutStrLn logPipe
-  }
+myLoghook logPipe = do
+  host <- XS.get :: X Host
+  dynamicLogWithPP $ defaultPP
+    { ppCurrent = dzenColor (solarized "green") ""
+    , ppVisible = dzenColor (solarized "cyan") ""
+    , ppHidden = dzenColor (solarized "text") ""
+    , ppUrgent = dzenColor (solarized "yellow") (solarized "red")
+    , ppLayout = dzenColor (solarized "text") ""
+    , ppTitle = shorten 100
+    , ppSort = fmap (namedScratchpadFilterOutWorkspace .) DO.getSortByOrder
+    , ppExtras =
+      [ date "%a %b %d  %I:%M %p"
+      , loadAvg
+      , dzenColorL (solarized "green") "" $
+        wrapL "Inbox: " "" $ maildirUnread ".maildir/Inbox"] ++
+      (case host of
+         Laptop{} -> [battery]
+         Desktop _ _ -> [])
+    , ppOrder = \(ws:l:t:exs) -> [t, l, ws] ++ exs
+    , ppOutput = hPutStrLn logPipe
+    }
 
 -----------------------------------------------------------------------
 -- Colors for text and backgrounds of each tab when in "Tabbed" layout.
