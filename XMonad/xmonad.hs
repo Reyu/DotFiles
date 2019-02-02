@@ -386,6 +386,7 @@ myManageHook host =
   [ resource =? r --> doIgnore
   | r <- myIgnores ] ++
   [ className =? "Xmessage" --> doCenterFloat
+  , className =? "Zenity" --> doCenterFloat
   , className =? "Steam" --> doShift "games"
   , isFullscreen --> myDoFullFloat
   , manageDocks
