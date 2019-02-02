@@ -372,9 +372,9 @@ myLayoutHook =
   where
     tiled = ResizableTall 1 (2 / 100) (1 / 2) []
     chatLayout =
-       magnify splitGrid ||| tallGrid ||| tabbed shrinkText tabConfig
+       splitGrid ||| tallGrid ||| tabbed shrinkText tabConfig
     tallGrid = G.TallGrid 2 1 (1 / 2) (16 / 10) 1
-    splitGrid = G.SplitGrid G.R 1 1 (1 / 2) (16 / 10) 1
+    splitGrid = G.SplitGrid G.L 1 1 (3 / 8) (16 / 10) 1
     magnify = Mag.magnifiercz (20 % 10)
 
 ------------------------------------------------------------------------
