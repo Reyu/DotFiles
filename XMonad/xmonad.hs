@@ -105,9 +105,9 @@ myConfig host logPipe =
                 Laptop False _ _ -> modMask desktopConfig
                 _ -> mod4Mask
         , workspaces = myTopicNames
-        , normalBorderColor = solarized "secondary"
-        , focusedBorderColor = solarized "emphasis"
-        , borderWidth = 2
+        , normalBorderColor = solarized "background"
+        , focusedBorderColor = solarized "green"
+        , borderWidth = 1
         , layoutHook = myLayoutHook
         , manageHook = myManageHook host <+> manageSpawn <+> manageHook desktopConfig
         , logHook = myLoghook logPipe <+> logHook desktopConfig
