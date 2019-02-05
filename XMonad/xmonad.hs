@@ -16,6 +16,8 @@ import qualified XMonad.Actions.DynamicWorkspaceOrder as DO
 import XMonad.Actions.CycleWS
 import XMonad.Actions.WithAll
 import XMonad.Actions.FloatKeys
+import XMonad.Actions.PerWorkspaceKeys
+import XMonad.Actions.RotSlaves
 import XMonad.Config.Desktop
 import XMonad.Util.Run
 import XMonad.Util.NamedWindows (getName)
@@ -271,7 +273,19 @@ myKeymap host conf =
     ("M-a", currentTopicAction myTopicConfig)
   ,
     -- Window Movement
-    ("M-g", promptedGoto)
+    ("M-j", bindOn [ ("", windows W.focusDown)
+                   , ("chat", rotAllDown)
+                   ])
+  , ("M-k", bindOn [ ("", windows W.focusUp)
+                   , ("chat", rotAllUp)
+                   ])
+  , ("M-S-j", bindOn [ ("", windows W.swapDown)
+                     , ("chat", rotSlavesDown)
+                     ])
+  , ("M-S-k", bindOn [ ("", windows W.swapUp)
+                     , ("chat", rotSlavesUp)
+                     ])
+  , ("M-g", promptedGoto)
   , ("M-S-g", promptedShift)
   , ("M-z", removeEmptyNonTopicWorkspaceAfter toggleWS)]
   -- I have the rest in list-comprehension groups, because they make
@@ -375,7 +389,7 @@ myLayoutHook =
     chatLayout =
        splitGrid ||| tallGrid ||| tabbed shrinkText tabConfig
     tallGrid = G.TallGrid 2 1 (1 / 2) (16 / 10) 1
-    splitGrid = G.SplitGrid G.L 1 1 (3 / 8) (16 / 10) 1
+    splitGrid = G.SplitGrid G.L 1 1 (9 / 16) (16 / 10) 1
     magnify = Mag.magnifiercz (20 % 10)
 
 ------------------------------------------------------------------------
