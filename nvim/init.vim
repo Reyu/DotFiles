@@ -104,6 +104,8 @@ if dein#load_state(s:dein_path)
         call dein#add('tmux-plugins/vim-tmux')
         call dein#add('tmux-plugins/vim-tmux-focus-events')
         call dein#add('tpope/vim-dispatch')
+        call dein#add('tpope/vim-dadbod')
+        call dein#add('tpope/vim-dotenv')
         if s:myconfig_prompt == "powerline"
             call dein#add('edkolev/promptline.vim')
             call dein#add('edkolev/tmuxline.vim')
