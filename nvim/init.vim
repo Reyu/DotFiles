@@ -91,6 +91,7 @@ if dein#load_state(s:dein_path)
     if !exists('g:gui_oni')
         " Non-Oni/Gui Plugins
         call dein#add('Shougo/deoplete.nvim')
+        call dein#add('Shougo/deoplete-lsp')
         call dein#add('airblade/vim-gitgutter')
         call dein#add('altercation/vim-colors-solarized')
         call dein#add('christoomey/vim-tmux-navigator')
