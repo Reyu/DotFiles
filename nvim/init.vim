@@ -35,7 +35,14 @@ else
     " Minimal bootstrap
     set rtp+=~/.config/nvim/dein.vim
 endif
-if dein#load_state(s:dein_path)
+
+function! CocDeps()
+    let extensions = ['coc-emmet', 'coc-highlight', 'coc-html', 'coc-css', 'coc-java', 'coc-yaml', 'coc-snippets', 'coc-tsserver', 'coc-json']
+    call coc#util#install()
+    call coc#util#install_extension(extensions)
+endfunction
+
+" if dein#load_state(s:dein_path)
     call dein#begin(s:dein_path)
     " Global Plugins
     call dein#add('benekastah/neomake')
@@ -90,15 +97,15 @@ if dein#load_state(s:dein_path)
 
     if !exists('g:gui_oni')
         " Non-Oni/Gui Plugins
-        call dein#add('Shougo/deoplete.nvim')
-        call dein#add('Shougo/deoplete-lsp')
+        " call dein#add('Shougo/deoplete.nvim')
+        " call dein#add('Shougo/deoplete-lsp')
+        call dein#add('Shougo/defx.nvim')
         call dein#add('airblade/vim-gitgutter')
         call dein#add('altercation/vim-colors-solarized')
         call dein#add('christoomey/vim-tmux-navigator')
         " call dein#add('garbas/vim-snipmate.git')
         call dein#add('majutsushi/tagbar')
-        " call dein#add('neoclide/coc.nvim')
-        " call dein#add('neoclide/coc-jedi')
+        call dein#add('neoclide/coc.nvim', {'hook_post_update': function('CocDeps')})
         call dein#add('radenling/vim-dispatch-neovim')
         call dein#add('sakhnik/nvim-gdb')
         call dein#add('tmux-plugins/vim-tmux')
@@ -123,8 +130,8 @@ if dein#load_state(s:dein_path)
     endif
 
     call dein#end()
-    call dein#save_state()
-endif
+    " call dein#save_state()
+" endif
 if dein#check_install()
     call dein#install()
 endif
@@ -216,7 +223,7 @@ if dein#tap('vim-easymotion') " {{{
     let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
 endif "}}}
 if dein#tap('editorconfig-vim') " {{{
-    let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+    let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*', 'defx://.*']
 endif
 " }}}
 if dein#tap('tabular') " {{{
@@ -608,7 +615,6 @@ if dein#tap('coc.nvim') " {{{
     nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
     " Resume latest coc list
     nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
-    
 
     " Use <C-l> to trigger snippet expand.
     imap <C-l>  <Plug>(coc-snippets-expand)
@@ -754,7 +760,7 @@ set list                " Show problematic characters.
 
 " Also highlight all tabs and trailing whitespace characters.
 highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
-match ExtraWhitespace /\s\+$\|\t/
+" match ExtraWhitespace /\s\+$\|\t/
 
 " General }}}
 " {{{ Files, backups and undo
