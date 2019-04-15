@@ -21,6 +21,7 @@ cdpath=($^cdpath(N-/))
 path=(
   ${HOME}/.local/bin
   ${HOME}/bin
+  ${HOME}/.yarn/bin
   ${HOME}/.go/bin
   ${HOME}/.npm-global/bin
   ${HOME}/.gem/ruby/2.2.0/bin

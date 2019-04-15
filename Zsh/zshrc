@@ -477,6 +477,9 @@ antigen apply
 
 if [ -f ~/.fzf.zsh ]
 then
+    export FZF_TMUX=1
+    export FZF_TMUX_HEIGHT=20
+    export FZF_COMPLETION_TRIGGER='~~'
     source ~/.fzf.zsh
 fi
 
@@ -599,7 +602,6 @@ alias -g PE='| egrep'
 alias -g PN1='> /dev/null'
 alias -g PN2='2> /dev/null'
 alias -g PN='&> /dev/null'
-alias -g pisudo='-t sudo -u piops sudo -i'
 alias -s zsh=$commands[zsh]
 alias -s pl=$commands[perl]
 alias -s sh=$commands[sh]
