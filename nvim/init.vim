@@ -37,8 +37,7 @@ else
 endif
 
 function! CocDeps()
-    let extensions = ['coc-emmet', 'coc-highlight', 'coc-html', 'coc-css', 'coc-java', 'coc-yaml', 'coc-snippets', 'coc-tsserver', 'coc-json']
-    call coc#util#install()
+    let extensions = ['coc-tag', 'coc-word', 'coc-gocode', 'coc-neosnippet', 'coc-html', 'coc-css', 'coc-yaml', 'coc-tsserver', 'coc-json']
     call coc#util#install_extension(extensions)
 endfunction
 
@@ -50,6 +49,7 @@ endfunction
     call dein#add('easymotion/vim-easymotion')
     call dein#add('editorconfig/editorconfig-vim')
     call dein#add('godlygeek/tabular')
+    call dein#add('junegunn/fzf')
     call dein#add('Konfekt/FastFold')
     call dein#add('Shougo/dein.vim')
     call dein#add('Shougo/denite.nvim')
@@ -101,11 +101,12 @@ endfunction
         " call dein#add('Shougo/deoplete-lsp')
         call dein#add('Shougo/defx.nvim')
         call dein#add('airblade/vim-gitgutter')
-        call dein#add('altercation/vim-colors-solarized')
-        call dein#add('christoomey/vim-tmux-navigator')
+        " call dein#add('altercation/vim-colors-solarized')
+        call dein#add('iCyMind/NeoSolarized')
+        "call dein#add('christoomey/vim-tmux-navigator')
         " call dein#add('garbas/vim-snipmate.git')
         call dein#add('majutsushi/tagbar')
-        call dein#add('neoclide/coc.nvim', {'hook_post_update': function('CocDeps')})
+        call dein#add('neoclide/coc.nvim', {'merge':0, 'build': './install.sh nightly', 'hook_post_update': function('CocDeps')})
         call dein#add('radenling/vim-dispatch-neovim')
         call dein#add('sakhnik/nvim-gdb')
         call dein#add('tmux-plugins/vim-tmux')
@@ -149,6 +150,8 @@ if dein#tap('vim-colors-solarized') " {{{
         colorscheme solarized
     endfunction
     nnoremap <Leader>tb :call ToggleBackground()<CR>
+elseif dein#tap('NeoSolarized')
+    colorscheme NeoSolarized
 else
     colorscheme slate
 endif " }}}
@@ -407,8 +410,8 @@ if dein#tap('ale') " {{{
     if dein#tap('vim-airline')
         let g:airline#extensions#ale#enabled = 1
     endif
-    nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-    nmap <silent> <C-j> <Plug>(ale_next_wrap)
+    " nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+    " nmap <silent> <C-j> <Plug>(ale_next_wrap)
     let g:ale_completion_enabled = 1
     let g:ale_completion_experimental_lsp_support = 1
     let g:ale_linters = {
@@ -436,32 +439,23 @@ endif " }}}
 if dein#tap('neosnippet.vim') " {{{
     let g:neosnippet#enable_snipmate_compatibility = 1
     let g:neosnippet#snippets_directory = s:dein_path.'/repos/github.com/honza/vim-snippets/snippets'
+
     " Plugin key-mappings.
     " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
     imap <C-k> <Plug>(neosnippet_expand_or_jump)
     smap <C-k> <Plug>(neosnippet_expand_or_jump)
     xmap <C-k> <Plug>(neosnippet_expand_target)
 
-     " Expand the completed snippet trigger by <CR>.
-     imap <expr><CR>
-                 \ (pumvisible() && neosnippet#expandable()) ?
-                 \ "\<Plug>(neosnippet_expand)" : "\<CR>"
-
-     " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-    imap <expr><TAB>
-     \ pumvisible() ? "\<C-n>" :
-     \ neosnippet#expandable_or_jumpable() ?
-     \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-    smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-    \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-
+    " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+    imap <expr><M-l> neosnippet#expandable_or_jumpable() ?
+                   \ "\<Plug>(neosnippet_jump_or_expand)" : "\<TAB>"
+    smap <expr><M-l> neosnippet#expandable_or_jumpable() ?
+                   \ "\<Plug>(neosnippet_jump_or_expand)" : "\<TAB>"
 
     " For conceal markers.
     if has('conceal')
-      set conceallevel=2 concealcursor=niv
+        set conceallevel=2 concealcursor=niv
     endif
-
-    " let g:neosnippet#snippets_directory = "~/.config/nvim/snippets"
 endif "}}}
 if dein#tap('vim-tmux-navigator') " {{{
     " Disable tmux navigator when zooming the Vim pane
@@ -497,9 +491,6 @@ if dein#tap('coc.nvim') " {{{
     " if hidden is not set, TextEdit might fail.
     set hidden
 
-    " Better display for messages
-    set cmdheight=2
-
     " Smaller updatetime for CursorHold & CursorHoldI
     set updatetime=300
 
@@ -508,26 +499,6 @@ if dein#tap('coc.nvim') " {{{
 
     " always show signcolumns
     set signcolumn=yes
-
-    " Use tab for trigger completion with characters ahead and navigate.
-    " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-    " inoremap <silent><expr> <TAB>
-    "             \ pumvisible() ? "\<C-n>" :
-    "             \ <SID>check_back_space() ? "\<TAB>" :
-    "             \ coc#refresh()
-    " inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-    function! s:check_back_space() abort
-        let col = col('.') - 1
-        return !col || getline('.')[col - 1]  =~# '\s'
-    endfunction
-
-    " Use <c-space> for trigger completion.
-    inoremap <silent><expr> <c-space> coc#refresh()
-
-    " Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
-    " Coc only does snippet and additional edit on confirm.
-    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
     " Use `[c` and `]c` for navigate diagnostics
     nmap <silent> [c <Plug>(coc-diagnostic-prev)
@@ -549,9 +520,6 @@ if dein#tap('coc.nvim') " {{{
             call CocAction('doHover')
         endif
     endfunction
-
-    " Highlight symbol under cursor on CursorHold
-    autocmd CursorHold * silent call CocActionAsync('highlight')
 
     " Remap for rename current word
     nmap <leader>rn <Plug>(coc-rename)
@@ -583,21 +551,6 @@ if dein#tap('coc.nvim') " {{{
     " Use `:Fold` for fold current buffer
     command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
-
-    " Add diagnostic info for https://github.com/itchyny/lightline.vim
-    let g:lightline = {
-                \ 'colorscheme': 'wombat',
-                \ 'active': {
-                \   'left': [ [ 'mode', 'paste' ],
-                \             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ]
-                \ },
-                \ 'component_function': {
-                \   'cocstatus': 'coc#status'
-                \ },
-                \ }
-
-
-
     " Using CocList
     " Show all diagnostics
     nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
@@ -615,15 +568,6 @@ if dein#tap('coc.nvim') " {{{
     nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
     " Resume latest coc list
     nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
-
-    " Use <C-l> to trigger snippet expand.
-    imap <C-l>  <Plug>(coc-snippets-expand)
-    " Use <C-j> to select text for visual text of snippet.
-    vmap <C-j>  <Plug>(coc-snippets-select)
-    " Use <C-j> to jump to forward placeholder, which is default
-    let g:coc_snippet_next = '<c-j>'
-    " Use <C-k> to jump to backward placeholder, which is default
-    let g:coc_snippet_prev = '<c-k>'
 endif " }}}
 if dein#tap('deoplete.nvim') " {{{
     let g:deoplete#enable_at_startup = 1
@@ -668,6 +612,9 @@ endif " }}}
 " }}}
 " Plugins }}}
 " {{{ General
+
+" Better display for messages
+set cmdheight=2
 
 " Sets how many lines of history VIM has to remember
 set history=700
