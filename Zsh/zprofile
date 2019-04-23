@@ -77,8 +77,8 @@ export NNTPSERVER="news.giganews.commands"
 if [[ -n $TMUX ]]
 then
     export TMUX_SESSION=$(tmux list-sessions -F '#{session_attached} #{session_name}'|awk '/^1/{print $2}')
+    cd ${HOME}/Projects/${TMUX_SESSION} 2>/dev/null || true
 fi
-cd ${HOME}/Projects/${TMUX_SESSION} 2>/dev/null || true
 
 if [[ -x ${PWD}/.new-shell ]]
 then
@@ -94,15 +94,6 @@ then
         todoist --color --indent list | grep "#${TODO_DEFAULT_PROJECT}"
     else
         todoist --color --indent list --filter 'today|overdue'
-    fi
-elif (( $+commands[yokadi] ))
-then
-    # If yokadi is installed, get our ToDo list
-    if yokadi p_list|cut -f1 -d" "|grep -q ${TMUX_SESSION}
-    then
-        yokadi t_list ${TMUX_SESSION}
-    else
-        yokadi t_list Personal
     fi
 elif [[ -z $SSH_CONNECTION && $USER != 'root' && $SHLVL -le 2 && -z $NO_FORTUNE ]]; then
     # Give a Fortune!
