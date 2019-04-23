@@ -482,6 +482,10 @@ then
     export FZF_COMPLETION_TRIGGER='~~'
     source ~/.fzf.zsh
 fi
+if [ -f ~/.fzf-extras/fzf-extras.zsh ]
+then
+    source ~/.fzf-extras/fzf-extras.zsh
+fi
 
 # zsh-completions
 # git-flow-completion
@@ -616,6 +620,7 @@ if (( $+commands[runhaskell] )) ; then alias -s hs=runhaskell                   
 if (( $+commands[salt-call] ))  ; then alias salt-call='sudo salt-call'                             ; fi
 if (( $+commands[todoist] ))    ; then alias todo='todoist --color'                                 ; fi
 if (( $+commands[yokadi] ))     ; then alias y=yokadi                                               ; fi
+if (( $+commands[ledger] ))     ; then alias ledger='noglob ledger'                                 ; fi
 if [[ -f ${HOME}/.local/todo.txt/todo.sh ]]; then
     alias todo="~/.local/todo.txt/todo.sh -d ~/.config/todo.cfg"
     alias t=todo
