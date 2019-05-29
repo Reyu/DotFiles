@@ -462,26 +462,49 @@ function prepend-sudo {
 zle -N prepend-sudo # }}}
 # }}}
 # External Modules {{{
-source ${zdir}/antigen.zsh
-# antigen use oh-my-zsh
-# antigen bundle git
-# antigen bundle pip
-antigen bundle Tarrasch/zsh-command-not-found
-antigen bundle Tarrasch/zsh-autoenv
-antigen bundle Tarrasch/zsh-functional
-antigen bundle zsh-users/zsh-syntax-highlighting
-antigen bundle zsh-users/zsh-history-substring-search
-antigen bundle zsh-users/zsh-completions
-antigen bundle greymd/tmux-xpanes
-antigen apply
+source ~/.zplug/init.zsh
+zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 
-if [ -f ~/.fzf.zsh ]
-then
+zplug "Tarrasch/zsh-functional"
+zplug "zsh-users/zsh-syntax-highlighting", defer:2
+zplug "zsh-users/zsh-history-substring-search"
+zplug "zsh-users/zsh-completions"
+zplug "greymd/tmux-xpanes"
+
+zplug "junegunn/fzf-bin", \
+    from:gh-r, \
+    as:command, \
+    rename-to:fzf, \
+    use:"*darwin*amd64*"
+
+zplug "stedolan/jq", \
+    from:gh-r, \
+    as:command, \
+    rename-to:jq
+zplug "b4b4r07/emoji-cli", \
+    on:"stedolan/jq"
+
+zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
+
+# Install plugins if there are plugins that have not been installed
+if ! zplug check --verbose; then
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    fi
+fi
+
+# Then, source plugins and add commands to $PATH
+zplug load
+
+if zplug check b4b4r07/enhancd; then
+    # setting if enhancd is available
+    export ENHANCD_FILTER=fzf-tmux
     export FZF_TMUX=1
     export FZF_TMUX_HEIGHT=20
     export FZF_COMPLETION_TRIGGER='~~'
-    source ~/.fzf.zsh
 fi
+
 if [ -f ~/.fzf-extras/fzf-extras.zsh ]
 then
     source ~/.fzf-extras/fzf-extras.zsh
@@ -588,14 +611,6 @@ bindkey -M isearch " " magic-space # normal space during searches
 
 # Fancy Ctrl-Z
 bindkey '^Z' fancy-ctrl-z
-# }}}
-# Prompt {{{
-if [[ ${USE_PROMPT} == "powerline" ]]
-then
-    source ${HOME}/.config/Zsh/lib/Airline.sh
-else
-    source ${HOME}/.config/Zsh/lib/prompt.zsh
-fi
 # }}}
 # Aliases {{{
 alias mmv='noglob zmv -W'

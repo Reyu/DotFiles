@@ -87,7 +87,7 @@ then
 elif [[ -z $SSH_CONNECTION && $USER != 'root' && $SHLVL -le 2 && -z $NO_FORTUNE ]]; then
     # Give a Fortune!
     if (( $+commands[cowsay] ))
-    then fortune | foxsay
+    then fortune | cowsay
     else fortune
     fi
 fi
