@@ -80,32 +80,6 @@ else
     alias ls='ls -G'
 fi
 
-# Default Prompt Styles
-zstyle ':prompt:addon:openstack:tenant:default' 'color' 'green'
-zstyle ':prompt:addon:openstack:tenant:openstack' 'color' 'yellow'
-zstyle ':prompt:addon:openstack:user:default' 'color' 'green'
-zstyle ':prompt:addon:openstack:user:pi_admin' 'color' 'yellow'
-zstyle ':prompt:addon:openstack:user:admin' 'color' 'red'
-zstyle ':prompt:addon:openstack:token:used' 'color' 'magenta'
-zstyle ':prompt:addon:openstack:token:none' 'color' 'blue'
-zstyle ':prompt:addon:openstack:token:used' 'symbol' '!'
-zstyle ':prompt:addon:openstack:token:none' 'symbol' '@'
-zstyle ':prompt:addon:openstack:tenant:openstack' 'color' 'yellow'
-zstyle ':prompt:addon:vcs:*' 'enabled' 'true'
-zstyle ':prompt:addon:vcs:git' 'prefix' '%{%f%}on%{%F{37}%} '
-zstyle ':prompt:addon:vcs:git' 'suffix' '%{%f%}'
-zstyle ':prompt:addon:vcs:*:status:dirty' 'prefix' '%{%F{160}%}'
-zstyle ':prompt:addon:vcs:*:status:dirty' 'suffix' '%{%f%}'
-zstyle ':prompt:addon:vcs:*:status:clean' 'prefix' '%{%F{64}%}'
-zstyle ':prompt:addon:vcs:*:status:clean' 'suffix' '%{%f%}'
-zstyle ':prompt:addon:vcs:*:status:untracked' 'prefix' '%{%F{136}%}'
-zstyle ':prompt:addon:vcs:*:status:untracked' 'suffix' '%{%f%}'
-zstyle ':prompt:addon:vcs:git:remote:ahead' 'prefix' '%{%F{64}%}⇡'
-zstyle ':prompt:addon:vcs:git:remote:ahead' 'suffix' '%{%f%}'
-zstyle ':prompt:addon:vcs:git:remote:behind' 'prefix' '%{%F{166}%}⇣'
-zstyle ':prompt:addon:vcs:git:remote:behind' 'suffix' '%{%f%}'
-
-
 # Completion {{{
 # Use caching to make completion for commands such as dpkg and apt usable.
 zstyle ':completion::complete:*' use-cache on
@@ -133,6 +107,10 @@ zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 zstyle ':completion:*' format ' %F{yellow}-- %d --%f'
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' verbose yes
+zstyle ':completion:*' menu select
+zstyle ':completion:*' keep-prefix
+zstyle ':completion:*' completer _oldlist _complete _match _ignored \
+    _approximate _list _history
 
 # Fuzzy match mistyped completions.
 zstyle ':completion:*' completer _complete _match _approximate
@@ -163,6 +141,10 @@ zstyle ':completion:*:history-words' menu yes
 
 # Environmental Variables
 # zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
+
+# sudo completions
+zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin \
+    /usr/sbin /usr/bin /sbin /bin /usr/X11R6/bin
 
 # Populate hostname completion.
 zstyle -e ':completion:*:hosts' hosts 'reply=(

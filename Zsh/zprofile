@@ -25,11 +25,10 @@ path=(
   ${HOME}/.go/bin
   ${HOME}/.npm-global/bin
   ${HOME}/.gem/ruby/2.2.0/bin
-  /usr/local/{bin,sbin}
-  /usr/{bin,sbin}
-  /{bin,sbin}
+  /usr/local/bin
+  /usr/bin
+  /bin
   $path
-  /usr/share/surfraw
 )
 # Remove non-existent directories
 path=($^path(N-/))
@@ -54,8 +53,9 @@ export EDITOR=$VISUAL
 # Make sure that SSH and GPG agents are accessible {{{
 if (( $+commands[keychain] )); then
     local SSH_KEYS=$(print ${HOME}/.ssh/*(*:tN))
-    # local GPG_KEYS=$(gpg -K --with-colons|awk -F':' '$1 == "fpr" {fpr = $10}; $1 == "uid" {printf "%s ", substr(fpr,33)}')
-    eval `keychain -q --agents gpg,ssh --eval ${=SSH_KEYS}`
+    local GPG_KEYS=$(cat ${HOME}/.gnupg/autoload)
+    eval `keychain -q --agents gpg,ssh --eval ${=SSH_KEYS} ${=GPG_KEYS}`
+    unset SSH_KEYS GPG_KEYS
 fi
 # }}}
 # EC2 Tools {{{
