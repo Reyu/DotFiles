@@ -50,14 +50,6 @@ elif (( $+commands[emacs] )); then
 fi
 export EDITOR=$VISUAL
 # }}}
-# Make sure that SSH and GPG agents are accessible {{{
-if (( $+commands[keychain] )); then
-    local SSH_KEYS=$(print ${HOME}/.ssh/*(*:tN))
-    local GPG_KEYS=$(cat ${HOME}/.gnupg/autoload)
-    eval `keychain -q --agents gpg,ssh --eval ${=SSH_KEYS} ${=GPG_KEYS}`
-    unset SSH_KEYS GPG_KEYS
-fi
-# }}}
 # EC2 Tools {{{
 if [[ -f $HOME/.aws_keys ]]; then
     export AWS_ACCESS_KEY=$(cat $HOME/.aws_keys|head -n1)

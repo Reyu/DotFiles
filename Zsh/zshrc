@@ -80,6 +80,7 @@ else
     alias ls='ls -G'
 fi
 
+
 # Completion {{{
 # Use caching to make completion for commands such as dpkg and apt usable.
 zstyle ':completion::complete:*' use-cache on
@@ -440,6 +441,11 @@ function prepend-sudo {
 zle -N prepend-sudo # }}}
 # }}}
 # External Modules {{{
+zstyle :omz:plugins:keychain agents gpg,ssh
+zstyle :omz:plugins:keychain identities \
+    $(print ${HOME}/.ssh/id_*(*:tN)) \
+    $(cat ${HOME}/.gnupg/autoload 2> /dev/null)
+
 source ~/.zplug/init.zsh
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 
@@ -455,6 +461,7 @@ zplug "b4b4r07/enhancd", use:init.sh
 zplug "plugins/github", from:"oh-my-zsh"
 zplug "plugins/git-hubflow", from:"oh-my-zsh"
 zplug "plugins/mosh", from:"oh-my-zsh"
+zplug "plugins/keychain", from:"oh-my-zsh"
 
 zplug "junegunn/fzf-bin", \
     from:gh-r, \
