@@ -309,10 +309,6 @@ if [[ -d $HOME/.openstack ]]; then
         path+=$HOME/.openstack/scripts
     fi
 fi # }}}
-# Makes a directory and changes to it. {{{
-function mkdcd {
-  test -n "$1" && mkdir -p "$1" && builtin cd "$1"
-} # }}}
 # Changes to a directory and lists its contents. {{{
 function cdls {
   builtin cd "$argv[-1]" && ls "${(@)argv[1,-2]}"
@@ -470,12 +466,24 @@ zplug "zsh-users/zsh-syntax-highlighting", defer:2
 zplug "zsh-users/zsh-history-substring-search"
 zplug "zsh-users/zsh-completions"
 zplug "greymd/tmux-xpanes"
+zplug "k4rthik/git-cal", as:command
+zplug "rimraf/k"
+zplug "b4b4r07/enhancd", use:init.sh
+
+zplug "plugins/github", from:"oh-my-zsh"
+zplug "plugins/git-hubflow", from:"oh-my-zsh"
+zplug "plugins/mosh", from:"oh-my-zsh"
 
 zplug "junegunn/fzf-bin", \
     from:gh-r, \
     as:command, \
     rename-to:fzf, \
-    use:"*darwin*amd64*"
+    use:"*$(uname)*amd64*"
+
+zplug "github/hub", \
+    from:gh-r, \
+    as:command, \
+    rename-to:hub
 
 zplug "stedolan/jq", \
     from:gh-r, \
@@ -544,9 +552,6 @@ if (( $+widgets[history-substring-search-up] )); then
     bindkey -M emacs "$key_info[Down]" history-substring-search-down
 fi
 
-# Clear Line
-bindkey '\el' clear-line
-
 # Edit command in an external editor.
 bindkey -M vicmd "v" edit-command-line
 bindkey -M viins "^v" edit-command-line
@@ -579,27 +584,8 @@ bindkey -M viins "$key_info[Right]" forward-char
 # Clear screen.
 bindkey -M viins "$key_info[Control]L" clear-screen
 
-# Expand command name to full path.
-for key in "$key_info[Escape]"{E,e}
-do
-    bindkey -M viins "$key" expand-cmd-path
-done
-
-# Duplicate the previous word.
-for key in "$key_info[Escape]"{M,m}
-do
-    bindkey -M viins "$key" copy-prev-shell-word
-done
-
 # Bind Shift + Tab to go to the previous menu item.
 bindkey -M viins "$key_info[BackTab]" reverse-menu-complete
-
-# Complete in the middle of word.
-bindkey -M viins "$key_info[Control]I" expand-or-complete
-
-# Display an indicator when completing.
-bindkey -M viins "$key_info[Control]I" \
-    expand-or-complete-with-indicator
 
 # Insert 'sudo ' at the beginning of the line.
 bindkey -M viins "$key_info[Control]X$key_info[Control]S" prepend-sudo
@@ -614,6 +600,9 @@ bindkey '^Z' fancy-ctrl-z
 # }}}
 # Aliases {{{
 alias mmv='noglob zmv -W'
+alias mv='nocorrect mv'
+alias cp='nocorrect cp'
+alias mkdir='nocorrect mkdir'
 alias -g ISODATE='$(date --iso-8601=date)'
 alias -g PL='| ${PAGER}'
 alias -g PG='| grep -P'
@@ -627,8 +616,8 @@ alias -s sh=$commands[sh]
 
 if (( $+commands[nvim] ))       ; then alias ni='nvim'                                              ; fi
 if (( $+commands[emacs] ))      ; then alias emacs='emacs -nw'; alias emacsc='emacsclient -c'       ; fi
-if (( $+commands[hub] ))        ; then eval $(hub alias -s)                                         ; fi
-if (( $+commands[lab] ))        ; then alias git='lab'                                              ; fi
+# if (( $+commands[hub] ))        ; then eval $(hub alias -s)                                         ; fi
+# if (( $+commands[lab] ))        ; then alias git='lab'                                              ; fi
 if (( $+commands[cowsay] ))     ; then alias foxsay='cowsay -nf ${HOME}/.config/Zsh/lib/Fox.cow'    ; fi
 if (( $+commands[xclip] ))      ; then alias -g CLIP='$(xclip -o -sel clip)'                        ; fi
 if (( $+commands[runhaskell] )) ; then alias -s hs=runhaskell                                       ; fi
