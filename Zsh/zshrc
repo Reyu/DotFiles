@@ -466,8 +466,15 @@ zplug "plugins/keychain", from:"oh-my-zsh"
 zplug "junegunn/fzf-bin", \
     from:gh-r, \
     as:command, \
-    rename-to:fzf, \
-    use:"*$(uname)*amd64*"
+    rename-to:fzf
+zplug "junegunn/fzf", \
+    on:"bin/fzf-tmux" \
+    as:command
+zplug "junegunn/fzf", \
+    use:"shell/key-bindings.zsh"
+zplug "zsh-users/zaw", \
+    as:plugin, \
+    use:"zaw.zsh"
 
 zplug "github/hub", \
     from:gh-r, \
@@ -494,34 +501,33 @@ fi
 # Then, source plugins and add commands to $PATH
 zplug load
 
-if zplug check b4b4r07/enhancd; then
-    # setting if enhancd is available
-    export ENHANCD_FILTER=fzf-tmux
-    export FZF_TMUX=1
-    export FZF_TMUX_HEIGHT=20
-    export FZF_COMPLETION_TRIGGER='~~'
+if zplug check "b4b4r07/enhancd"; then
+    if (( $+commands[lsd] )); then
+        export ENHANCD_FILTER="fzf-tmux --height 50% --reverse --ansi --preview 'lsd -l --color=always {}'"
+    else
+        export ENHANCD_FILTER="fzf-tmux --height 50% --reverse --ansi --preview 'ls -l {}'"
+    fi
+    export ENHANCD_DOT_SHOW_FULLPATH=1
 fi
 
-if [ -f ~/.fzf-extras/fzf-extras.zsh ]
-then
-    source ~/.fzf-extras/fzf-extras.zsh
-fi
-
-# zsh-completions
-# git-flow-completion
-
-# python virtualenv wrapper
-# if [[ $+commands[virtualenvwrapper.sh] == 1 ]]; then
-#     source $commands[virtualenvwrapper.sh]
-# fi
-# # Make sure we are still in the virtual env if, for example, we open a subshell
-# if [[ -n $VIRTUAL_ENV ]]; then
-#     if (( $+commands[virtualenvwrapper.sh] )); then
-#         workon $VIRTUAL_ENV(:t)
-#     else
-#         source $VIRTUAL_ENV/bin/activate
-#     fi
-# fi
+# If current selection is a text file shows its content,
+# if it's a directory shows its content, the rest is ignored
+FZF_CTRL_T_OPTS=" --preview '
+if [[ -f {} ]]; then
+    if (( $+commands[bat] )); then
+        file --mime {} | grep -q \"text\/.*;\" && bat --color \"always\" {} || (tput setaf 1; file --mime {})
+    else
+        file --mime {} | grep -q \"text\/.*;\" && cat {} || (tput setaf 1; file --mime {})
+    fi
+elif [[ -d {} ]]; then
+    if (( $+commands[lsd] )); then
+        lsd -l --color=always {}
+    else
+        ls -l --color always {}
+    fi
+else
+    tput setaf 1; echo YOU ARE NOT SUPPOSED TO SEE THIS!
+fi'"
 # }}}
 # Key Bindings {{{
 source ${HOME}/.config/MyConfig
@@ -577,7 +583,7 @@ bindkey -M viins "$key_info[Control]L" clear-screen
 bindkey -M viins "$key_info[BackTab]" reverse-menu-complete
 
 # Insert 'sudo ' at the beginning of the line.
-bindkey -M viins "$key_info[Control]X$key_info[Control]S" prepend-sudo
+# bindkey -M viins "$key_info[Control]X$key_info[Control]S" prepend-sudo
 
 # Auto expand global aliases
 bindkey " " globalias
@@ -614,6 +620,9 @@ if (( $+commands[salt-call] ))  ; then alias salt-call='sudo salt-call'         
 if (( $+commands[todoist] ))    ; then alias todo='todoist --color'                                 ; fi
 if (( $+commands[yokadi] ))     ; then alias y=yokadi                                               ; fi
 if (( $+commands[ledger] ))     ; then alias ledger='noglob ledger'                                 ; fi
+if (( $+commands[hledger] ))    ; then alias ledger='noglob hledger'                                ; fi
+if (( $+commands[bat] ))        ; then alias cat='bat'                                              ; fi
+if (( $+commands[lsd] ))        ; then alias ls='lsd'                                               ; fi
 if [[ -f ${HOME}/.local/todo.txt/todo.sh ]]; then
     alias todo="~/.local/todo.txt/todo.sh -d ~/.config/todo.cfg"
     alias t=todo

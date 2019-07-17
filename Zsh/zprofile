@@ -76,12 +76,9 @@ if [[ -x ${PWD}/.new-shell ]]
 then
     # If file exists, and is marked executable
     ${PWD}/.new-shell
-elif [[ -z $SSH_CONNECTION && $USER != 'root' && $SHLVL -le 2 && -z $NO_FORTUNE ]]; then
+elif (( $+commands[fortune] )) && [[ -z $SSH_CONNECTION && $USER != 'root' && $SHLVL -le 2 && -z $NO_FORTUNE ]]; then
     # Give a Fortune!
-    if (( $+commands[cowsay] ))
-    then fortune | cowsay
-    else fortune
-    fi
+    fortune
 fi
 # }}}
 # Read local configuration {{{
