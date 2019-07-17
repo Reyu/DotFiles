@@ -452,11 +452,15 @@ zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 zplug "Tarrasch/zsh-functional"
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
 zplug "zsh-users/zsh-history-substring-search"
+zplug "b4b4r07/zsh-vimode-visual", use:"*.zsh", defer:3
 zplug "zsh-users/zsh-completions"
 zplug "greymd/tmux-xpanes"
 zplug "k4rthik/git-cal", as:command
 zplug "rimraf/k"
 zplug "b4b4r07/enhancd", use:init.sh
+
+zplug "glidenote/hub-zsh-completion"
+zplug 'Valodim/zsh-curl-completion'
 
 zplug "plugins/github", from:"oh-my-zsh"
 zplug "plugins/git-hubflow", from:"oh-my-zsh"
@@ -488,6 +492,14 @@ zplug "stedolan/jq", \
 zplug "b4b4r07/emoji-cli", \
     on:"stedolan/jq"
 
+zplug "mitmproxy/mitmproxy", \
+    as:command, \
+    hook-build:"pipsi install ."
+
+zplug "reorx/httpstat", \
+    as:command, \
+    hook-build:"pipsi install ."
+
 zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
 
 # Install plugins if there are plugins that have not been installed
@@ -500,6 +512,11 @@ fi
 
 # Then, source plugins and add commands to $PATH
 zplug load
+
+if zplug check "junegunn/fzf"; then
+    export FZF_TMUX=1
+    export FZF_TMUX_HEIGHT=40
+fi
 
 if zplug check "b4b4r07/enhancd"; then
     if (( $+commands[lsd] )); then
@@ -528,6 +545,7 @@ elif [[ -d {} ]]; then
 else
     tput setaf 1; echo YOU ARE NOT SUPPOSED TO SEE THIS!
 fi'"
+
 # }}}
 # Key Bindings {{{
 source ${HOME}/.config/MyConfig
@@ -548,8 +566,8 @@ if (( $+widgets[history-substring-search-up] )); then
 fi
 
 # Edit command in an external editor.
-bindkey -M vicmd "v" edit-command-line
-bindkey -M viins "^v" edit-command-line
+# bindkey -M vicmd "v" edit-command-line
+# bindkey -M viins "^v" edit-command-line
 
 # Undo/Redo
 bindkey -M vicmd "u" undo

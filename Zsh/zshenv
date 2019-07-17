@@ -6,6 +6,9 @@
 #
 
 # Read local configuration {{{
+BAT_THEME="ansi-dark"
+# }}}
+# Read local configuration {{{
 if [[ -f ${ZDOTDIR:-$HOME}/.zshenv.local ]]; then
     source ${ZDOTDIR:-$HOME}/.zshenv.local
 fi
