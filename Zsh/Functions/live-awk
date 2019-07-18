@@ -1,2 +1,2 @@
 #!/bin/zsh
-exec echo ''| fzf --print-query --preview '< '$1' awk {q}'
+exec echo ''| fzf --query '{print}' --print-query --preview '< '$1' awk {q}'
