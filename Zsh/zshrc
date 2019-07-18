@@ -529,7 +529,7 @@ fi
 
 # If current selection is a text file shows its content,
 # if it's a directory shows its content, the rest is ignored
-FZF_CTRL_T_OPTS=" --preview '
+FZF_CTRL_T_OPTS=" --multi --preview '
 if [[ -f {} ]]; then
     if (( $+commands[bat] )); then
         file --mime {} | grep -q \"text\/.*;\" && bat --color \"always\" {} || (tput setaf 1; file --mime {})
