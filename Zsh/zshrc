@@ -545,6 +545,12 @@ elif [[ -d {} ]]; then
 else
     tput setaf 1; echo YOU ARE NOT SUPPOSED TO SEE THIS!
 fi'"
+FZF_ALT_C_OPTS=" --preview '
+if (( $+commands[lsd] )); then
+    lsd -l --color=always {}
+else
+    ls -l --color always {}
+fi'"
 
 # }}}
 # Key Bindings {{{
@@ -612,6 +618,7 @@ bindkey -M isearch " " magic-space # normal space during searches
 bindkey '^Z' fancy-ctrl-z
 # }}}
 # Aliases {{{
+alias ll='ls -l'
 alias mmv='noglob zmv -W'
 alias mv='nocorrect mv'
 alias cp='nocorrect cp'
@@ -629,8 +636,8 @@ alias -s sh=$commands[sh]
 
 if (( $+commands[nvim] ))       ; then alias ni='nvim'                                              ; fi
 if (( $+commands[emacs] ))      ; then alias emacs='emacs -nw'; alias emacsc='emacsclient -c'       ; fi
-# if (( $+commands[hub] ))        ; then eval $(hub alias -s)                                         ; fi
-# if (( $+commands[lab] ))        ; then alias git='lab'                                              ; fi
+if (( $+commands[hub] ))        ; then eval $(hub alias -s)                                         ; fi
+if (( $+commands[lab] ))        ; then alias git='lab'                                              ; fi
 if (( $+commands[cowsay] ))     ; then alias foxsay='cowsay -nf ${HOME}/.config/Zsh/lib/Fox.cow'    ; fi
 if (( $+commands[xclip] ))      ; then alias -g CLIP='$(xclip -o -sel clip)'                        ; fi
 if (( $+commands[runhaskell] )) ; then alias -s hs=runhaskell                                       ; fi
@@ -640,7 +647,7 @@ if (( $+commands[yokadi] ))     ; then alias y=yokadi                           
 if (( $+commands[ledger] ))     ; then alias ledger='noglob ledger'                                 ; fi
 if (( $+commands[hledger] ))    ; then alias ledger='noglob hledger'                                ; fi
 if (( $+commands[bat] ))        ; then alias cat='bat'                                              ; fi
-if (( $+commands[lsd] ))        ; then alias ls='lsd'                                               ; fi
+if (( $+commands[lsd] ))        ; then alias ls='lsd'; alias tree='lsd --tree'                      ; fi
 if [[ -f ${HOME}/.local/todo.txt/todo.sh ]]; then
     alias todo="~/.local/todo.txt/todo.sh -d ~/.config/todo.cfg"
     alias t=todo
