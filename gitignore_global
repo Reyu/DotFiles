@@ -11,30 +11,39 @@ Session.vim
 .netrwhist
 *~
 
-# Eclipse #
-###########
-*.pydevproject
-.project
-.metadata
-bin/**
-tmp/**
-tmp/**/*
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
-.classpath
-.settings/
-.loadpath
-# External tool builders
-.externalToolBuilders/
-# Locally stored "Eclipse launch configurations"
-*.launch
-# CDT-specific
-.cproject
-# PDT-specific
-.buildpath
+# Python #
+##########
+*.py[cod]
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+
+# Unit test / coverage reports
+.pytest_cache
+.coverage
+.tox
+nosetests.xml
+
+# Translations
+*.mo
+
+# Sphinx
+docs/_build
+.venv/
 
 # Logs and Databases #
 ######################
