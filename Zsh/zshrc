@@ -446,7 +446,18 @@ zstyle :omz:plugins:keychain identities \
     $(print ${HOME}/.ssh/id_*(*:tN)) \
     $(cat ${HOME}/.gnupg/autoload 2> /dev/null)
 
-source ~/.zplug/init.zsh
+if [[ -d ${HOME}/zplug ]]
+then
+    source ~/.zplug/init.zsh
+elif [[ -d /usr/local/opt/zplug ]]
+then
+    export ZPLUG_HOME=/usr/local/opt/zplug
+    source $ZPLUG_HOME/init.zsh
+else
+    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+    source ~/.zplug/init.zsh
+fi
+
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 
 zplug "Tarrasch/zsh-functional"
