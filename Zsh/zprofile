@@ -63,7 +63,7 @@ fi
 # }}}
 # Extra {{{
 export GOPATH="${HOME}/.go"
-export NNTPSERVER="news.giganews.commands"
+export NNTPSERVER="news.giganews.com"
 
 # Attempt to `cd` to project dir, if possible, based on name of current session
 if [[ -n $TMUX ]]
