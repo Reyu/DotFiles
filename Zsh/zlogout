@@ -11,6 +11,8 @@ if [[ -f ${ZDOTDIR:-$HOME}/.zlogout.local ]]; then
 fi
 # }}}
 
+clear  # the screen
+
 if [[ $USER != 'root' ]]; then
     echo 'The world is coming to an end--save your buffers!'
 fi

@@ -1,9 +1,4 @@
 set mbox_type=Maildir
-set folder=$HOME/.maildir
-set spoolfile=+Inbox
 set mask=".*"
-set record="+Sent"
-set postponed="+Drafts"
 
-mailboxes `zsh -c '(cd ~/.maildir;print -l **/new(D:h)|grep -Ev "Archive|Drafts|Sent|Trash|(probably-s|S)pam|virus"|xargs printf "+%s ")'`
-# vim: ft=muttrc
+# vim: ft=neomuttrr

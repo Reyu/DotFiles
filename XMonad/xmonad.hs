@@ -78,7 +78,6 @@ getHost = do
   return $
     case hostName of
       "renard" -> Desktop 3 Pulse
-      "vulpie" -> Desktop 3 Pulse
       "crevan" -> Laptop True True Pulse
       _ -> Desktop (-1) Pulse
 
@@ -185,16 +184,18 @@ data TopicItem = TI
 -- define some custom topics for use with the TopicSpace module.
 myTopics :: [TopicItem]
 myTopics =
-  [ TI "web" "." (spawn "firefox")
+  [ TI "web" "." (spawn "firefox -P Reyu")
+  , TI "work" "Projects" spawnTopicShell
   , TI "chat" "."
        (spawn "telegram-desktop" >>
         spawn "discord" >>
         spawnTopicShell)
-  , TI "work" "Projects" spawnTopicShell
+  , TI "video" "." (spawn "/home/reyu/bin/brave")
   , TI "games" "." (spawn "steam")
   , TI "stream" "." (spawn "obs")
   , TI "virt" "." (spawn "virt-manager")
-  , TI "video" "." (spawn "qutebrowser --restore video")
+  , TI "modeling" "Projects/Blender" (spawn "~/bin/blender")
+  , TI "capacity" "Projects/Capacity" spawnTopicShell
   ]
   where
     spawnTopicShell = spawnShell Nothing
@@ -208,7 +209,7 @@ myTopicConfig =
   { topicDirs = M.fromList $ map (\(TI n d _) -> (n, d)) myTopics
   , defaultTopicAction = \x ->
       spawnShell (Just x) >>
-      spawn ("qutebrowser --restore '" ++ x ++ "'")
+      spawn ("qutebrowser -r " ++ x)
   , defaultTopic = "web"
   , maxTopicHistory = 10
   , topicActions = M.fromList $ map (\(TI n _ a) -> (n, a)) myTopics
@@ -218,21 +219,23 @@ myTopicConfig =
 -- Scratchpads
 scratchpads :: Host -> [NamedScratchpad]
 scratchpads host =
-  [ ns "htop" "htop" mySPFloat
-  , ns "ghci" "ghci" mySPFloat
-  , ns "mail" "mutt" mySPLargeFloat
+  [ term "htop" "htop" mySPFloat
+  , term "ghci" "ghci" mySPFloat
+  , tmux "mail" "neomutt" mySPLargeFloat
+  , term "news" "zsh -lc slrn" mySPLargeFloat
+  , NS "thunderbird" "thunderbird" (className =? "Thunderbird") mySPLargeFloat
   , case getAudioSystem host of
-      Alsa -> ns "volume" "alsamixer" mySPLargeFloat
-      Pulse ->
-        NS "volume" "pavucontrol" (className =? "Pavucontrol") mySPLargeFloat
-  , ns "calendar" "ikhal" mySPLargeFloat]
+      Alsa -> term "volume" "alsamixer" mySPLargeFloat
+      Pulse -> NS "volume" "pavucontrol" (className =? "Pavucontrol") mySPLargeFloat
+  , tmux "calendar" "ikhal" mySPLargeFloat]
   where
-    ns n p = NS n (termTmuxStart p) (className =? p)
-    termTmuxStart n =
-      myTerminal ++ " -c " ++ n ++ " -e tmux new -As " ++ n ++ " " ++ n
+    -- Run in Terminal
+    term n c = NS n (myTerminal ++ " -c " ++ n ++ " -- " ++ c) (className =? n)
+    -- Run in TMUX session
+    tmux n c = NS n (myTerminal ++ " -c " ++ n ++ " -e tmux new -As " ++ n ++ " " ++ c) (className =? n)
+    -- Helpers
     mySPFloat = customFloating $ W.RationalRect (1 / 4) (1 / 4) (1 / 2) (1 / 2)
-    mySPLargeFloat =
-      customFloating $ W.RationalRect (1 / 8) (1 / 8) (3 / 4) (3 / 4)
+    mySPLargeFloat = customFloating $ W.RationalRect (1 / 8) (1 / 8) (3 / 4) (3 / 4)
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -263,11 +266,14 @@ myKeymap host conf =
   , ("M-t", withFocused $ windows . W.sink)
   , ("M-u", do
         workspace <- gets (W.currentTag . windowset)
-        spawn ("qutebrowser --restore " ++ workspace))
+        spawn ("qutebrowser -r " ++ workspace))
+  , ("S-M-u", spawn "firefox --new-window")
   , ("<Print>", spawn "scrot")
   , ("C-<Print>", spawn "sleep 0.2; scrot -s")
   , ("M-b", sendMessage ToggleStruts)
   , ("M-f", newCodeWS)
+  , ("C-M-l", spawn "~/bin/lights on")
+  , ("S-M-l", spawn "~/bin/lights off")
   ,
     -- Topic actions
     ("M-a", currentTopicAction myTopicConfig)
@@ -287,7 +293,7 @@ myKeymap host conf =
                      ])
   , ("M-g", promptedGoto)
   , ("M-S-g", promptedShift)
-  , ("M-z", removeEmptyNonTopicWorkspaceAfter toggleWS)]
+  , ("M-z", removeEmptyNonTopicWorkspaceAfter $ toggleWS' ["NSP"])]
   -- I have the rest in list-comprehension groups, because they make
   -- it easier, for me personally, to read.
   ++ -- Volume
@@ -314,7 +320,8 @@ myKeymap host conf =
      , ("s", sshPrompt myXPConfig)
      , ("m", prompt "mpc " myXPConfig)
      , ("S-m", manPrompt myXPConfig)
-     , ("t", prompt (myTerminal ++ " -e tmux new -s ") myXPConfig)] ]
+     , ("l", prompt "~/bin/lights" myXPConfig)
+     , ("t", prompt (myTerminal ++ " -e tmux new -A -s ") myXPConfig)] ]
   ++ -- Workspace Groups
   [ ("M-y " ++ k, f)
   | (k,f) <-
@@ -335,10 +342,9 @@ myKeymap host conf =
      [ ("t", "htop")
      , ("g", "ghci")
      , ("m", "mail")
-     , ("e", "emacs")
-     , ("v", "volume")
-     , ("b", "brain")
-     , ("c", "calendar")] ]
+     , ("n", "news")
+     , ("S-m", "thunderbird")
+     , ("v", "volume")] ]
   ++ -- toggles: fullscreen, flip x, flip y, mirror, no borders
   [ ("M-C-" ++ k, sendMessage f)
   | (k,f) <-
@@ -362,7 +368,7 @@ myKeymap host conf =
   | (dir,dx,dy) <- [("n", -20, 0), ("h", 20, 0), ("t", 0, -20), ("c", 0, 20)] ]
   ++ -- Move focus, or move windows, between screens
   [ (m ++ "M-" ++ k, f s)
-  | (k,s) <- zip [";", ",", "."] [0 ..]
+  | (k,s) <- zip ["'", ",", ".", "o"] [0 ..]
   , (f,m) <- [(viewScreen, ""), (sendToScreen, "S-")] ]
 
 ------------------------------------------------------------------------
@@ -383,7 +389,7 @@ myLayoutHook =
     [ "code" ++ show i
     | i <- [0 .. 10] ]
     (noBorders Full ||| TwoPane (2 / 100) (1 / 2)) $
-    TwoPane (2 / 100) (1 / 2) ||| tiled ||| Mag.magnifier Grid ||| noBorders Full
+    TwoPane (2 / 100) (1 / 2) ||| tiled ||| Mag.magnifier Grid
   where
     tiled = ResizableTall 1 (2 / 100) (1 / 2) []
     chatLayout =
@@ -450,16 +456,21 @@ myLoghook logPipe = do
   dynamicLogWithPP $ defaultPP
     { ppCurrent = dzenColor (solarized "green") ""
     , ppVisible = dzenColor (solarized "cyan") ""
-    , ppHidden = dzenColor (solarized "text") ""
+    , ppHidden = dzenColor (solarized "blue") ""
     , ppUrgent = dzenColor (solarized "yellow") (solarized "red")
     , ppLayout = dzenColor (solarized "text") ""
-    , ppTitle = shorten 100
+    , ppTitle = shorten 150
     , ppSort = fmap (namedScratchpadFilterOutWorkspace .) DO.getSortByOrder
     , ppExtras =
-      [ date "%a %b %d  %I:%M %p"
+      [ date "%a %b %d  %H%M"
       , loadAvg
       , dzenColorL (solarized "green") "" $
-        wrapL "Inbox: " "" $ maildirUnread ".maildir/Inbox"] ++
+        wrapL "Proton: " "" $ maildirUnread "Mail/proton/Inbox"
+      , dzenColorL (solarized "yellow") "" $
+        wrapL "BlkFox: " "" $ maildirUnread "Mail/blkfox/Inbox"
+      , dzenColorL (solarized "blue") "" $
+        wrapL "Gmail: " "" $ maildirUnread "Mail/tim/Inbox"
+      ] ++
       (case host of
          Laptop{} -> [battery]
          Desktop _ _ -> [])

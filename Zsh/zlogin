@@ -14,6 +14,22 @@
   fi
 } &!
 # }}}
+# Attempt to `cd` to project dir, if possible, based on name of current session {{{
+if [[ -n $TMUX ]]
+then
+    export TMUX_SESSION=$(tmux list-sessions -F '#{session_attached} #{session_name}'|awk '/^1/{print $2}')
+    cd ${HOME}/Projects/${TMUX_SESSION} 2>/dev/null || true
+fi
+
+if [[ -x ${PWD}/.new-shell ]]
+then
+    # If file exists, and is marked executable
+    ${PWD}/.new-shell
+elif (( $+commands[fortune] )) && [[ -z $SSH_CONNECTION && $USER != 'root' && $SHLVL -le 2 && -z $NO_FORTUNE ]]; then
+    # Give a Fortune!
+    fortune
+fi
+# }}}
 # Read local configuration {{{
 if [[ -f ${ZDOTDIR:-$HOME}/.zlogin.local ]]; then
     source ${ZDOTDIR:-$HOME}/.zlogin.local

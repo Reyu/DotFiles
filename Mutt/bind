@@ -20,6 +20,10 @@
     macro index \er "!notmuch new\r" "Sync with mailserver"
   # Jumping to the next mail that is still unread.
     bind index \t next-unread
+  # Sidebar Navigation and Controls
+    macro index \cP ':push <sidebar-prev><enter>'
+    macro index \cN ':push <sidebar-next><enter>'
+    macro index \cO ':push <sidebar-open><enter>'
   # Edit the Bindings And Macros File
     macro index \eB "!nvim  ~/.mutt/bind\n:source ~/.mutt/bind\n" "Edit the bindings and macros file and reload it"
     macro index \eC "!nvim ~/.mutt/color\n:source ~/.mutt/color\n" "Edit the colour file and reload it"
@@ -30,31 +34,28 @@
     macro index \\ ":set simple_search='~b %s'\r<search>"
     macro index \e/ ":set simple_search='~f %s | ~s %s'\r<search-reverse>"
     macro index \e\\ ":set simple_search='~b %s'\r<search-reverse>"
-  # Archive message
-    macro index d "<save-message>=Archive<enter>" "Archive Message"
   # Notmuch Mail shortcuts
-    macro index <F8> \
+    macro index <F9> \
        "<enter-command>set my_old_pipe_decode=\$pipe_decode my_old_wait_key=\$wait_key nopipe_decode nowait_key<enter>\
        <shell-escape>notmuch-mutt -r --prompt search<enter>\
        <change-folder-readonly>`echo ${XDG_CACHE_HOME:-$HOME/.cache}/notmuch/mutt/results`<enter>\
        <enter-command>set pipe_decode=\$my_old_pipe_decode wait_key=\$my_old_wait_key<enter>" \
              "notmuch: search mail"
 
-    macro index <F9> \
+    macro index <F10> \
        "<enter-command>set my_old_pipe_decode=\$pipe_decode my_old_wait_key=\$wait_key nopipe_decode nowait_key<enter>\
        <pipe-message>notmuch-mutt -r thread<enter>\
        <change-folder-readonly>`echo ${XDG_CACHE_HOME:-$HOME/.cache}/notmuch/mutt/results`<enter>\
        <enter-command>set pipe_decode=\$my_old_pipe_decode wait_key=\$my_old_wait_key<enter>" \
              "notmuch: reconstruct thread"
 
-    macro index <F6> \
+    macro index <F8> \
        "<enter-command>set my_old_pipe_decode=\$pipe_decode my_old_wait_key=\$wait_key nopipe_decode nowait_key<enter>\
        <pipe-message>notmuch-mutt tag -- -inbox<enter>\
        <enter-command>set pipe_decode=\$my_old_pipe_decode wait_key=\$my_old_wait_key<enter>" \
              "notmuch: remove message from inbox"
 
 
-# Bindings for PAGER (Message Pager)
   # Jumping to the next mail that is still unread ('\t' means <TAB> (Tabulator)!).
     bind pager \t next-unread
   # urlview rulez
@@ -76,10 +77,11 @@
 
 # Bindings for COMPOSE
   # Select identity to send from
-    bind  compose \eff edit-from
+    bind  compose \ef  noop
+    macro compose \eff "<edit-from>\n"
     macro compose \efr "<edit-from>^UReyu Zenfold <reyu@reyuzenfold.com>\n"
+    macro compose \efb "<edit-from>^UReyu Zenfold <reyu@blackfoxcode.com>\n"
     macro compose \efp "<edit-from>^UTim Millican <tim.millican@gmail.com>\n"
     macro compose \efl "<edit-from>^UTim Millican <tim.millican@linux.com>\n"
-    macro compose \efw "<edit-from>^UTim Millican <timothy_millican@cable.comcast.com>\n"
 
-# vim: ft=muttrc
+# vim: ft=neomuttrc

@@ -5,8 +5,54 @@
 #   Tim Millican <tim.millican@linux.com>
 #
 
-# Read local configuration {{{
-BAT_THEME="ansi-dark"
+# Paths {{{
+typeset -gU cdpath fpath mailpath path
+
+# Set the the list of directories that cd searches.
+cdpath=(
+   $HOME
+   $HOME/Projects
+   $cdpath
+)
+# Remove non-existent directories
+cdpath=($^cdpath(N-/))
+
+# Set the list of directories that Zsh searches for programs.
+path=(
+  ${HOME}/.local/bin
+  ${HOME}/bin
+  ${HOME}/.go/bin
+  ${HOME}/.yarn/bin
+  ${HOME}/.npm-global/bin
+  /usr/local/bin
+  /usr/bin
+  /bin
+  $path
+)
+# Remove non-existent directories
+path=($^path(N-/))
+
+# Python VirtualEnv Wrapper
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+export WORKON_HOME=${HOME}/Projects/.python_virtual_environments
+# }}}
+# Editors {{{
+if (( $+commands[nvim] )); then
+    export VISUAL=${commands[nvim]}
+elif (( $+commands[vim] )); then
+    export VISUAL=${commands[vim]}
+elif (( $+commands[emacsclient] )); then
+    export VISUAL="${commands[emacsclient]} -c"
+    export ALTERNATE_EDITOR=${commands[emacs]}
+elif (( $+commands[emacs] )); then
+    export VISUAL="${commands[emacs]} -nw"
+fi
+export EDITOR=$VISUAL
+# }}}
+# Extra Config {{{
+export GOPATH="${HOME}/.go"
+export NNTPSERVER="news.giganews.com"
+export BAT_THEME="ansi-dark"
 # }}}
 # Read local configuration {{{
 if [[ -f ${ZDOTDIR:-$HOME}/.zshenv.local ]]; then

@@ -17,23 +17,24 @@ score ~D                                          =0    # this is a deleted emai
 
 # My addresses
 # Messages addressed to me get                    +10
-score '~t reyu@reyuzenfold.com'                   +10
+score '~t reyu@reyuzenfold.com'                   +15
 score '~t tim.millican@gmail.com'                 +10
 score '~t reyuzenfold@gmail.com'                  +10
-score '~t tim_millican@cable.comcast.com'         +10
-score '~t timothy_millican@cable.comcast.com'     +10
+score '~t reyu@blackfoxcode.com'                  +10
 # Messages addressed ONLY to me get an additional +10
 score '~t ^reyu@reyuzenfold.com$'                 +10
 score '~t ^tim.millican@gmail.com$'               +10
 score '~t ^reyuzenfold@gmail.com$'                +10
-score '~t ^tim_millican@cable.comcast.com$'       +10
-score '~t ^timothy_millican@cable.comcast.com$'   +10
+score '~t ^reyu@blackfoxcode.com$'                +10
 
-# Work mail
-score '~l'                                        -5
-score '~s ^OVS-WATCH'                             -15
-score '~s Maintenance'                            +10
-score '~s Outage'                                 +25
+# Financial
+score '~f updates@healthequity.com'               +10
+
+# Marketing
+score '~f loyalty@loyalty.ms.aa.com'              -20
+
+# Housing/Apartment
+score '~f noreply@activebuilding.com'             +5
 
 # Other
 score '~f ^donotreply@*'                          -10
@@ -51,4 +52,4 @@ score '!~f@'                                      -9999 # no mail address presen
 score "~f '^([^ <>@]+ ){5,}'"                     -9999 # a realname consisting of >=5 portions is invalid, too
 
 # Tabularize /\s[+-=]\d\+/
-# vim: ft=muttrc
+# vim: ft=neomuttrr

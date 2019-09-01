@@ -20,4 +20,4 @@ color body green black "^#v[-+]"
 # aspell for president *hr*
 set ispell="/usr/bin/aspell --language-tag=en --lang=en --moen=email check --add-email-quote=%,#,:,}"
 
-# vim: ft=muttrc
+# vim: ft=neomuttrr

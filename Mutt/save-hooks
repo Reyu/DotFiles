@@ -4,4 +4,4 @@
 #save-hook "~C zfs-discuss@zfsonlinux.org" +Lists.ZFS
 #save-hook "~C vim_use@googlegroups.com" +Lists.Vim
 
-# vim: ft=muttrc
+# vim: ft=neomuttrr

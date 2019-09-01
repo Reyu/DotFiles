@@ -4,4 +4,4 @@ image/*;        feh %s
 
 */*;            xdg-open %s
 
-# vim: ft=muttrc
+# vim: ft=neomuttrr

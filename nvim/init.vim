@@ -78,8 +78,10 @@ endfunction
     " Haskell
     call dein#add('alx741/vim-stylishask', {'on_ft': 'haskell'})
     call dein#add('alx741/hindent', {'on_ft': 'haskell'})
-    call dein#add('DanielG/ghc-mod', {'on_ft': 'haskell'})
-    call dein#add('parsonsmatt/intero-neovim', {'on_ft': 'haskell'})
+    call dein#add('neovimhaskell/haskell-vim', {'on_ft': 'haskell'})
+    call dein#add('mpickering/hlint-refactor-vim', {'on_ft': 'haskell'})
+    " call dein#add('DanielG/ghc-mod', {'on_ft': 'haskell'})
+    " call dein#add('parsonsmatt/intero-neovim', {'on_ft': 'haskell'})
 
     " Python
     call dein#add('vim-scripts/python.vim', {'on_ft': 'python'})
@@ -608,6 +610,12 @@ if dein#tap('vim-subversive') " {{{
 
     " iv = current viewable text in the buffer
     onoremap iv :exec "normal! HVL"<cr>
+endif " }}}
+if dein#tap('cutlass') " {{{
+    nnoremap x d
+    xnoremap x d
+    nnoremap xx dd
+    nnoremap X D
 endif " }}}
 " }}}
 " Plugins }}}
