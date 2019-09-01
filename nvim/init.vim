@@ -105,7 +105,7 @@ endfunction
         call dein#add('airblade/vim-gitgutter')
         " call dein#add('altercation/vim-colors-solarized')
         call dein#add('iCyMind/NeoSolarized')
-        "call dein#add('christoomey/vim-tmux-navigator')
+        call dein#add('christoomey/vim-tmux-navigator')
         " call dein#add('garbas/vim-snipmate.git')
         call dein#add('majutsushi/tagbar')
         call dein#add('neoclide/coc.nvim', {'merge':0, 'build': './install.sh nightly', 'hook_post_update': function('CocDeps')})
