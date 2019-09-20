@@ -640,8 +640,8 @@ set background=dark
 " Turn on Mode Lines
 set modeline modelines=3
 
-" Turn on Line numbers
-set number relativenumber
+" Turn off Line numbers
+set nonumber norelativenumber
 
 " Highlight current line
 set cursorline nocursorcolumn
@@ -655,6 +655,11 @@ set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 " Keep some context at screen edges
 set scrolloff=5 sidescrolloff=5
 
+" Ignore case in searching...
+set ignorecase
+" ...except if search string contains uppercase
+set smartcase
+
 if exists('g:gui_oni')
     " Enable GUI mouse
     set mouse=a
@@ -666,7 +671,7 @@ if exists('g:gui_oni')
     set noshowcmd
 else
     " Set terminal title
-    set title titlestring=NeoVim\ (%F)
+    set titlestring=NeoVim\ (%F)
 
     " Don't use the mouse. Ever.
     set mouse=
