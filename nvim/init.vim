@@ -611,7 +611,7 @@ if dein#tap('vim-subversive') " {{{
     " iv = current viewable text in the buffer
     onoremap iv :exec "normal! HVL"<cr>
 endif " }}}
-if dein#tap('cutlass') " {{{
+if dein#tap('vim-cutlass') " {{{
     nnoremap x d
     xnoremap x d
     nnoremap xx dd
