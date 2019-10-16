@@ -10,7 +10,7 @@ augroup init
 augroup end
 
 " Set Python Host programs
-let g:python_host_prog=expand("~/Projects/.python_virtual_environments/neovim2/bin/python")
+" let g:python_host_prog=expand("~/Projects/.python_virtual_environments/neovim2/bin/python")
 let g:python3_host_prog=expand("~/Projects/.python_virtual_environments/neovim/bin/python")
 
 " Set <leader> to comma (,)
@@ -37,13 +37,14 @@ else
 endif
 
 function! CocDeps()
-    let extensions = ['coc-tag', 'coc-word', 'coc-gocode', 'coc-neosnippet', 'coc-html', 'coc-css', 'coc-yaml', 'coc-tsserver', 'coc-json']
+    let extensions = ['coc-tag', 'coc-gocode', 'coc-neosnippet', 'coc-html', 'coc-css', 'coc-yaml', 'coc-tsserver', 'coc-json']
     call coc#util#install_extension(extensions)
 endfunction
 
 " if dein#load_state(s:dein_path)
     call dein#begin(s:dein_path)
     " Global Plugins
+    call dein#add('dahu/bisectly')
     call dein#add('benekastah/neomake')
     call dein#add('chrisbra/NrrwRgn')
     call dein#add('easymotion/vim-easymotion')
@@ -66,7 +67,7 @@ endfunction
     call dein#add('tpope/vim-repeat')
     call dein#add('tpope/vim-surround')
     call dein#add('tpope/vim-unimpaired')
-    call dein#add('w0rp/ale')
+    " call dein#add('w0rp/ale')
 
     " Snippet Definitions
     call dein#add('honza/vim-snippets')
@@ -80,8 +81,6 @@ endfunction
     call dein#add('alx741/hindent', {'on_ft': 'haskell'})
     call dein#add('neovimhaskell/haskell-vim', {'on_ft': 'haskell'})
     call dein#add('mpickering/hlint-refactor-vim', {'on_ft': 'haskell'})
-    " call dein#add('DanielG/ghc-mod', {'on_ft': 'haskell'})
-    " call dein#add('parsonsmatt/intero-neovim', {'on_ft': 'haskell'})
 
     " Python
     call dein#add('vim-scripts/python.vim', {'on_ft': 'python'})
@@ -99,11 +98,8 @@ endfunction
 
     if !exists('g:gui_oni')
         " Non-Oni/Gui Plugins
-        " call dein#add('Shougo/deoplete.nvim')
-        " call dein#add('Shougo/deoplete-lsp')
         call dein#add('Shougo/defx.nvim')
         call dein#add('airblade/vim-gitgutter')
-        " call dein#add('altercation/vim-colors-solarized')
         call dein#add('iCyMind/NeoSolarized')
         call dein#add('christoomey/vim-tmux-navigator')
         " call dein#add('garbas/vim-snipmate.git')
@@ -140,24 +136,7 @@ if dein#check_install()
 endif
 " Plugin Init/Load }}}
 " Plugin Configuration {{{
-if dein#tap('vim-colors-solarized') " {{{
-    let g:solarized_termtrans=1
-    colorscheme solarized
-    function! ToggleBackground()
-        if ( g:solarized_termtrans == 1 )
-            let g:solarized_termtrans = 0
-        else
-            let g:solarized_termtrans = 1
-        endif
-        colorscheme solarized
-    endfunction
-    nnoremap <Leader>tb :call ToggleBackground()<CR>
-elseif dein#tap('NeoSolarized')
-    colorscheme NeoSolarized
-else
-    colorscheme slate
-endif " }}}
-if dein#tap('neomake') " {{{
+if dein#tap('NeoSolarized') " {{{
     let g:neomake_open_list=2
     " call neomake#configure#automake('nw', 500)
 
@@ -170,53 +149,9 @@ if dein#tap('neomake') " {{{
     let g:neomake_haskell_enabled_makers = []
 
 endif " }}}
-if dein#tap('vim2hs') " {{{
-    let g:haskell_conceal_wide = 0
-    " disable all conceals, including the simple ones like
-    " lambda and composition
-    let g:haskell_conceal = 0
-    " disable concealing of "enumerations": commatized lists like
-    " deriving clauses and LANGUAGE pragmas,
-    " otherwise collapsed into a single ellipsis
-    let g:haskell_conceal_enumerations = 0
+if dein#tap('neomake') " {{{
+    colorscheme NeoSolarized
 endif " }}}
-if dein#tap('ghcmod-vim') " {{{
-    map <silent> <Leader>tw :GhcModTypeInsert<CR>
-    map <silent> <Leader>ts :GhcModSplitFunCase<CR>
-    map <silent> <Leader>tq :GhcModType<CR>
-    map <silent> <Leader>te :GhcModTypeClear<CR>
-
-    " Hoogle the word under the cursor
-    nnoremap <silent> <leader>hh :Hoogle<CR>
-    " Hoogle and prompt for input
-    nnoremap <leader>hH :Hoogle
-    " Hoogle for detailed documentation (e.g. "Functor")
-    nnoremap <silent> <leader>hi :HoogleInfo<CR>
-    " Hoogle for detailed documentation and prompt for input
-    nnoremap <leader>hI :HoogleInfo
-    " Hoogle, close the Hoogle window
-    nnoremap <silent> <leader>hz :HoogleClose<CR>
-
-    " Type of expression under cursor
-    nmap <silent> <leader>ht :GhcModType<CR>
-    " Insert type of expression under cursor
-    nmap <silent> <leader>hT :GhcModTypeInsert<CR>
-
-    " Use hindent instead of par for haskell buffers
-    " autocmd FileType haskell let &formatprg="hindent --tab-size 2 -XQuasiQuotes"
-
-    " Point Conversion {{{
-    function! Pointfree()
-        call setline('.', split(system('pointfree '.shellescape(join(getline(a:firstline, a:lastline), "\n"))), "\n"))
-    endfunction
-    vnoremap <silent> <leader>h. :call Pointfree()<CR>
-
-    function! Pointful()
-        call setline('.', split(system('pointful '.shellescape(join(getline(a:firstline, a:lastline), "\n"))), "\n"))
-    endfunction
-    vnoremap <silent> <leader>h> :call Pointful()<CR>
-    " }}}
-endif "}}}
 if dein#tap('vim-easymotion') " {{{
     let g:EasyMotion_smartcase = 1
     " map <Leader> <Plug>(easymotion-prefix)
@@ -273,49 +208,6 @@ if dein#tap('tagbar') " {{{
         \ 'type'   : 't'
     \ }
     \ }
-endif " }}}
-if dein#tap('intero-neovim') " {{{
-    augroup interoMaps
-        au!
-        " Maps for intero. Restrict to Haskell buffers so the bindings don't collide.
-
-        " Background process and window management
-        au FileType haskell nnoremap <silent> <leader>is :InteroStart<CR>
-        au FileType haskell nnoremap <silent> <leader>ik :InteroKill<CR>
-
-        " Open intero/GHCi split horizontally
-        au FileType haskell nnoremap <silent> <leader>io :InteroOpen<CR>
-        " Open intero/GHCi split vertically
-        au FileType haskell nnoremap <silent> <leader>iov :InteroOpen<CR><C-W>H
-        au FileType haskell nnoremap <silent> <leader>ih :InteroHide<CR>
-
-        " Automatically reload on save
-        au BufWritePost *.hs InteroReload
-
-        " Load individual modules
-        au FileType haskell nnoremap <silent> <leader>il :InteroLoadCurrentModule<CR>
-        au FileType haskell nnoremap <silent> <leader>if :InteroLoadCurrentFile<CR>
-
-        " Type-related information
-        " Heads up! These next two differ from the rest.
-        au FileType haskell map <silent> <leader>t <Plug>InteroGenericType
-        au FileType haskell map <silent> <leader>T <Plug>InteroType
-        au FileType haskell nnoremap <silent> <leader>it :InteroTypeInsert<CR>
-        au FileType haskell nnoremap <silent> <leader>i :InteroInfo<CR>
-
-        " Navigation
-        au FileType haskell nnoremap <silent> <leader>jd :InteroGoToDef<CR>
-
-        " Evaluate an expression in REPL
-        au FileType haskell nnoremap <silent> <leader>ie :InteroEval<CR>
-
-        " Managing targets
-        " Prompts you to enter targets (no silent):
-        au FileType haskell nnoremap <leader>ist :InteroSetTargets<SPACE>
-    augroup END
-endif " }}}
-if dein#tap('nerdtree') " {{{
-    map <Leader>nt :NERDTreeFocus<CR>
 endif " }}}
 if dein#tap('denite.nvim') " {{{
     let s:menus = {
