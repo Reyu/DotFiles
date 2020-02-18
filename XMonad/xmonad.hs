@@ -16,6 +16,7 @@ import qualified XMonad.Actions.DynamicWorkspaceOrder as DO
 import XMonad.Actions.CycleWS
 import XMonad.Actions.WithAll
 import XMonad.Actions.FloatKeys
+import XMonad.Actions.Minimize
 import XMonad.Actions.PerWorkspaceKeys
 import XMonad.Actions.RotSlaves
 import XMonad.Config.Desktop
@@ -23,7 +24,9 @@ import XMonad.Util.Run
 import XMonad.Util.NamedWindows (getName)
 import XMonad.Util.Loggers
 import XMonad.Util.NamedScratchpad
+import XMonad.Util.Ungrab
 import XMonad.Prompt
+import XMonad.Prompt.AppLauncher as AL
 import XMonad.Prompt.Man
 import XMonad.Prompt.Ssh
 import XMonad.Prompt.Shell
@@ -31,15 +34,20 @@ import XMonad.Prompt.Workspace
 import XMonad.Prompt.RunOrRaise
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.Minimize
 import XMonad.Hooks.UrgencyHook
 import XMonad.Hooks.ManageHelpers
+import XMonad.Layout.BoringWindows
+import XMonad.Layout.Minimize
 import XMonad.Layout.NoBorders
+import XMonad.Layout.NoFrillsDecoration
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.Reflect
 import XMonad.Layout.Tabbed
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Gaps
 import XMonad.Layout.Grid
+import XMonad.Layout.Simplest
 import XMonad.Layout.TwoPane
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
@@ -113,7 +121,7 @@ myConfig host logPipe =
         , manageHook = myManageHook host <+> manageSpawn <+> manageHook desktopConfig
         , logHook = myLoghook logPipe <+> logHook desktopConfig
         , startupHook = myStartupHook host logPipe <+> startupHook desktopConfig
-        , handleEventHook = docksEventHook <+> handleEventHook desktopConfig
+        , handleEventHook = minimizeEventHook <+> docksEventHook <+> handleEventHook desktopConfig
         } `additionalKeysP` myKeys host logPipe
 
 ------------------------------------------------------------------------
@@ -129,9 +137,9 @@ spawnShell name' = currentTopicDir myTopicConfig >>= spawnShellIn name'
 spawnShellIn :: Maybe String -> Dir -> X ()
 spawnShellIn Nothing dir = do
     tag <- gets (W.currentTag . windowset)
-    spawn $ myTerminal ++ " -e tmux new -As '" ++ tag ++ "' -c '" ++ dir ++ "'"
+    spawn $ myTerminal ++ " -e tmux new -A -t '" ++ tag ++ "' -c '" ++ dir ++ "'"
 spawnShellIn (Just name') dir =
-    spawn $ myTerminal ++ " -e tmux new -As '" ++ name' ++ "' -c '" ++ dir ++ "'"
+    spawn $ myTerminal ++ " -e tmux new -A -t '" ++ name' ++ "' -c '" ++ dir ++ "'"
 
 removeEmptyNonTopicWorkspaceAfter :: X () -> X ()
 removeEmptyNonTopicWorkspaceAfter = removeEmptyWorkspaceAfterExcept myTopicNames
@@ -195,7 +203,7 @@ myTopics =
   , TI "stream" "." (spawn "obs")
   , TI "virt" "." (spawn "virt-manager")
   , TI "modeling" "Projects/Blender" (spawn "~/bin/blender")
-  , TI "capacity" "Projects/Capacity" spawnTopicShell
+  , TI "capacity" "Projects/Capacity" (spawn (myTerminal ++ " -e ssh macbook")  >> spawn "firefox -P capacity")
   ]
   where
     spawnTopicShell = spawnShell Nothing
@@ -248,7 +256,7 @@ myKeymap host conf =
   , ("<XF86AudioNext>", spawn "mpc next")
   , ("<XF86AudioPrev>", spawn "mpc prev")
   , ("<XF86Sleep>", spawn "xset dpms force off")
-  , ("M-S-s", spawn "sleep 1;xset dpms force off")
+  , ("M-S-s", unGrab >> spawn "sleep 1;xset dpms force off")
   , ("M-S-<XF86Sleep>", spawn "sudo poweroff")
   ,
     -- General
@@ -264,25 +272,26 @@ myKeymap host conf =
   , ("M-q", spawn "xmonad --recompile; xmonad --restart")
   , ("M-C-S-q", io exitSuccess)
   , ("M-t", withFocused $ windows . W.sink)
-  , ("M-u", do
+  , ("M-u", AL.launchApp myXPConfig { defaultText = "-P Reyu --new-window " } "firefox")
+  , ("M-S-u", do
         workspace <- gets (W.currentTag . windowset)
-        spawn ("qutebrowser -r " ++ workspace))
-  , ("S-M-u", spawn "firefox --new-window")
-  , ("<Print>", spawn "scrot")
-  , ("C-<Print>", spawn "sleep 0.2; scrot -s")
+        AL.launchApp myXPConfig { defaultText = "-P " ++ workspace } "firefox")
+  , ("<Print>", unGrab >> spawn "scrot")
+  , ("C-<Print>", unGrab >> spawn "scrot -s")
   , ("M-b", sendMessage ToggleStruts)
   , ("M-f", newCodeWS)
-  , ("C-M-l", spawn "~/bin/lights on")
-  , ("S-M-l", spawn "~/bin/lights off")
+  , ("M-C-S-b", markBoring)
+  , ("M-S-m", withFocused minimizeWindow)
+  , ("M-S-C-m", withLastMinimized maximizeWindowAndFocus)
   ,
     -- Topic actions
     ("M-a", currentTopicAction myTopicConfig)
   ,
     -- Window Movement
-    ("M-j", bindOn [ ("", windows W.focusDown)
+    ("M-j", bindOn [ ("", focusDown)
                    , ("chat", rotAllDown)
                    ])
-  , ("M-k", bindOn [ ("", windows W.focusUp)
+  , ("M-k", bindOn [ ("", focusUp)
                    , ("chat", rotAllUp)
                    ])
   , ("M-S-j", bindOn [ ("", windows W.swapDown)
@@ -291,6 +300,8 @@ myKeymap host conf =
   , ("M-S-k", bindOn [ ("", windows W.swapUp)
                      , ("chat", rotSlavesUp)
                      ])
+  , ("M-C-j", windows W.focusDown)
+  , ("M-C-k", windows W.focusUp)
   , ("M-g", promptedGoto)
   , ("M-S-g", promptedShift)
   , ("M-z", removeEmptyNonTopicWorkspaceAfter $ toggleWS' ["NSP"])]
@@ -316,17 +327,22 @@ myKeymap host conf =
   | (k,f) <-
      [ ("p", spawn "~/.xmonad/bin/passmenu")
      , ("r", runOrRaisePrompt myXPConfig)
-     , ("e", spawn "exe=`echo | yeganesh -x` && eval \"exec $exe\"")
+     , ("e", prompt "exec" myXPConfig)
+     , ("S-e", prompt (myTerminal ++ " -e") myXPConfig)
      , ("s", sshPrompt myXPConfig)
-     , ("m", prompt "mpc " myXPConfig)
-     , ("S-m", manPrompt myXPConfig)
-     , ("l", prompt "~/bin/lights" myXPConfig)
-     , ("t", prompt (myTerminal ++ " -e tmux new -A -s ") myXPConfig)] ]
+     , ("m", manPrompt myXPConfig)
+     , ("l", safePrompt "~/bin/lights" myXPConfig)
+     , ("t", mkXPrompt
+                Tmux
+                myXPConfig { defaultText = "new -A -s " }
+                tmuxCompletion
+                (\x -> spawn $ myTerminal ++ " -e tmux " ++ x))
+  ]]
   ++ -- Workspace Groups
   [ ("M-y " ++ k, f)
   | (k,f) <-
      [ ("n", promptWSGroupAdd myXPConfig "Name this group: ")
-     , ("g", promptWSGroupView myXPConfig "Go to group: " >> viewScreen 1)
+     , ("g", promptWSGroupView myXPConfig "Go to group: " >> viewScreen def 1)
      , ("d", promptWSGroupForget myXPConfig "Forget group: ")] ]
   ++ -- Dynamic Workspaces
   [ ("M-w " ++ k, f)
@@ -369,31 +385,34 @@ myKeymap host conf =
   ++ -- Move focus, or move windows, between screens
   [ (m ++ "M-" ++ k, f s)
   | (k,s) <- zip ["'", ",", ".", "o"] [0 ..]
-  , (f,m) <- [(viewScreen, ""), (sendToScreen, "S-")] ]
+  , (f,m) <- [(viewScreen def, ""), (sendToScreen def, "S-")] ]
 
 ------------------------------------------------------------------------
 -- Layouts:
 myLayoutHook =
+  --noFrillsDeco shrinkText solarizedTheme $
   avoidStrutsOn [U] $
   smartBorders $
+  boringWindows $
+  minimize $
   mkToggle1 NBFULL $
   mkToggle1 REFLECTX $
   mkToggle1 REFLECTY $
   mkToggle1 NOBORDERS $
   mkToggle1 MIRROR $
-  onWorkspace "web" (noBorders Full ||| tiled) $
+  onWorkspace "web" (noBorders Simplest ||| tiled) $
   onWorkspace "chat" chatLayout $
-  onWorkspace "games" (noBorders Full) $
-  onWorkspace "video" (noBorders Full) $
+  onWorkspace "games" (noBorders Simplest) $
+  onWorkspace "video" (noBorders Simplest) $
   onWorkspaces
     [ "code" ++ show i
     | i <- [0 .. 10] ]
-    (noBorders Full ||| TwoPane (2 / 100) (1 / 2)) $
+    (noBorders Simplest ||| TwoPane (2 / 100) (1 / 2)) $
     TwoPane (2 / 100) (1 / 2) ||| tiled ||| Mag.magnifier Grid
   where
     tiled = ResizableTall 1 (2 / 100) (1 / 2) []
     chatLayout =
-       splitGrid ||| tallGrid ||| tabbed shrinkText tabConfig
+       splitGrid ||| tallGrid ||| tabbed shrinkText solarizedTheme
     tallGrid = G.TallGrid 2 1 (1 / 2) (16 / 10) 1
     splitGrid = G.SplitGrid G.L 1 1 (9 / 16) (16 / 10) 1
     magnify = Mag.magnifiercz (20 % 10)
@@ -462,32 +481,36 @@ myLoghook logPipe = do
     , ppTitle = shorten 150
     , ppSort = fmap (namedScratchpadFilterOutWorkspace .) DO.getSortByOrder
     , ppExtras =
-      [ date "%a %b %d  %H%M"
+      [ date "%a %b %d %H%M"
       , loadAvg
       , dzenColorL (solarized "green") "" $
-        wrapL "Proton: " "" $ maildirUnread "Mail/proton/Inbox"
+        wrapL "Proton: " "" $ maildirUnread "Mail/Proton"
       , dzenColorL (solarized "yellow") "" $
-        wrapL "BlkFox: " "" $ maildirUnread "Mail/blkfox/Inbox"
+        wrapL "BlkFox: " "" $ maildirUnread "Mail/BlackFox"
       , dzenColorL (solarized "blue") "" $
-        wrapL "Gmail: " "" $ maildirUnread "Mail/tim/Inbox"
+        wrapL "Gmail: " "" $ maildirUnread "Mail/Tim"
       ] ++
       (case host of
          Laptop{} -> [battery]
          Desktop _ _ -> [])
-    , ppOrder = \(ws:l:t:exs) -> [t, l, ws] ++ exs
+    , ppOrder = \(ws:l:t:exs) -> [ws, l] ++ exs
     , ppOutput = hPutStrLn logPipe
     }
 
 -----------------------------------------------------------------------
--- Colors for text and backgrounds of each tab when in "Tabbed" layout.
-tabConfig =
+-- Themes
+solarizedTheme :: Theme
+solarizedTheme =
   defaultTheme
-  { activeBorderColor = solarized "emphasis"
+  { fontName = "Source Code Pro"
+  , activeBorderColor = solarized "green"
   , activeTextColor = solarized "green"
   , activeColor = solarized "bghighlights"
   , inactiveBorderColor = solarized "background"
   , inactiveTextColor = solarized "text"
   , inactiveColor = solarized "background"
+  , urgentBorderColor = solarized "red"
+  , urgentTextColor = solarized "red"
   }
 
 -----------------------------------------------------------------------
@@ -496,10 +519,12 @@ myXPConfig :: XPConfig
 myXPConfig =
   defaultXPConfig
   { font = "xft:Source Code Pro:pixelsize=16:autohint=true"
+  , height = 23
   , bgColor = solarized "background"
   , fgColor = solarized "text"
   , borderColor = solarized "emphasis"
   , promptBorderWidth = 1
+  -- , promptKeymap = vimLikeXPKeymay -- Needs >=xmonad-contrib-0.16
   }
 
 ------------------------------------------------------------------------
@@ -535,3 +560,23 @@ newCodeWS =
       case reads s of
         [(r,_)] -> Just r
         _ -> Nothing
+
+
+------------------------------------------------------------------------
+-- Tmux Prompt
+data Tmux = Tmux
+instance XPrompt Tmux where
+    showXPrompt Tmux     = "tmux "
+    completionToCommand _ = escape
+
+escape :: String -> String
+escape []       = ""
+escape (x:xs)
+    | isSpecialChar x = '\\' : x : escape xs
+    | otherwise       = x : escape xs
+
+isSpecialChar :: Char -> Bool
+isSpecialChar =  flip elem " &\\@\"'#?$*()[]{};"
+
+tmuxCompletion :: String -> IO [String]
+tmuxCompletion input = return []
