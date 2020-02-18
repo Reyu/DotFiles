@@ -442,7 +442,7 @@ if dein#tap('coc.nvim') " {{{
     command! -nargs=0 Format :call CocAction('format')
 
     " Use `:Fold` for fold current buffer
-    command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+    command! -nargs=? Fold :call CocAction('fold', <f-args>)
 
     " Using CocList
     " Show all diagnostics
@@ -461,6 +461,28 @@ if dein#tap('coc.nvim') " {{{
     nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
     " Resume latest coc list
     nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+    " Use <C-l> for trigger snippet expand.
+    imap <C-l> <Plug>(coc-snippets-expand)
+
+    " Use <C-j> for select text for visual placeholder of snippet.
+    vmap <C-j> <Plug>(coc-snippets-select)
+
+    " Use <C-j> for both expand and jump (make expand higher priority.)
+    imap <C-j> <Plug>(coc-snippets-expand-jump)
+
+    inoremap <silent><expr> <TAB>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+
+    function! s:check_back_space() abort
+      let col = col('.') - 1
+      return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+
+    let g:coc_snippet_next = '<tab>'
 endif " }}}
 if dein#tap('deoplete.nvim') " {{{
     let g:deoplete#enable_at_startup = 1
