@@ -23,6 +23,7 @@ path=(
   ${HOME}/bin
   ${HOME}/.go/bin
   ${HOME}/.yarn/bin
+  ${HOME}/.config/yarn/global/node_modules/.bin
   ${HOME}/.npm-global/bin
   /usr/local/bin
   /usr/bin

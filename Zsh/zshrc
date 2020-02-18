@@ -563,6 +563,12 @@ else
     ls -l --color always {}
 fi'"
 
+if (( $+commands[pyenv] ));
+then
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+fi
+
 # }}}
 # Key Bindings {{{
 source ${HOME}/.config/MyConfig
