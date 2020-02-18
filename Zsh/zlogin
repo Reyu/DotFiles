@@ -17,8 +17,10 @@
 # Attempt to `cd` to project dir, if possible, based on name of current session {{{
 if [[ -n $TMUX ]]
 then
-    export TMUX_SESSION=$(tmux list-sessions -F '#{session_attached} #{session_name}'|awk '/^1/{print $2}')
-    cd ${HOME}/Projects/${TMUX_SESSION} 2>/dev/null || true
+    export TMUX_SESSION=$(tmux list-sessions -F '#{session_attached} #{session_name}'|awk '/^1/{gsub(/-[0-9]+$/, "", $2);print $2}')
+    if [[ -d ${HOME}/Projects/${TMUX_SESSION} ]]; then
+        cd ${HOME}/Projects/${TMUX_SESSION}
+    fi
 fi
 
 if [[ -x ${PWD}/.new-shell ]]
