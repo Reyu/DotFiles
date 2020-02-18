@@ -10,8 +10,7 @@ augroup init
 augroup end
 
 " Set Python Host programs
-" let g:python_host_prog=expand("~/Projects/.python_virtual_environments/neovim2/bin/python")
-let g:python3_host_prog=expand("~/Projects/.python_virtual_environments/neovim/bin/python")
+let g:python3_host_prog=expand("~/.pyenv/versions/nvim/bin/python")
 
 " Set <leader> to comma (,)
 let mapleader=","
