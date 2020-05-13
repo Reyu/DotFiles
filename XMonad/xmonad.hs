@@ -192,7 +192,7 @@ data TopicItem = TI
 -- define some custom topics for use with the TopicSpace module.
 myTopics :: [TopicItem]
 myTopics =
-  [ TI "web" "." (spawn "firefox -P Reyu")
+  [ TI "web" "." (spawn "firefox")
   , TI "work" "Projects" spawnTopicShell
   , TI "chat" "."
        (spawn "telegram-desktop" >>
@@ -203,7 +203,7 @@ myTopics =
   , TI "stream" "." (spawn "obs")
   , TI "virt" "." (spawn "virt-manager")
   , TI "modeling" "Projects/Blender" (spawn "~/bin/blender")
-  , TI "capacity" "Projects/Capacity" (spawn (myTerminal ++ " -e ssh macbook")  >> spawn "firefox -P capacity")
+  , TI "capacity" "Projects/Capacity" (spawn (myTerminal ++ " -e ssh macbook")  >> spawn "firefox -P work")
   ]
   where
     spawnTopicShell = spawnShell Nothing
@@ -272,10 +272,10 @@ myKeymap host conf =
   , ("M-q", spawn "xmonad --recompile; xmonad --restart")
   , ("M-C-S-q", io exitSuccess)
   , ("M-t", withFocused $ windows . W.sink)
-  , ("M-u", AL.launchApp myXPConfig { defaultText = "-P Reyu --new-window " } "firefox")
+  , ("M-u", AL.launchApp myXPConfig { defaultText = "-new-window " } "firefox")
   , ("M-S-u", do
         workspace <- gets (W.currentTag . windowset)
-        AL.launchApp myXPConfig { defaultText = "-P " ++ workspace } "firefox")
+        AL.launchApp myXPConfig "firefox")
   , ("<Print>", unGrab >> spawn "scrot")
   , ("C-<Print>", unGrab >> spawn "scrot -s")
   , ("M-b", sendMessage ToggleStruts)
