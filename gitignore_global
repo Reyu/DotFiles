@@ -75,3 +75,5 @@ docs/_build
 # My Stuff #
 ############
 .new-shell
+.python-version
+.terraform
