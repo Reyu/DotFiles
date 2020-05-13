@@ -19,6 +19,47 @@ let mapleader=","
 let s:myconfig_prompt = system("cat ${HOME}/.config/MyConfig | grep USE_PROMPT | cut -d'=' -f2 | tr -d '\n'")
 
 " Pre-setup }}}
+" {{{ Custom Functions
+
+" floating window with borders
+function! CreateCenteredFloatingWindow()
+    let width = min([&columns - 4, max([80, &columns - (&columns / 3)])])
+    let height = min([&lines - 4, max([20, &lines - (&lines / 3)])])
+    let top = ((&lines - height) / 2) - 1
+    let left = (&columns - width) / 2
+    let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}
+
+    let top = "╭" . repeat("─", width - 2) . "╮"
+    let mid = "│" . repeat(" ", width - 2) . "│"
+    let bot = "╰" . repeat("─", width - 2) . "╯"
+    let lines = [top] + repeat([mid], height - 2) + [bot]
+    let s:buf = nvim_create_buf(v:false, v:true)
+    call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
+    call nvim_open_win(s:buf, v:true, opts)
+    set winhl=Normal:Floating
+    let opts.row += 1
+    let opts.height -= 2
+    let opts.col += 2
+    let opts.width -= 4
+    call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
+    au BufWipeout <buffer> exe 'bw '.s:buf
+endfunction
+
+function! ToggleTerm(cmd)
+    if empty(bufname(a:cmd))
+        call CreateCenteredFloatingWindow()
+        call termopen(a:cmd, { 'on_exit': function('OnTermExit') })
+    else
+        bwipeout!
+    endif
+endfunction
+
+function! OnTermExit(job_id, code, event) dict
+    if a:code == 0
+        bwipeout!
+    endif
+endfunction
+" }}}
 " {{{ Plugins
 " Load plugins first, so they are availible to later code {{{
 if exists('g:vscode')
@@ -321,6 +362,8 @@ if dein#tap('denite.nvim') " {{{
 
     nnoremap <Leader>m :Denite -split=floating menu<CR>
     nnoremap <C-b> :Denite -split=floating buffer<CR>
+    " nnoremap <silent> <C-p> :<C-u>Denite -split=floating 
+    "             \`finddir('_darcs', ';') != '' ? 'file/rec/darcs' : finddir('.git', ';') != '' ? 'file/rec/git' : 'file/rec'`<CR>
 endif " }}}
 if dein#tap('vim-airline') " {{{
     let g:airline#extensions#tabline#enabled = 1
@@ -607,6 +650,30 @@ if dein#tap('vim-cutlass') " {{{
     nnoremap xx dd
     nnoremap X D
 endif " }}}
+if dein#tap('fzf') " {{{
+    let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
+    " let g:fzf_history_dir = expand('~/.cache/nvim/fzf')
+    let $FZF_DEFAULT_OPTS="--layout=reverse " " top to bottom
+
+    " Custom <C-p>: Attemps to use source control lists
+    function! FZFCtrlP()
+        let l:opts = g:fzf_layout
+        let l:opts['sink'] = 'e'
+        if system('which bat') != ''
+            let l:opts['options'] = '--prompt='':e '' --preview=''bat --style header,numbers,changes --color=always {}'' '
+        else
+            let l:opts['options'] = '--prompt='':e '' --preview=''cat {}'' '
+        endif
+        if finddir('_darcs', ';') != ''
+            let l:opts['source'] = 'darcs show files --no-directories --pending'
+        elseif finddir('.git', ';') != ''
+            let l:opts['source'] = 'git ls-files -co --exclude-standard'
+        endif
+        call fzf#run(l:opts)
+    endfunction
+
+    nnoremap <silent> <C-p> :call FZFCtrlP()<CR>
+endif " }}}
 if exists('g:vscode') " {{{
     xmap gc  <Plug>VSCodeCommentary
     nmap gc  <Plug>VSCodeCommentary
@@ -616,6 +683,17 @@ endif " }}}
 " }}}
 " Plugins }}}
 " {{{ General
+
+" When term starts, auto go into insert mode
+autocmd TermOpen * startinsert
+
+" Turn off line numbers etc
+autocmd TermOpen * setlocal listchars= nonumber norelativenumber
+
+" Some scratchpads
+nnoremap <silent> <Leader>st :call ToggleTerm($SHELL)<CR>
+nnoremap <silent> <Leader>sg :call ToggleTerm('lazygit')<CR>
+nnoremap <silent> <Leader>sd :call ToggleTerm('lazydocker')<CR>
 
 " Better display for messages
 set cmdheight=2
