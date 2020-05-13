@@ -21,10 +21,10 @@ let s:myconfig_prompt = system("cat ${HOME}/.config/MyConfig | grep USE_PROMPT |
 " Pre-setup }}}
 " {{{ Plugins
 " Load plugins first, so they are availible to later code {{{
-if exists('g:gui_oni')
-    let s:dein_path = expand('~/.cache/oni')
+if exists('g:vscode')
+    let s:dein_path = expand('~/.cache/dein/vscode')
 else
-    let s:dein_path = expand('~/.cache/nvim')
+    let s:dein_path = expand('~/.cache/dein/nvim')
 endif
 let s:dein_repo = s:dein_path.'/repos/github.com/Shougo/dein.vim'
 if isdirectory(s:dein_repo)
@@ -40,84 +40,131 @@ function! CocDeps()
     call coc#util#install_extension(extensions)
 endfunction
 
-" if dein#load_state(s:dein_path)
+let g:dein#auto_recache = 1
+if dein#load_state(s:dein_path)
     call dein#begin(s:dein_path)
+    " Common conditionals
+    let s:in_gui = exists('g:vscode')
+
     " Global Plugins
     call dein#add('dahu/bisectly')
-    call dein#add('benekastah/neomake')
-    call dein#add('chrisbra/NrrwRgn')
-    call dein#add('easymotion/vim-easymotion')
-    call dein#add('editorconfig/editorconfig-vim')
+    call dein#add('easymotion/vim-easymotion',
+                \{'if': !exists('g:vscode')})
+    call dein#add('asvetliakov/vim-easymotion',
+                \{'if': exists('g:vscode')}) " Fork that works (better) with VSCode
     call dein#add('godlygeek/tabular')
-    call dein#add('junegunn/fzf')
-    call dein#add('Konfekt/FastFold')
-    call dein#add('Shougo/dein.vim')
-    call dein#add('Shougo/denite.nvim')
-    call dein#add('Shougo/neosnippet.vim')
     call dein#add('svermeulen/vim-cutlass')
     call dein#add('svermeulen/vim-yoink')
     call dein#add('svermeulen/vim-subversive')
     call dein#add('tommcdo/vim-exchange')
-    call dein#add('tpope/vim-commentary')
-    call dein#add('tpope/vim-eunuch')
-    call dein#add('tpope/vim-fugitive')
-    call dein#add('tpope/vim-obsession')
-    call dein#add('tpope/vim-projectionist')
+    call dein#add('tpope/vim-commentary',
+                \{'if': !exists('g:vscode')}) " Use VSCode calls when availible
     call dein#add('tpope/vim-repeat')
     call dein#add('tpope/vim-surround')
     call dein#add('tpope/vim-unimpaired')
-    " call dein#add('w0rp/ale')
+
+    call dein#add('benekastah/neomake',
+                \{'if': !s:in_gui})
+    call dein#add('chrisbra/NrrwRgn',
+                \{'if': !s:in_gui})
+    call dein#add('editorconfig/editorconfig-vim',
+                \{'if': !s:in_gui})
+    call dein#add('tpope/vim-eunuch',
+                \{'if': !s:in_gui})
+    call dein#add('tpope/vim-fugitive')
+    call dein#add('tpope/vim-obsession',
+                \{'if': !s:in_gui})
+    call dein#add('tpope/vim-projectionist',
+                \{'if': !s:in_gui})
+    call dein#add('junegunn/fzf',
+                \{'if': !s:in_gui})
+    call dein#add('Konfekt/FastFold',
+                \{'if': !s:in_gui})
+    call dein#add('Shougo/dein.vim',
+                \{'if': !s:in_gui})
+    call dein#add('Shougo/denite.nvim',
+                \{'if': !s:in_gui})
+    call dein#add('Shougo/neosnippet.vim',
+                \{'if': 0})
+    call dein#add('Shougo/defx.nvim',
+                \{'if': !s:in_gui})
+    call dein#add('airblade/vim-gitgutter',
+                \{'if': !s:in_gui})
+    call dein#add('iCyMind/NeoSolarized',
+                \{'if': !s:in_gui})
+    call dein#add('christoomey/vim-tmux-navigator',
+                \{'if': !s:in_gui})
+    " call dein#add('garbas/vim-snipmate.git',
+    "             \{'if': !s:in_gui})
+    call dein#add('majutsushi/tagbar',
+                \{'if': !s:in_gui})
+    call dein#add('neoclide/coc.nvim',
+                \{'merged':0, 'rev': 'release', 'hook_post_update': function('CocDeps')})
+    call dein#add('radenling/vim-dispatch-neovim',
+                \{'if': !s:in_gui})
+    call dein#add('sakhnik/nvim-gdb',
+                \{'if': !s:in_gui})
+    call dein#add('tmux-plugins/vim-tmux',
+                \{'if': !s:in_gui})
+    call dein#add('tmux-plugins/vim-tmux-focus-events',
+                \{'if': !s:in_gui})
+    call dein#add('tpope/vim-dispatch',
+                \{'if': !s:in_gui})
+    call dein#add('tpope/vim-dadbod',
+                \{'if': !s:in_gui})
+    call dein#add('tpope/vim-dotenv',
+                \{'if': !s:in_gui})
+
+    let s:use_powerline = s:myconfig_prompt == "powerline" && !s:in_gui
+    call dein#add('edkolev/promptline.vim',
+                \{'if': s:use_powerline})
+    call dein#add('edkolev/tmuxline.vim',
+                \{'if': s:use_powerline})
+    call dein#add('vim-airline/vim-airline',
+                \{'if': s:use_powerline})
+    call dein#add('vim-airline/vim-airline-themes',
+                \{'if': s:use_powerline})
+
 
     " Snippet Definitions
-    call dein#add('honza/vim-snippets')
-    call dein#add('Shougo/neosnippet-snippets')
+    call dein#add('honza/vim-snippets',
+                \{'if': !s:in_gui})
+    call dein#add('Shougo/neosnippet-snippets',
+                \{'if': !s:in_gui})
 
     " Ledger
-    call dein#add('ledger/vim-ledger')
+    call dein#add('ledger/vim-ledger',
+                \{'on_ft': 'ledger'})
 
     " Haskell
-    call dein#add('alx741/vim-stylishask', {'on_ft': 'haskell'})
-    call dein#add('alx741/hindent', {'on_ft': 'haskell'})
-    call dein#add('neovimhaskell/haskell-vim', {'on_ft': 'haskell'})
-    call dein#add('mpickering/hlint-refactor-vim', {'on_ft': 'haskell'})
+    " call dein#add('alx741/vim-stylishask',
+                " \{'if': !s:in_gui, 'on_ft': 'haskell'})
+    " call dein#add('alx741/hindent',
+                " \{'if': !s:in_gui, 'on_ft': 'haskell'})
+    " call dein#add('neovimhaskell/haskell-vim',
+                " \{'if': !s:in_gui, 'on_ft': 'haskell'})
+    " call dein#add('mpickering/hlint-refactor-vim',
+                " \{'if': !s:in_gui, 'on_ft': 'haskell'})
 
     " Python
-    call dein#add('vim-scripts/python.vim', {'on_ft': 'python'})
-    call dein#add('tmhedberg/SimpylFold', {'on_ft': 'python'})
+    call dein#add('vim-scripts/python.vim',
+                \{'if': !s:in_gui, 'on_ft': 'python'})
+    call dein#add('tmhedberg/SimpylFold',
+                \{'if': !s:in_gui, 'on_ft': 'python'})
 
     " JS/Web
-    call dein#add('mxw/vim-jsx')
-    call dein#add('leafgarland/typescript-vim')
+    call dein#add('mxw/vim-jsx',
+                \{'if': !s:in_gui, 'on_ft': 'jsx'})
+    call dein#add('leafgarland/typescript-vim',
+                \{'if': !s:in_gui, 'on_ft': 'jsx'})
 
     " Mono/C#
-    call dein#add('OmniSharp/omnisharp-vim')
+    call dein#add('OmniSharp/omnisharp-vim',
+                \{'if': !s:in_gui, 'on_ft': 'csharp'})
 
     " Other Language
-    call dein#add('saltstack/salt-vim', {'on_ft': 'sls'})
-
-    if !exists('g:gui_oni')
-        " Non-Oni/Gui Plugins
-        call dein#add('Shougo/defx.nvim')
-        call dein#add('airblade/vim-gitgutter')
-        call dein#add('iCyMind/NeoSolarized')
-        call dein#add('christoomey/vim-tmux-navigator')
-        " call dein#add('garbas/vim-snipmate.git')
-        call dein#add('majutsushi/tagbar')
-        call dein#add('neoclide/coc.nvim', {'merge':0, 'build': './install.sh nightly', 'hook_post_update': function('CocDeps')})
-        call dein#add('radenling/vim-dispatch-neovim')
-        call dein#add('sakhnik/nvim-gdb')
-        call dein#add('tmux-plugins/vim-tmux')
-        call dein#add('tmux-plugins/vim-tmux-focus-events')
-        call dein#add('tpope/vim-dispatch')
-        call dein#add('tpope/vim-dadbod')
-        call dein#add('tpope/vim-dotenv')
-        if s:myconfig_prompt == "powerline"
-            call dein#add('edkolev/promptline.vim')
-            call dein#add('edkolev/tmuxline.vim')
-            call dein#add('vim-airline/vim-airline')
-            call dein#add('vim-airline/vim-airline-themes')
-        endif
-    endif
+    call dein#add('saltstack/salt-vim',
+                \{'if': !s:in_gui, 'on_ft': 'sls'})
 
     " Dependencies
     call dein#add('MarcWeber/vim-addon-mw-utils.git')
@@ -128,14 +175,15 @@ endfunction
     endif
 
     call dein#end()
-    " call dein#save_state()
-" endif
+    call dein#save_state()
+endif
 if dein#check_install()
     call dein#install()
+    call dein#remote_plugins()
 endif
 " Plugin Init/Load }}}
 " Plugin Configuration {{{
-if dein#tap('NeoSolarized') " {{{
+if dein#tap('neomake') " {{{
     let g:neomake_open_list=2
     " call neomake#configure#automake('nw', 500)
 
@@ -148,13 +196,13 @@ if dein#tap('NeoSolarized') " {{{
     let g:neomake_haskell_enabled_makers = []
 
 endif " }}}
-if dein#tap('neomake') " {{{
+if dein#tap('NeoSolarized') " {{{
     colorscheme NeoSolarized
 endif " }}}
 if dein#tap('vim-easymotion') " {{{
     let g:EasyMotion_smartcase = 1
     " map <Leader> <Plug>(easymotion-prefix)
-    nmap s <Plug>(easymotion-overwin-f)
+    " nmap s <Plug>(easymotion-overwin-f)
     map  <Leader><Leader>/ <Plug>(easymotion-sn)
     omap <Leader><Leader>/ <Plug>(easymotion-tn)
     map  <Leader><Leader>l <Plug>(easymotion-lineforward)
@@ -163,8 +211,7 @@ if dein#tap('vim-easymotion') " {{{
 endif "}}}
 if dein#tap('editorconfig-vim') " {{{
     let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*', 'defx://.*']
-endif
-" }}}
+endif " }}}
 if dein#tap('tabular') " {{{
     let g:haskell_tabular = 1
     nnoremap <Leader>a= :Tabularize /=<CR>
@@ -211,47 +258,69 @@ endif " }}}
 if dein#tap('denite.nvim') " {{{
     let s:menus = {
                 \ 'nvim': {
-                    \ 'description': 'Edit NeoVim files',
-                    \ 'file_candidates': [
-                        \ ['init.vim', '~/.config/nvim/init.vim'],
-                        \ ['coc-settings.json', '~/.config/nvim/coc-settings.json']
-                        \ ]
-                    \ },
+                \     'description': 'Edit NeoVim files',
+                \     'file_candidates': [
+                \         ['init.vim',          '~/.config/nvim/init.vim'],
+                \         ['coc-settings.json', '~/.config/nvim/coc-settings.json']
+                \         ]
+                \     },
                 \ 'tmux': {
-                    \ 'description': 'Edit Tmux files',
-                    \ 'file_candidates': [
-                        \ ['tmux.conf', '~/.tmux.conf']
-                        \ ]
-                    \ },
+                \     'description': 'Edit Tmux files',
+                \     'file_candidates': [
+                \         ['tmux.conf', '~/.tmux.conf']
+                \         ]
+                \     },
                 \ 'zsh': {
-                    \ 'description': 'Edit ZSH files',
-                    \ 'file_candidates': [
-                        \ ['zlogin', '~/.zlogin'],
-                        \ ['zlogout', '~/.zlogout'],
-                        \ ['zprofile', '~/.zprofile'],
-                        \ ['zshenv', '~/.zshenv'],
-                        \ ['zshrc', '~/.zshrc'],
-                        \ ]
-                    \ }
+                \     'description': 'Edit ZSH files',
+                \     'file_candidates': [
+                \         ['zlogin',   '~/.zlogin'],
+                \         ['zlogout',  '~/.zlogout'],
+                \         ['zprofile', '~/.zprofile'],
+                \         ['zshenv',   '~/.zshenv'],
+                \         ['zshrc',    '~/.zshrc'],
+                \         ]
+                \     }
                 \ }
     call denite#custom#var('menu', 'menus', s:menus)
 
     " Define alias
     call denite#custom#alias('source', 'file/rec/git', 'file/rec')
-    call denite#custom#var('file/rec/git', 'command',
-          \ ['git', 'ls-files', '-co', '--exclude-standard'])
+    call denite#custom#var('file/rec/git', 'command', 
+                \['git', 'ls-files', '-co', '--exclude-standard'])
 
     call denite#custom#alias('source', 'file/rec/darcs', 'file/rec')
     call denite#custom#var('file/rec/darcs', 'command',
-                \ ['dars', 'show', 'files', '--no-directories', '--pending'])
+                \['darcs', 'show', 'files', '--no-directories', '--pending'])
 
     " Change ignore_globs
     call denite#custom#filter('matcher_ignore_globs', 'ignore_globs',
-          \ [ '.git/', '*/__pycache__/*', 'venv/'])
+                \[ '.git/', '*/__pycache__/*', 'venv/', 'pip-wheel-metadata/',
+                \  '_darcs/', '*.pyc'])
 
-    nnoremap <Leader>m :Denite menu<CR>
-    nnoremap <C-p> :Denite file/rec<CR>
-    nnoremap <C-b> :Denite buffer<CR>
+    " Define mappings
+    autocmd FileType denite call s:denite_my_settings()
+    function! s:denite_my_settings() abort
+        nnoremap <silent><buffer><expr> <CR>
+                    \ denite#do_map('do_action')
+        nnoremap <silent><buffer><expr> d
+                    \ denite#do_map('do_action', 'delete')
+        nnoremap <silent><buffer><expr> p
+                    \ denite#do_map('do_action', 'preview')
+        nnoremap <silent><buffer><expr> q
+                    \ denite#do_map('quit')
+        nnoremap <silent><buffer><expr> i
+                    \ denite#do_map('open_filter_buffer')
+        nnoremap <silent><buffer><expr> <Space>
+                    \ denite#do_map('toggle_select').'j'
+    endfunction
+
+    autocmd FileType denite-filter call s:denite_filter_my_settings()
+    function! s:denite_filter_my_settings() abort
+        imap <silent><buffer> <C-o> <Plug>(denite_filter_quit)
+    endfunction
+
+    nnoremap <Leader>m :Denite -split=floating menu<CR>
+    nnoremap <C-b> :Denite -split=floating buffer<CR>
 endif " }}}
 if dein#tap('vim-airline') " {{{
     let g:airline#extensions#tabline#enabled = 1
@@ -330,24 +399,26 @@ if dein#tap('ale') " {{{
     \}
 endif " }}}
 if dein#tap('neosnippet.vim') " {{{
-    let g:neosnippet#enable_snipmate_compatibility = 1
-    let g:neosnippet#snippets_directory = s:dein_path.'/repos/github.com/honza/vim-snippets/snippets'
+    if dein#tap('vim-snipmate')
+        let g:neosnippet#enable_snipmate_compatibility = 1
+        let g:neosnippet#snippets_directory = s:dein_path.'/repos/github.com/honza/vim-snippets/snippets'
+    endif
 
-    " Plugin key-mappings.
-    " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-    imap <C-k> <Plug>(neosnippet_expand_or_jump)
-    smap <C-k> <Plug>(neosnippet_expand_or_jump)
-    xmap <C-k> <Plug>(neosnippet_expand_target)
+    " " Plugin key-mappings.
+    " " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+    " imap <C-k> <Plug>(neosnippet_expand_or_jump)
+    " smap <C-k> <Plug>(neosnippet_expand_or_jump)
+    " xmap <C-k> <Plug>(neosnippet_expand_target)
 
-    " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-    imap <expr><M-l> neosnippet#expandable_or_jumpable() ?
-                   \ "\<Plug>(neosnippet_jump_or_expand)" : "\<TAB>"
-    smap <expr><M-l> neosnippet#expandable_or_jumpable() ?
-                   \ "\<Plug>(neosnippet_jump_or_expand)" : "\<TAB>"
+    " " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+    " imap <expr><M-l> neosnippet#expandable_or_jumpable() ?
+    "                \ "\<Plug>(neosnippet_jump_or_expand)" : "\<TAB>"
+    " smap <expr><M-l> neosnippet#expandable_or_jumpable() ?
+    "                \ "\<Plug>(neosnippet_jump_or_expand)" : "\<TAB>"
 
     " For conceal markers.
     if has('conceal')
-        set conceallevel=2 concealcursor=niv
+        set conceallevel=2 concealcursor=n
     endif
 endif "}}}
 if dein#tap('vim-tmux-navigator') " {{{
@@ -493,14 +564,14 @@ endif " }}}
 if dein#tap('vim-yoink') " {{{
     let g:yoinkIncludeDeleteOperations = 1
 
-    nmap <c-n> <plug>(YoinkPostPasteSwapBack)
-    nmap <c-p> <plug>(YoinkPostPasteSwapForward)
+    nmap <m-n> <plug>(YoinkPostPasteSwapBack)
+    nmap <m-p> <plug>(YoinkPostPasteSwapForward)
 
     nmap p <plug>(YoinkPaste_p)
     nmap P <plug>(YoinkPaste_P)
 
-    " nmap [y <plug>(YoinkRotateBack)
-    " nmap ]y <plug>(YoinkRotateForward)
+    nmap [y <plug>(YoinkRotateBack)
+    nmap ]y <plug>(YoinkRotateForward)
 
     nmap <c-=> <plug>(YoinkPostPasteToggleFormat)
 endif " }}}
@@ -518,6 +589,12 @@ if dein#tap('vim-subversive') " {{{
     xmap <leader>cr <plug>(SubversiveSubstituteRangeConfirm)
     nmap <leader>crr <plug>(SubversiveSubstituteWordRangeConfirm)
 
+    if dein#tap('vim-abolish')
+        nmap <leader><leader>s <plug>(SubversiveSubvertRange)
+        xmap <leader><leader>s <plug>(SubversiveSubvertRange)
+        nmap <leader><leader>ss <plug>(SubversiveSubvertWordRange)
+    endif
+
     " ie = inner entire buffer
     onoremap ie :exec "normal! ggVG"<cr>
 
@@ -529,6 +606,12 @@ if dein#tap('vim-cutlass') " {{{
     xnoremap x d
     nnoremap xx dd
     nnoremap X D
+endif " }}}
+if exists('g:vscode') " {{{
+    xmap gc  <Plug>VSCodeCommentary
+    nmap gc  <Plug>VSCodeCommentary
+    omap gc  <Plug>VSCodeCommentary
+    nmap gcc <Plug>VSCodeCommentaryLine
 endif " }}}
 " }}}
 " Plugins }}}
