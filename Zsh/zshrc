@@ -663,6 +663,7 @@ if (( $+commands[todoist] ))    ; then alias todo='todoist --color'             
 if (( $+commands[yokadi] ))     ; then alias y=yokadi                                               ; fi
 if (( $+commands[ledger] ))     ; then alias ledger='noglob ledger'                                 ; fi
 if (( $+commands[hledger] ))    ; then alias ledger='noglob hledger'                                ; fi
+if (( $+commands[locate] ))     ; then alias locate='noglob locate'                                 ; fi
 if (( $+commands[bat] ))        ; then alias cat='bat'                                              ; fi
 if (( $+commands[lsd] ))        ; then alias ls='lsd'; alias tree='lsd --tree'                      ; fi
 if [[ -f ${HOME}/.local/todo.txt/todo.sh ]]; then
@@ -693,3 +694,6 @@ fi
 compinit -i
 
 # vim: fdm=marker syntax=zsh
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /home/reyu/bin/vault vault
