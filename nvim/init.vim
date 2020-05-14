@@ -85,7 +85,7 @@ let g:dein#auto_recache = 1
 if dein#load_state(s:dein_path)
     call dein#begin(s:dein_path)
     " Common conditionals
-    let s:in_gui = exists('g:vscode')
+    let s:in_gui = exists('g:vscode') || exists('g:gui_oni')
 
     " Global Plugins
     call dein#add('dahu/bisectly')
@@ -125,8 +125,8 @@ if dein#load_state(s:dein_path)
                 \{'if': !s:in_gui})
     call dein#add('Shougo/denite.nvim',
                 \{'if': !s:in_gui})
-    call dein#add('Shougo/neosnippet.vim',
-                \{'if': 0})
+    " call dein#add('Shougo/neosnippet.vim',
+    "             \{'if': !s:in_gui})
     call dein#add('Shougo/defx.nvim',
                 \{'if': !s:in_gui})
     call dein#add('airblade/vim-gitgutter',
@@ -140,13 +140,13 @@ if dein#load_state(s:dein_path)
     call dein#add('majutsushi/tagbar',
                 \{'if': !s:in_gui})
     call dein#add('neoclide/coc.nvim',
-                \{'merged':0, 'rev': 'release', 'hook_post_update': function('CocDeps')})
+                \{'if': !s:in_gui, 'merged':0, 'rev': 'release', 'hook_post_update': function('CocDeps')})
     call dein#add('radenling/vim-dispatch-neovim',
                 \{'if': !s:in_gui})
     call dein#add('sakhnik/nvim-gdb',
                 \{'if': !s:in_gui})
-    call dein#add('tmux-plugins/vim-tmux',
-                \{'if': !s:in_gui})
+    " call dein#add('tmux-plugins/vim-tmux',
+    "             \{'if': !s:in_gui})
     call dein#add('tmux-plugins/vim-tmux-focus-events',
                 \{'if': !s:in_gui})
     call dein#add('tpope/vim-dispatch',
@@ -154,6 +154,10 @@ if dein#load_state(s:dein_path)
     call dein#add('tpope/vim-dadbod',
                 \{'if': !s:in_gui})
     call dein#add('tpope/vim-dotenv',
+                \{'if': !s:in_gui})
+    call dein#add('preservim/nerdtree',
+                \{'if': !s:in_gui})
+    call dein#add('Xuyuanp/nerdtree-git-plugin',
                 \{'if': !s:in_gui})
 
     let s:use_powerline = s:myconfig_prompt == "powerline" && !s:in_gui
@@ -173,37 +177,13 @@ if dein#load_state(s:dein_path)
     call dein#add('Shougo/neosnippet-snippets',
                 \{'if': !s:in_gui})
 
-    " Ledger
+    " FileTypes
+    call dein#add('sheerun/vim-polyglot',
+                \{'if': !s:in_gui})
     call dein#add('ledger/vim-ledger',
-                \{'on_ft': 'ledger'})
-
-    " Haskell
-    " call dein#add('alx741/vim-stylishask',
-                " \{'if': !s:in_gui, 'on_ft': 'haskell'})
-    " call dein#add('alx741/hindent',
-                " \{'if': !s:in_gui, 'on_ft': 'haskell'})
-    " call dein#add('neovimhaskell/haskell-vim',
-                " \{'if': !s:in_gui, 'on_ft': 'haskell'})
-    " call dein#add('mpickering/hlint-refactor-vim',
-                " \{'if': !s:in_gui, 'on_ft': 'haskell'})
-
-    " Python
-    call dein#add('vim-scripts/python.vim',
-                \{'if': !s:in_gui, 'on_ft': 'python'})
+                \{'if': !s:in_gui, 'on_ft': 'ledger'})
     call dein#add('tmhedberg/SimpylFold',
                 \{'if': !s:in_gui, 'on_ft': 'python'})
-
-    " JS/Web
-    call dein#add('mxw/vim-jsx',
-                \{'if': !s:in_gui, 'on_ft': 'jsx'})
-    call dein#add('leafgarland/typescript-vim',
-                \{'if': !s:in_gui, 'on_ft': 'jsx'})
-
-    " Mono/C#
-    call dein#add('OmniSharp/omnisharp-vim',
-                \{'if': !s:in_gui, 'on_ft': 'csharp'})
-
-    " Other Language
     call dein#add('saltstack/salt-vim',
                 \{'if': !s:in_gui, 'on_ft': 'sls'})
 
@@ -214,6 +194,10 @@ if dein#load_state(s:dein_path)
         call dein#add('roxma/nvim-yarp')
         call dein#add('roxma/vim-hug-neovim-rpc')
     endif
+
+    " Must be last
+    call dein#add('ryanoasis/vim-devicons',
+                \{'if': !s:in_gui})
 
     call dein#end()
     call dein#save_state()
@@ -238,6 +222,7 @@ if dein#tap('neomake') " {{{
 
 endif " }}}
 if dein#tap('NeoSolarized') " {{{
+    let g:neosolarized_termBoldAsBright = 1
     colorscheme NeoSolarized
 endif " }}}
 if dein#tap('vim-easymotion') " {{{
@@ -295,6 +280,34 @@ if dein#tap('tagbar') " {{{
         \ 'type'   : 't'
     \ }
     \ }
+endif " }}}
+if dein#tap('nerdtree') " {{{
+    nnoremap <silent> <F7> :NERDTreeToggleVCS<CR>w
+
+    " If more than one window and previous buffer was NERDTree, go back to it.
+    autocmd BufEnter * if bufname('#') =~# "^NERD_tree_" && winnr('$') > 1 | b# | endif
+
+    let NERDTreeQuitOnOpen = 0
+    let NERDTreeShowHidden=1
+    let NERDChristmasTree=1
+    let g:NERDTreeMinimalUI = 1
+    let g:NERDTreeWinSize = 25
+    let g:NERDTreeDirArrowExpandable = '▷'
+    let g:NERDTreeDirArrowCollapsible = '▼'
+    let NERDTreeAutoCenter=1
+    let g:NERDTreeIndicatorMapCustom = {
+                \ "modified"  : "✹",
+                \ "staged"    : "✚",
+                \ "untracked" : "✭",
+                \ "renamed"   : "➜",
+                \ "unmerged"  : "═",
+                \ "deleted"   : "✖",
+                \ "dirty"     : "✗",
+                \ "clean"     : "✔︎",
+                \ 'ignored'   : '☒',
+                \ "unknown"   : "?"
+                \ }
+
 endif " }}}
 if dein#tap('denite.nvim') " {{{
     let s:menus = {
@@ -360,9 +373,9 @@ if dein#tap('denite.nvim') " {{{
         imap <silent><buffer> <C-o> <Plug>(denite_filter_quit)
     endfunction
 
-    nnoremap <Leader>m :Denite -split=floating menu<CR>
-    nnoremap <C-b> :Denite -split=floating buffer<CR>
-    " nnoremap <silent> <C-p> :<C-u>Denite -split=floating 
+    nnoremap <Leader>m :Denite menu<CR>
+    nnoremap <C-b> :Denite buffer<CR>
+    " nnoremap <silent> <C-p> :<C-u>Denite -split=floating
     "             \`finddir('_darcs', ';') != '' ? 'file/rec/darcs' : finddir('.git', ';') != '' ? 'file/rec/git' : 'file/rec'`<CR>
 endif " }}}
 if dein#tap('vim-airline') " {{{
@@ -659,10 +672,14 @@ if dein#tap('fzf') " {{{
     function! FZFCtrlP()
         let l:opts = g:fzf_layout
         let l:opts['sink'] = 'e'
+        " Only get as many lines as will be displayed
+        let l:lines = &lines - (&lines / 3) - 4
         if system('which bat') != ''
-            let l:opts['options'] = '--prompt='':e '' --preview=''bat --style header,numbers,changes --color=always {}'' '
+            " bat provides line numbers, syntax highlighting, and Git markers
+            let l:opts['options'] = '--preview=''head -n '.l:lines.' {} | bat --style numbers,changes --color=always'' '
         else
-            let l:opts['options'] = '--prompt='':e '' --preview=''cat {}'' '
+            " but regular cat works just fine too
+            let l:opts['options'] = '--preview=''head -n '.l:lines.' {} | cat'' '
         endif
         if finddir('_darcs', ';') != ''
             let l:opts['source'] = 'darcs show files --no-directories --pending'
