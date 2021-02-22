@@ -20,6 +20,7 @@ cdpath=($^cdpath(N-/))
 # Set the list of directories that Zsh searches for programs.
 path=(
   ${HOME}/.local/bin
+  ${HOME}/.pyenv/bin
   ${HOME}/bin
   ${HOME}/.go/bin
   ${HOME}/.yarn/bin
