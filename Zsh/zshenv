@@ -19,6 +19,8 @@ cdpath=($^cdpath(N-/))
 
 # Set the list of directories that Zsh searches for programs.
 path=(
+  ${HOME}/.poetry/bin
+  ${HOME}/.pyenv/bin
   ${HOME}/.local/bin
   ${HOME}/.pyenv/bin
   ${HOME}/bin
@@ -55,6 +57,7 @@ export EDITOR=$VISUAL
 export GOPATH="${HOME}/.go"
 export NNTPSERVER="news.giganews.com"
 export BAT_THEME="ansi-dark"
+export QUBES_GPG_DOMAIN="gpg"
 # }}}
 # Read local configuration {{{
 if [[ -f ${ZDOTDIR:-$HOME}/.zshenv.local ]]; then

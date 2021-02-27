@@ -443,7 +443,7 @@ zle -N prepend-sudo # }}}
 # External Modules {{{
 zstyle :omz:plugins:keychain agents gpg,ssh
 zstyle :omz:plugins:keychain identities \
-    $(print ${HOME}/.ssh/id_*(*:tN)) \
+    $(print ${HOME}/.ssh/id_*(*N:t)) \
     $(cat ${HOME}/.gnupg/autoload 2> /dev/null)
 
 if [[ -d ${HOME}/.zplug ]]
@@ -621,7 +621,7 @@ bindkey -M viins "$key_info[Right]" forward-char
 bindkey -M viins "$key_info[Control]L" clear-screen
 
 # Bind Shift + Tab to go to the previous menu item.
-bindkey -M viins "$key_info[BackTab]" reverse-menu-complete
+#bindkey -M viins "$key_info[BackTab]" reverse-menu-complete
 
 # Insert 'sudo ' at the beginning of the line.
 # bindkey -M viins "$key_info[Control]X$key_info[Control]S" prepend-sudo
